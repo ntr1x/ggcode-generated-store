@@ -1,0 +1,19 @@
+server:
+  port: 8080
+  forward-headers-strategy: framework
+  servlet:
+    context-path: /api/service_security
+
+spring:
+  application:
+    name: service_security
+  config:
+    import:
+      - classpath:shared-security.yaml
+      - classpath:shared-openid-client.yaml
+
+springdoc:
+  api:
+    title: Store
+    description: Store Description
+    version: 1

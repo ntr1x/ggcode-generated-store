@@ -1,0 +1,60 @@
+<script setup lang="ts">
+import { set as setProperty } from 'lodash';
+import { ref, watch, reactive } from 'vue';
+import { useRoute } from 'vue-router';
+import { useAuthStore } from '../../store/authStore';
+import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { paymentsRemote } from '../../remotes/paymentsRemote';
+import SectionHeading from '../partials/SectionHeading.vue';
+import GridPaymentStatuses from '../grids/GridPaymentStatuses.vue';
+
+const route = useRoute()
+const authStore = useAuthStore()
+
+const paymentStatusSelectFilter = reactive({
+})
+
+const paymentStatusSelectSort = reactive({
+})
+
+const paymentStatusSelectSelection = ref([])
+
+const paymentStatusSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
+  const token = await authStore.requireToken()
+  const data = {}
+  const params = {}
+  const sort: string[] = []
+  setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
+
+  return {
+    method: 'POST',
+    url: `/system/public_payment_status/select`,
+    params,
+    data,
+    paramsSerializer: {
+      indexes: null
+    },
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+})
+
+watch(
+  [paymentStatusSelectFilter, paymentStatusSelectSort],
+  () => {
+    paymentStatusSelectQuery.refresh()
+    paymentStatusSelectSelection.value = []
+  }
+)
+</script>
+
+<template>
+  <div class="flex flex-col overflow-hidden">
+    <SectionHeading tag="h1" title="Payment Statuses" />
+    <GridPaymentStatuses
+      :state="paymentStatusSelectQuery.state"
+      v-model:selection="paymentStatusSelectSelection"
+    />
+  </div>
+</template>

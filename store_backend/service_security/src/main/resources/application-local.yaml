@@ -1,0 +1,7 @@
+app:
+  openid:
+    client:
+      client-id: api
+      client-secret: 4Ggxc50xzu5j1qFk5rZ4OPHwvNFXLpNX
+server:
+  port: 8086
