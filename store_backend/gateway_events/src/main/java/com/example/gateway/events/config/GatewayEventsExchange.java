@@ -10,7 +10,7 @@ import org.springframework.kafka.config.TopicBuilder;
 public class GatewayEventsExchange {
     
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "publicCustomersTopic")
     public NewTopic publicCustomersTopic() {
         return TopicBuilder
                 .name("public_customers")
@@ -19,7 +19,7 @@ public class GatewayEventsExchange {
                 .build();
     }
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "publicCategoryTopic")
     public NewTopic publicCategoryTopic() {
         return TopicBuilder
                 .name("public_category")
@@ -28,7 +28,7 @@ public class GatewayEventsExchange {
                 .build();
     }
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "publicProductTopic")
     public NewTopic publicProductTopic() {
         return TopicBuilder
                 .name("public_product")
@@ -37,7 +37,7 @@ public class GatewayEventsExchange {
                 .build();
     }
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "publicDispatchTopic")
     public NewTopic publicDispatchTopic() {
         return TopicBuilder
                 .name("public_dispatch")

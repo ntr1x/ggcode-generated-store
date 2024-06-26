@@ -10,7 +10,7 @@ import org.springframework.kafka.config.TopicBuilder;
 public class ServicePaymentsExchange {
     
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "publicOrderTopic")
     public NewTopic publicOrderTopic() {
         return TopicBuilder
                 .name("public_order")
@@ -19,7 +19,7 @@ public class ServicePaymentsExchange {
                 .build();
     }
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "publicPaymentTopic")
     public NewTopic publicPaymentTopic() {
         return TopicBuilder
                 .name("public_payment")
