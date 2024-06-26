@@ -20,7 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.util.*;
 
 @Slf4j
-@Component
+@Component("serviceEvents.publicDispatchListener")
 public class PublicDispatchListener {
 
     @Autowired

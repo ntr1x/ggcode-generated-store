@@ -70,7 +70,7 @@ Initialize keycloak installation:
 
 ```bash
 # Launch one-off container to initialize keycloak
-$ cd $PROJECT_ROOT/store_compose
+$ cd $PROJECT_ROOT/store_starter
 $ docker compose run env_kcadm
 ```
 

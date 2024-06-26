@@ -9,7 +9,7 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
+@Component("gatewayEvents.publicDispatchListener")
 public class PublicDispatchListener {
 
     @KafkaListener(

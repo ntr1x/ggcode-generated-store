@@ -9,13 +9,13 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
+@Component("gatewayProfile.verifyPhoneListener")
 public class VerifyPhoneListener {
 
     @KafkaListener(
         containerFactory = CloudEventsConstants.CONTAINER_FACTORY_CLOUD_EVENT,
-        groupId = "gateway_profile",
-        topicPattern = "verify_phone"
+        groupId = "${app.gateway_profile.listener.verify_phone.group_id:gateway_profile}",
+        topicPattern = "${app.gateway_profile.listener.verify_phone.topic_pattern:verify_phone}"
     )
     public void listen(ConsumerRecord<String, CloudEvent> record, Acknowledgment ack) {
         try {
