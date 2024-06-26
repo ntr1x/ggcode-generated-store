@@ -9,6 +9,7 @@ import SectionHeading from '../partials/SectionHeading.vue';
 import ToolbarEvents from '../toolbars/ToolbarEvents.vue';
 import GridEvents from '../grids/GridEvents.vue';
 
+// @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
 
@@ -35,6 +36,7 @@ const eventSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   setProperty(data, 'ceType', eventSelectFilter.eventType)
   setProperty(data, 'topic', eventSelectFilter.eventTopic)
   const params = {
+  "size": 50,
   "sort": "created_at,desc"
 }
   const sort: string[] = []

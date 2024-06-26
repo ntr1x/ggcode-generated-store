@@ -10,7 +10,7 @@ import org.springframework.kafka.config.TopicBuilder;
 public class ServiceCatalogExchange {
     
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "publicCategoryTopic")
     public NewTopic publicCategoryTopic() {
         return TopicBuilder
                 .name("public_category")
@@ -19,7 +19,7 @@ public class ServiceCatalogExchange {
                 .build();
     }
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "publicProductTopic")
     public NewTopic publicProductTopic() {
         return TopicBuilder
                 .name("public_product")

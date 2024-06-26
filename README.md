@@ -14,6 +14,7 @@ Add this routes to your hosts file:
 
 ```
 127.0.0.1   api.local.example.com
+127.0.0.1   admin-ui.local.example.com
 127.0.0.1   swagger-ui.local.example.com
 127.0.0.1   kafka-ui.local.example.com
 127.0.0.1   pgadmin.local.example.com
@@ -39,7 +40,7 @@ $ export PROJECT_ROOT=$(pwd)
 
 #### Step 2
 
-Build the application:
+Build back-end application:
 
 ```bash
 $ cd $PROJECT_ROOT/store_backend
@@ -48,6 +49,15 @@ $ make build/assembly_web
 
 #### Step 3
 
+Build Admin UI:
+
+```bash
+$ cd $PROJECT_ROOT/store_admin
+$ make build/admin_ui
+```
+
+#### Step 4
+
 Launch containers:
 
 ```bash
@@ -55,7 +65,7 @@ $ cd $PROJECT_ROOT/store_starter
 $ docker compose --profile env --profile app up -d
 ```
 
-#### Step 4
+#### Step 5
 
 Migrate database:
 
@@ -64,13 +74,13 @@ $ cd $PROJECT_ROOT/store_migrate
 $ make migrate/changelog/liquibase_host
 ```
 
-#### Step 5
+#### Step 6
 
 Initialize keycloak installation:
 
 ```bash
 # Launch one-off container to initialize keycloak
-$ cd $PROJECT_ROOT/store_compose
+$ cd $PROJECT_ROOT/store_starter
 $ docker compose run env_kcadm
 ```
 
@@ -88,6 +98,7 @@ $ yarn dev
 
 Open in your browser:
 
+- http://admin-ui.local.example.com/
 - http://swagger-ui.local.example.com/
 - http://kafka-ui.local.example.com/
 - http://pgadmin.local.example.com/

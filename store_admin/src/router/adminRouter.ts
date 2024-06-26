@@ -1,4 +1,4 @@
-import PrivateView from '../components/views/PrivateView.vue'
+import ViewAdmin from '../components/views/ViewAdmin.vue'
 import PageCustomers from '../components/pages/PageCustomers.vue'
 import PageCustomerInfo from '../components/pages/PageCustomerInfo.vue'
 import PageAgents from '../components/pages/PageAgents.vue'
@@ -31,123 +31,239 @@ import PageDispatchTypes from '../components/pages/PageDispatchTypes.vue'
 
 export const adminRouter = {
   path: '/admin',
-  component: PrivateView,
+  component: ViewAdmin,
   children: [
     {
       path: 'customers',
-      component: PageCustomers
+      component: PageCustomers,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin","realm:support"]
+      }
     },
     {
       path: 'customers/:customerId',
-      component: PageCustomerInfo
+      component: PageCustomerInfo,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin","realm:support"]
+      }
     },
     {
       path: 'agents',
-      component: PageAgents
+      component: PageAgents,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'agents/:agentId',
-      component: PageAgentInfo
+      component: PageAgentInfo,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'orders',
-      component: PageOrders
+      component: PageOrders,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'orders/:orderId',
-      component: PageOrderInfo
+      component: PageOrderInfo,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'payments',
-      component: PagePayments
+      component: PagePayments,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'categories',
-      component: PageCategories
+      component: PageCategories,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'products',
-      component: PageProducts
+      component: PageProducts,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'products/:productId',
-      component: PageProductInfo
+      component: PageProductInfo,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'items',
-      component: PageItems
+      component: PageItems,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'regions',
-      component: PageRegions
+      component: PageRegions,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'shops',
-      component: PageShops
+      component: PageShops,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'order_types',
-      component: PageOrderTypes
+      component: PageOrderTypes,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'order_statuses',
-      component: PageOrderStatuses
+      component: PageOrderStatuses,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'payment_types',
-      component: PagePaymentTypes
+      component: PagePaymentTypes,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'payment_statuses',
-      component: PagePaymentStatuses
+      component: PagePaymentStatuses,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'source_types',
-      component: PageSourceTypes
+      component: PageSourceTypes,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'promotion_types',
-      component: PagePromotionTypes
+      component: PagePromotionTypes,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'promotions',
-      component: PagePromotions
+      component: PagePromotions,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'events',
-      component: PageEvents
+      component: PageEvents,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin","realm:support"]
+      }
     },
     {
       path: 'event_sources',
-      component: PageEventSources
+      component: PageEventSources,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'event_types',
-      component: PageEventTypes
+      component: PageEventTypes,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'event_topics',
-      component: PageEventTopics
+      component: PageEventTopics,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'subscriptions',
-      component: PageSubscriptions
+      component: PageSubscriptions,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin","realm:support"]
+      }
     },
     {
       path: 'subscription_types',
-      component: PageSubscriptionTypes
+      component: PageSubscriptionTypes,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'dispatches',
-      component: PageDispatches
+      component: PageDispatches,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin","realm:support"]
+      }
     },
     {
       path: 'dispatch_statuses',
-      component: PageDispatchStatuses
+      component: PageDispatchStatuses,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: 'dispatch_types',
-      component: PageDispatchTypes
+      component: PageDispatchTypes,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
     },
     {
       path: '',

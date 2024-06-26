@@ -8,6 +8,7 @@ import { eventsRemote } from '../../remotes/eventsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridDispatchStatuses from '../grids/GridDispatchStatuses.vue';
 
+// @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
 

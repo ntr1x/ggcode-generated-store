@@ -4,12 +4,14 @@ import { ref, watch, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { productsRemote } from '../../remotes/productsRemote';
 import { paymentsRemote } from '../../remotes/paymentsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
 import FieldsetProductInfo from '../fieldsets/FieldsetProductInfo.vue';
 import ToolbarPromotionTargets from '../toolbars/ToolbarPromotionTargets.vue';
 import GridPromotionTargets from '../grids/GridPromotionTargets.vue';
 
+// @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
 
@@ -21,7 +23,7 @@ const productGetSort = reactive({
 
 const productGetSelection = ref([])
 
-const productGetQuery = useAxiosRequest<any>(paymentsRemote, async () => {
+const productGetQuery = useAxiosRequest<any>(productsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   const params = {}

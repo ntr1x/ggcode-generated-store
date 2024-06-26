@@ -9,6 +9,7 @@ import SectionHeading from '../partials/SectionHeading.vue';
 import ToolbarOrders from '../toolbars/ToolbarOrders.vue';
 import GridOrders from '../grids/GridOrders.vue';
 
+// @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
 
@@ -23,6 +24,10 @@ const orderSelectFilter = reactive({
 const orderSelectSort = reactive({
   orderTypeId: undefined,
   orderStatusId: undefined,
+  id: undefined,
+  customerId: undefined,
+  createdAt: undefined,
+  updatedAt: undefined,
 })
 
 const orderSelectSelection = ref([])
@@ -35,13 +40,28 @@ const orderSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
   setProperty(data, 'orderStatusId', orderSelectFilter.orderStatus)
   setProperty(data, 'sourceTypeId', orderSelectFilter.sourceType)
   setProperty(data, 'regionId', orderSelectFilter.regionId)
-  const params = {}
+  const params = {
+  "size": 50,
+  "sort": "id,asc"
+}
   const sort: string[] = []
   if (orderSelectSort.orderTypeId != null) {
     sort.push('orderType,' + orderSelectSort.orderTypeId)
   }
   if (orderSelectSort.orderStatusId != null) {
     sort.push('orderStatus,' + orderSelectSort.orderStatusId)
+  }
+  if (orderSelectSort.id != null) {
+    sort.push('id,' + orderSelectSort.id)
+  }
+  if (orderSelectSort.customerId != null) {
+    sort.push('customerId,' + orderSelectSort.customerId)
+  }
+  if (orderSelectSort.createdAt != null) {
+    sort.push('createdAt,' + orderSelectSort.createdAt)
+  }
+  if (orderSelectSort.updatedAt != null) {
+    sort.push('updatedAt,' + orderSelectSort.updatedAt)
   }
   setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
 

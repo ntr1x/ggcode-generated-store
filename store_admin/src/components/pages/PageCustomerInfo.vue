@@ -17,6 +17,7 @@ import GridSubscriptions from '../grids/GridSubscriptions.vue';
 import ToolbarDispatches from '../toolbars/ToolbarDispatches.vue';
 import GridDispatches from '../grids/GridDispatches.vue';
 
+// @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
 
@@ -67,6 +68,10 @@ const orderSelectFilter = reactive({
 const orderSelectSort = reactive({
   orderTypeId: undefined,
   orderStatusId: undefined,
+  id: undefined,
+  customerId: undefined,
+  createdAt: undefined,
+  updatedAt: undefined,
 })
 
 const orderSelectSelection = ref([])
@@ -79,13 +84,28 @@ const orderSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
   setProperty(data, 'orderStatusId', orderSelectFilter.orderStatus)
   setProperty(data, 'sourceTypeId', orderSelectFilter.sourceType)
   setProperty(data, 'regionId', orderSelectFilter.regionId)
-  const params = {}
+  const params = {
+  "size": 50,
+  "sort": "id,asc"
+}
   const sort: string[] = []
   if (orderSelectSort.orderTypeId != null) {
     sort.push('orderType,' + orderSelectSort.orderTypeId)
   }
   if (orderSelectSort.orderStatusId != null) {
     sort.push('orderStatus,' + orderSelectSort.orderStatusId)
+  }
+  if (orderSelectSort.id != null) {
+    sort.push('id,' + orderSelectSort.id)
+  }
+  if (orderSelectSort.customerId != null) {
+    sort.push('customerId,' + orderSelectSort.customerId)
+  }
+  if (orderSelectSort.createdAt != null) {
+    sort.push('createdAt,' + orderSelectSort.createdAt)
+  }
+  if (orderSelectSort.updatedAt != null) {
+    sort.push('updatedAt,' + orderSelectSort.updatedAt)
   }
   setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
 
@@ -123,7 +143,10 @@ const agentSelectQuery = useAxiosRequest<any>(customersRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'customerId', agentSelectFilter.customerId)
-  const params = {}
+  const params = {
+  "size": 50,
+  "sort": "created_at,asc"
+}
   const sort: string[] = []
   setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
 
@@ -156,6 +179,7 @@ const subscriptionSelectFilter = reactive({
 const subscriptionSelectSort = reactive({
   id: undefined,
   createdAt: undefined,
+  typeId: undefined,
 })
 
 const subscriptionSelectSelection = ref([])
@@ -172,6 +196,9 @@ const subscriptionSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   }
   if (subscriptionSelectSort.createdAt != null) {
     sort.push('createdAt,' + subscriptionSelectSort.createdAt)
+  }
+  if (subscriptionSelectSort.typeId != null) {
+    sort.push('typeId,' + subscriptionSelectSort.typeId)
   }
   setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
 
@@ -219,6 +246,7 @@ const dispatchSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   setProperty(data, 'typeId', dispatchSelectFilter.typeId)
   setProperty(data, 'statusId', dispatchSelectFilter.statusId)
   const params = {
+  "size": 50,
   "sort": "created_at,desc"
 }
   const sort: string[] = []

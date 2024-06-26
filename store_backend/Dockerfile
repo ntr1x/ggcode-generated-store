@@ -1,4 +1,4 @@
-FROM maven:3.9.5-eclipse-temurin-17-alpine as loader
+FROM maven:3.9.5-eclipse-temurin-17-alpine AS loader
 WORKDIR /app
 
 ADD pom.xml .
@@ -18,7 +18,7 @@ ADD gateway_profile/pom.xml ./gateway_profile/pom.xml
 ADD assembly_web/pom.xml ./assembly_web/pom.xml
 RUN mvn dependency:go-offline
 
-FROM loader as builder
+FROM loader AS builder
 ARG MODULE_NAME
 ARG MODULE_VERSION=1.0-SNAPSHOT
 ADD common_api/src ./common_api/src

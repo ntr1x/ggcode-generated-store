@@ -45,7 +45,7 @@ function openPrincipalDialog() {
         }" />
       </div>
       <div class="flex-1 flex flex-col gap-2">
-        <RouterLink to="/admin" custom v-slot="{ navigate }">
+        <RouterLink to="/personal" custom v-slot="{ navigate }">
           <Button text rounded class="text-white" icon="pi pi-home" size="large" @click="navigate" />
         </RouterLink>
         <Button text rounded class="text-white" icon="pi pi-search" size="large" @click="openPageDialog" />

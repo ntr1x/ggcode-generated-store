@@ -6,7 +6,7 @@ import SymbolId from '../symbols/SymbolId.vue'
 import SymbolPromotionType from '../symbols/SymbolPromotionType.vue'
 
 export type ResponseData = {
-  content: T[]
+  content: []
 }
 
 export type GridPromotionTargetsProps = {
@@ -36,6 +36,16 @@ withDefaults(defineProps<GridPromotionTargetsProps>(), {
     :scrollHeight="scrollHeight"
     :class="{
       'overflow-hidden': scrollable
+    }"
+    :pt="{
+      column: {
+        bodyCell: {
+          class: 'text-left border-0 border-b border-solid border-r border-b p-2 border-surface-200 dark:border-surface-700'
+        },
+        headerCell: {
+          class: 'font-normal text-sm text-left border-t-0 border-y border-r border-0 border-b border-solid p-2 bg-surface-50 text-surface-700 dark:text-white/80 dark:bg-surface-800 border-surface-200 dark:border-surface-700 focus-visible:outline-none focus-visible:outline-offset-0 focus-visible:ring focus-visible:ring-inset focus-visible:ring-primary-400/50 dark:focus-visible:ring-primary-300/50'
+        }
+      }
     }"
   >
     <Column selectionMode="multiple" headerStyle="width: 3rem" />

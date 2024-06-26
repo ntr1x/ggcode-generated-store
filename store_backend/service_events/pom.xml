@@ -30,6 +30,11 @@
         </dependency>
         <dependency>
             <groupId>com.example</groupId>
+            <artifactId>common_ws</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.example</groupId>
             <artifactId>common_events</artifactId>
             <version>${project.version}</version>
         </dependency>

@@ -8,6 +8,7 @@ import { paymentsRemote } from '../../remotes/paymentsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridPromotionTypes from '../grids/GridPromotionTypes.vue';
 
+// @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
 

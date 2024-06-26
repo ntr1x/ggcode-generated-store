@@ -9,13 +9,13 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
+@Component("gatewayPayments.publicOrderListener")
 public class PublicOrderListener {
 
     @KafkaListener(
         containerFactory = CloudEventsConstants.CONTAINER_FACTORY_CLOUD_EVENT,
-        groupId = "gateway_payments",
-        topicPattern = "public_order"
+        groupId = "${app.gateway_payments.listener.public_order.group_id:gateway_payments}",
+        topicPattern = "${app.gateway_payments.listener.public_order.topic_pattern:public_order}"
     )
     public void listen(ConsumerRecord<String, CloudEvent> record, Acknowledgment ack) {
         try {

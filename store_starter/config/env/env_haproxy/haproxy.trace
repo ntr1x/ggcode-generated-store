@@ -3,10 +3,11 @@
   hostname: kafka-ui.local.example.com
   proxies:
   - servers:
-    - check: true
+    - backup: false
       port: 8080
-      optional: false
       hostname: env_kafka_ui
+      check: true
+      optional: false
     path: /
   port: 80
 - path: ''
@@ -14,10 +15,11 @@
   hostname: pgadmin.local.example.com
   proxies:
   - servers:
-    - check: true
+    - backup: false
       port: 80
-      optional: false
       hostname: env_pgadmin
+      check: true
+      optional: false
     path: /
   port: 80
 - path: ''
@@ -25,10 +27,11 @@
   hostname: swagger-ui.local.example.com
   proxies:
   - servers:
-    - check: true
+    - backup: false
       port: 8080
-      optional: false
       hostname: env_swagger_ui
+      check: true
+      optional: false
     path: /
   port: 80
 - path: ''
@@ -36,10 +39,11 @@
   hostname: auth.local.example.com
   proxies:
   - servers:
-    - check: true
+    - backup: false
       port: 8080
-      optional: false
       hostname: env_keycloak
+      check: true
+      optional: false
     path: /
   redirect:
     type: prefix
@@ -47,62 +51,100 @@
     code: 301
   port: 80
 - path: ''
+  name: admin_ui_local_example_com
+  hostname: admin-ui.local.example.com
+  proxies:
+  - servers:
+    - backup: false
+      port: 80
+      hostname: app_admin_ui
+      check: true
+      optional: true
+    - backup: true
+      port: 5173
+      hostname: host.docker.internal
+      check: true
+      optional: true
+    path: /
+  port: 80
+- path: ''
   name: api
   hostname: api.local.example.com
   proxies:
   - servers:
-    - check: true
+    - backup: false
       port: 8080
-      optional: true
       hostname: app_assembly_web
+      check: true
+      optional: true
+    - backup: true
+      port: 8080
+      hostname: host.docker.internal
+      check: true
+      optional: true
     path: /api/assembly_web
     cors:
       origin: '*'
   - servers:
-    - check: true
-      port: 8081
-      optional: true
+    - backup: false
+      port: 8080
       hostname: host.docker.internal
+      check: true
+      optional: true
+    path: /api/assembly_web
+    cors:
+      origin: '*'
+  - servers:
+    - backup: false
+      port: 8081
+      hostname: host.docker.internal
+      check: true
+      optional: true
     path: /api/service_basket
     cors:
       origin: '*'
   - servers:
-    - check: true
+    - backup: false
       port: 8082
-      optional: true
       hostname: host.docker.internal
+      check: true
+      optional: true
     path: /api/service_catalog
     cors:
       origin: '*'
   - servers:
-    - check: true
+    - backup: false
       port: 8083
-      optional: true
       hostname: host.docker.internal
+      check: true
+      optional: true
     path: /api/service_customers
     cors:
       origin: '*'
   - servers:
-    - check: true
+    - backup: false
       port: 8084
-      optional: true
       hostname: host.docker.internal
+      check: true
+      optional: true
     path: /api/service_events
     cors:
       origin: '*'
   - servers:
-    - check: true
+    - backup: false
       port: 8085
-      optional: true
       hostname: host.docker.internal
+      check: true
+      optional: true
     path: /api/service_payments
     cors:
       origin: '*'
   - servers:
-    - check: true
+    - backup: false
       port: 8086
-      optional: true
       hostname: host.docker.internal
+      check: true
+      optional: true
     path: /api/service_security
     cors:
       origin: '*'

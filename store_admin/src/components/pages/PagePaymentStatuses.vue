@@ -8,6 +8,7 @@ import { paymentsRemote } from '../../remotes/paymentsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridPaymentStatuses from '../grids/GridPaymentStatuses.vue';
 
+// @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
 

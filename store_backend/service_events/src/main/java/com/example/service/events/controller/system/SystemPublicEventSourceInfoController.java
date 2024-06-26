@@ -28,7 +28,7 @@ public class SystemPublicEventSourceInfoController {
     private final SystemPublicEventSourceInfoService systemPublicEventSourceInfoService;
     
     @PostMapping
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Create.class)
     public SystemPublicEventSourceInfoResponse.Create create(
@@ -39,7 +39,7 @@ public class SystemPublicEventSourceInfoController {
     }
     
     @PostMapping("/remove")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Remove.class)
     public SystemPublicEventSourceInfoResponse.Remove remove(
@@ -50,7 +50,7 @@ public class SystemPublicEventSourceInfoController {
     }
     
     @PutMapping("/update")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Update.class)
     public SystemPublicEventSourceInfoResponse.Update update(
@@ -61,7 +61,7 @@ public class SystemPublicEventSourceInfoController {
     }
     
     @DeleteMapping("/i/{name}")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Remove.class)
     public SystemPublicEventSourceInfoResponse.Remove remove(
@@ -75,7 +75,7 @@ public class SystemPublicEventSourceInfoController {
     }
     
     @PutMapping("/i/{name}")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Replace.class)
     public SystemPublicEventSourceInfoResponse.Replace replace(
@@ -90,7 +90,7 @@ public class SystemPublicEventSourceInfoController {
     }
     
     @PostMapping("/select")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Select.class)
     public Page<SystemPublicEventSourceInfoModel> select(
@@ -102,7 +102,7 @@ public class SystemPublicEventSourceInfoController {
     }
     
     @GetMapping("/i/{name}")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Select.class)
     public SystemPublicEventSourceInfoModel get(

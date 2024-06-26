@@ -28,7 +28,7 @@ public class SystemPublicShopController {
     private final SystemPublicShopService systemPublicShopService;
     
     @PostMapping
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Create.class)
     public SystemPublicShopResponse.Create create(
@@ -39,7 +39,7 @@ public class SystemPublicShopController {
     }
     
     @PostMapping("/remove")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Remove.class)
     public SystemPublicShopResponse.Remove remove(
@@ -50,7 +50,7 @@ public class SystemPublicShopController {
     }
     
     @PutMapping("/update")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Update.class)
     public SystemPublicShopResponse.Update update(
@@ -61,7 +61,7 @@ public class SystemPublicShopController {
     }
     
     @DeleteMapping("/i/{id}")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Remove.class)
     public SystemPublicShopResponse.Remove remove(
@@ -75,7 +75,7 @@ public class SystemPublicShopController {
     }
     
     @PutMapping("/i/{id}")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Replace.class)
     public SystemPublicShopResponse.Replace replace(
@@ -90,7 +90,7 @@ public class SystemPublicShopController {
     }
     
     @PostMapping("/select")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Select.class)
     public Page<SystemPublicShopModel> select(
@@ -102,7 +102,7 @@ public class SystemPublicShopController {
     }
     
     @GetMapping("/i/{id}")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Select.class)
     public SystemPublicShopModel get(

@@ -28,7 +28,7 @@ public class SystemPublicCategoryController {
     private final SystemPublicCategoryService systemPublicCategoryService;
     
     @PostMapping
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Create.class)
     public SystemPublicCategoryResponse.Create create(
@@ -39,7 +39,7 @@ public class SystemPublicCategoryController {
     }
     
     @PostMapping("/remove")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Remove.class)
     public SystemPublicCategoryResponse.Remove remove(
@@ -50,7 +50,7 @@ public class SystemPublicCategoryController {
     }
     
     @PutMapping("/update")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Update.class)
     public SystemPublicCategoryResponse.Update update(
@@ -61,7 +61,7 @@ public class SystemPublicCategoryController {
     }
     
     @DeleteMapping("/i/{id}")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Remove.class)
     public SystemPublicCategoryResponse.Remove remove(
@@ -75,7 +75,7 @@ public class SystemPublicCategoryController {
     }
     
     @PutMapping("/i/{id}")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Replace.class)
     public SystemPublicCategoryResponse.Replace replace(
@@ -90,7 +90,7 @@ public class SystemPublicCategoryController {
     }
     
     @PostMapping("/select")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Select.class)
     public Page<SystemPublicCategoryModel> select(
@@ -102,7 +102,7 @@ public class SystemPublicCategoryController {
     }
     
     @GetMapping("/i/{id}")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Select.class)
     public SystemPublicCategoryModel get(

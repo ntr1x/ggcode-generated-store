@@ -9,32 +9,41 @@ const props = defineProps<{
   decoration?: string,
 }>()
 
-const decorations = {
+const decorations: Record<string, any> = {
   "FCM": "rounded bg-green-800 text-white",
   "HMS": "rounded bg-indigo-800 text-white"
 }
+
 const label = computed(() => {
-  return props.label != undefined
-    ? props.label
-    : props.value.description
+  switch (true) {
+    case props.label != undefined: return props.label
+    case props.value != undefined: return props.value.description
+    default: return null
+  }
 })
 
 const route = computed(() => {
-  return props.route != undefined
-    ? props.route
-    : undefined
+  switch (true) {
+    case props.route != undefined: return props.route
+    case props.value != undefined: return null
+    default: return null
+  }
 })
 
 const icon = computed(() => {
-  return props.icon != undefined
-    ? props.icon
-    : undefined
+  switch (true) {
+    case props.icon != undefined: return props.icon
+    case props.value != undefined: return null
+    default: return null
+  }
 })
 
 const decoration = computed(() => {
-  return props.decoration != undefined
-    ? props.decoration
-    : decorations[props.value.name]
+  switch (true) {
+    case props.decoration != undefined: return props.decoration
+    case props.value != undefined: return decorations[props.value.name]
+    default: return null
+  }
 })
 </script>
 

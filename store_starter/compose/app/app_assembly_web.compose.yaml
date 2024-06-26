@@ -4,12 +4,7 @@ services:
     - env_kafka
     - env_postgres
     - env_keycloak
-    image: example/assembly_web:1.0-SNAPSHOT
-    links:
-    - env_haproxy:auth.local.example.com
-    restart: unless-stopped
-    networks:
-      default: {}
+    image: store/assembly_web:1.0-SNAPSHOT
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://env_postgres:5432/app
       APP_OPENID_CLIENT_CLIENTID: api
@@ -18,6 +13,11 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: env_kafka:29092
       SPRING_DATASOURCE_PASSWORD: app
       JAVA_OPTS: -Xmx512m -Xms256m
+    restart: unless-stopped
+    networks:
+      default: {}
+    links:
+    - env_haproxy:auth.local.example.com
     deploy:
       resources:
         limits:

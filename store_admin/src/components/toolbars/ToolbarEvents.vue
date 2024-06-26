@@ -22,8 +22,6 @@ const sortByCeType = defineModel<'asc' | 'desc' | undefined>('sortByCeType')
 const sortByTopic = defineModel<'asc' | 'desc' | undefined>('sortByTopic')
 const sortByCreatedAt = defineModel<'asc' | 'desc' | undefined>('sortByCreatedAt')
 
-const selection = defineModel<T[]>('selection')
-
 const filters = reactive<Record<string, Option | undefined>>({
   eventSource: undefined,
   eventTopic: undefined,

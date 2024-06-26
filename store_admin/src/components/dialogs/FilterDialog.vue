@@ -8,7 +8,7 @@ export type Option = {
   key: string
   title: string
   description?: string
-  value: T
+  value: any
 }
 
 const props = defineProps<{

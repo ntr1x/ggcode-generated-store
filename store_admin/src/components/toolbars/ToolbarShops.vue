@@ -13,8 +13,6 @@ const modalStore = useModalStore()
 
 const filterByRegionId = defineModel('filterByRegionId')
 
-const selection = defineModel<T[]>('selection')
-
 const filters = reactive<Record<string, Option | undefined>>({
   regionId: undefined,
 })

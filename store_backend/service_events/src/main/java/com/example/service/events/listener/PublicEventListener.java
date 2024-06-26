@@ -27,7 +27,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component
+@Component("serviceEvents.publicEventListener")
 public class PublicEventListener {
 
     @Autowired
@@ -40,8 +40,8 @@ public class PublicEventListener {
     @KafkaListener(
             containerFactory = CloudEventsConstants.CONTAINER_FACTORY_CLOUD_EVENT,
             batch = "true",
-            groupId = "service_events",
-            topicPattern = "public_.*"
+            groupId = "${app.service_events.listener.public_event.group_id:service_events}",
+            topicPattern = "${app.service_events.listener.public_event.topic_pattern:public_.*}"
     )
     public void listen(List<ConsumerRecord<String, CloudEvent>> list, Acknowledgment ack) {
         try {

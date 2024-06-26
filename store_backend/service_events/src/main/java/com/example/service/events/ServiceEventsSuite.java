@@ -8,6 +8,8 @@ import org.ntr1x.common.web.config.OpenApiConfig;
 import org.ntr1x.common.web.config.OpenApiSecurityConfig;
 import org.ntr1x.common.web.config.WebMvcConfig;
 import org.ntr1x.common.web.config.WebMvcSecurityConfig;
+import org.ntr1x.common.ws.config.WebSocketConfig;
+import org.ntr1x.common.ws.config.WebSocketHubConfig;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -20,6 +22,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         WebMvcSecurityConfig.class,
         OpenApiConfig.class,
         OpenApiSecurityConfig.class,
+        WebSocketConfig.class,
+        WebSocketHubConfig.class,
         CloudEventsKafkaConfig.class,
         CloudEventsBeanConfig.class,
 })

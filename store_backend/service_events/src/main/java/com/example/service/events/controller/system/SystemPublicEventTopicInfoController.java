@@ -28,7 +28,7 @@ public class SystemPublicEventTopicInfoController {
     private final SystemPublicEventTopicInfoService systemPublicEventTopicInfoService;
     
     @PostMapping
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Create.class)
     public SystemPublicEventTopicInfoResponse.Create create(
@@ -39,7 +39,7 @@ public class SystemPublicEventTopicInfoController {
     }
     
     @PostMapping("/remove")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Remove.class)
     public SystemPublicEventTopicInfoResponse.Remove remove(
@@ -50,7 +50,7 @@ public class SystemPublicEventTopicInfoController {
     }
     
     @PutMapping("/update")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Update.class)
     public SystemPublicEventTopicInfoResponse.Update update(
@@ -61,7 +61,7 @@ public class SystemPublicEventTopicInfoController {
     }
     
     @DeleteMapping("/i/{name}")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Remove.class)
     public SystemPublicEventTopicInfoResponse.Remove remove(
@@ -75,7 +75,7 @@ public class SystemPublicEventTopicInfoController {
     }
     
     @PutMapping("/i/{name}")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Replace.class)
     public SystemPublicEventTopicInfoResponse.Replace replace(
@@ -90,7 +90,7 @@ public class SystemPublicEventTopicInfoController {
     }
     
     @PostMapping("/select")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Select.class)
     public Page<SystemPublicEventTopicInfoModel> select(
@@ -102,7 +102,7 @@ public class SystemPublicEventTopicInfoController {
     }
     
     @GetMapping("/i/{name}")
-    @PreAuthorize("hasAuthority('realm:admin')")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
     @SecurityRequirement(name = "Bearer")
     @JsonView(Views.Select.class)
     public SystemPublicEventTopicInfoModel get(

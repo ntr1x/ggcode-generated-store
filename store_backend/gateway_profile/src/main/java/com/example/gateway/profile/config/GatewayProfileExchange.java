@@ -10,7 +10,7 @@ import org.springframework.kafka.config.TopicBuilder;
 public class GatewayProfileExchange {
     
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "publicCustomersTopic")
     public NewTopic publicCustomersTopic() {
         return TopicBuilder
                 .name("public_customers")
@@ -19,7 +19,7 @@ public class GatewayProfileExchange {
                 .build();
     }
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "verifyPhoneTopic")
     public NewTopic verifyPhoneTopic() {
         return TopicBuilder
                 .name("verify_phone")
@@ -28,7 +28,7 @@ public class GatewayProfileExchange {
                 .build();
     }
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "verifyEmailTopic")
     public NewTopic verifyEmailTopic() {
         return TopicBuilder
                 .name("verify_email")
@@ -37,7 +37,7 @@ public class GatewayProfileExchange {
                 .build();
     }
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "updatePhoneTopic")
     public NewTopic updatePhoneTopic() {
         return TopicBuilder
                 .name("update_phone")
@@ -46,7 +46,7 @@ public class GatewayProfileExchange {
                 .build();
     }
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "updateEmailTopic")
     public NewTopic updateEmailTopic() {
         return TopicBuilder
                 .name("update_email")

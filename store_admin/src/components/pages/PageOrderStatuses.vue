@@ -8,6 +8,7 @@ import { paymentsRemote } from '../../remotes/paymentsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridOrderStatuses from '../grids/GridOrderStatuses.vue';
 
+// @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
 
@@ -23,6 +24,7 @@ const orderStatusSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => 
   const token = await authStore.requireToken()
   const data = {}
   const params = {
+  "size": 50,
   "sort": "id,asc"
 }
   const sort: string[] = []

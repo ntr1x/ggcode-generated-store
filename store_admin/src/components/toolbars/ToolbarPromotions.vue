@@ -13,8 +13,6 @@ const modalStore = useModalStore()
 
 const filterByPromotionType = defineModel('filterByPromotionType')
 
-const selection = defineModel<T[]>('selection')
-
 const filters = reactive<Record<string, Option | undefined>>({
   promotionType: undefined,
 })

@@ -13,8 +13,6 @@ const modalStore = useModalStore()
 
 const filterByShopId = defineModel('filterByShopId')
 
-const selection = defineModel<T[]>('selection')
-
 const filters = reactive<Record<string, Option | undefined>>({
   shopId: undefined,
 })

@@ -8,6 +8,7 @@ import { customersRemote } from '../../remotes/customersRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridAgents from '../grids/GridAgents.vue';
 
+// @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
 
@@ -24,7 +25,10 @@ const agentSelectQuery = useAxiosRequest<any>(customersRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'customerId', agentSelectFilter.customerId)
-  const params = {}
+  const params = {
+  "size": 50,
+  "sort": "created_at,asc"
+}
   const sort: string[] = []
   setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
 

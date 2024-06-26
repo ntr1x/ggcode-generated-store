@@ -5,23 +5,31 @@ import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
 import FilterDialog, { type Option } from '../dialogs/FilterDialog.vue';
 
-const model = defineModel()
+type IHaveId = {
+  id: string
+}
+
+type IHaveName = {
+  name: string
+}
+
+type IHaveDescription = {
+  description: string
+}
+
+export type ResponseDataRow = IHaveId & IHaveName & IHaveDescription
+
+export type ResponseData = {
+  content: ResponseDataRow[]
+}
+
+const model = defineModel<ResponseDataRow | undefined>()
 
 const emit = defineEmits<{
   (e: 'change:option', value: Option): void
 }>()
 
 const authStore = useAuthStore()
-
-export type ResponseDataRow = {
-  id: string
-  name: string
-  description: string
-}
-
-export type ResponseData = {
-  content: ResponseDataRow[]
-}
 
 const { state } = useAxiosRequest<ResponseData>(paymentsRemote, async () => {
   const token = await authStore.requireToken()
@@ -30,6 +38,7 @@ const { state } = useAxiosRequest<ResponseData>(paymentsRemote, async () => {
     url: '/system/public_order_status/select',
     data: {},
     params: {
+  "size": 50,
   "sort": "id,asc"
 },
     headers: {

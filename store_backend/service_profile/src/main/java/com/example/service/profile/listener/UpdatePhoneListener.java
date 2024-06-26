@@ -9,13 +9,13 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
+@Component("serviceProfile.updatePhoneListener")
 public class UpdatePhoneListener {
 
     @KafkaListener(
         containerFactory = CloudEventsConstants.CONTAINER_FACTORY_CLOUD_EVENT,
-        groupId = "service_profile",
-        topicPattern = "update_phone"
+        groupId = "${app.service_profile.listener.update_phone.group_id:service_profile}",
+        topicPattern = "${app.service_profile.listener.update_phone.topic_pattern:update_phone}"
     )
     public void listen(ConsumerRecord<String, CloudEvent> record, Acknowledgment ack) {
         try {
