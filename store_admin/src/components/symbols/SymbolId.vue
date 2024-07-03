@@ -9,28 +9,37 @@ const props = defineProps<{
   decoration?: string,
 }>()
 
+
 const label = computed(() => {
-  return props.label != undefined
-    ? props.label
-    : props.value
+  switch (true) {
+    case props.label != undefined: return props.label
+    case props.value != undefined: return props.value
+    default: return null
+  }
 })
 
 const route = computed(() => {
-  return props.route != undefined
-    ? props.route
-    : undefined
+  switch (true) {
+    case props.route != undefined: return props.route
+    case props.value != undefined: return null
+    default: return null
+  }
 })
 
 const icon = computed(() => {
-  return props.icon != undefined
-    ? props.icon
-    : undefined
+  switch (true) {
+    case props.icon != undefined: return props.icon
+    case props.value != undefined: return null
+    default: return null
+  }
 })
 
 const decoration = computed(() => {
-  return props.decoration != undefined
-    ? props.decoration
-    : "text-xs text-ellipsis"
+  switch (true) {
+    case props.decoration != undefined: return props.decoration
+    case props.value != undefined: return "text-xs text-ellipsis"
+    default: return null
+  }
 })
 </script>
 

@@ -19,8 +19,6 @@ const filterByPaymentStatus = defineModel('filterByPaymentStatus')
 const filterByOrderType = defineModel('filterByOrderType')
 const filterByOrderStatus = defineModel('filterByOrderStatus')
 
-const selection = defineModel<T[]>('selection')
-
 const filters = reactive<Record<string, Option | undefined>>({
   paymentType: undefined,
   paymentStatus: undefined,

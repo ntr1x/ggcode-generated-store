@@ -8,7 +8,7 @@ include:
 - path: compose/env/env_keycloak.compose.yaml
 - path: compose/env/env_kcadm.compose.yaml
 - path: compose/app/app_assembly_web.compose.yaml
-version: '3.9'
+- path: compose/app/app_admin_ui.compose.yaml
 networks:
   default: null
 

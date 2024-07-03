@@ -10,7 +10,7 @@ import SymbolSessionId from '../symbols/SymbolSessionId.vue'
 import SymbolDatetime from '../symbols/SymbolDatetime.vue'
 
 export type ResponseData = {
-  content: T[]
+  content: []
 }
 
 export type GridDispatchesProps = {

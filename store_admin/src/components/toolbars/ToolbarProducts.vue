@@ -15,8 +15,6 @@ const filterByCategoryId = defineModel('filterByCategoryId')
 const sortById = defineModel<'asc' | 'desc' | undefined>('sortById')
 const sortByName = defineModel<'asc' | 'desc' | undefined>('sortByName')
 
-const selection = defineModel<T[]>('selection')
-
 const filters = reactive<Record<string, Option | undefined>>({
   categoryId: undefined,
 })

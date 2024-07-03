@@ -9,6 +9,7 @@ import SectionHeading from '../partials/SectionHeading.vue';
 import ToolbarSubscriptions from '../toolbars/ToolbarSubscriptions.vue';
 import GridSubscriptions from '../grids/GridSubscriptions.vue';
 
+// @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
 
@@ -20,6 +21,7 @@ const subscriptionSelectFilter = reactive({
 const subscriptionSelectSort = reactive({
   id: undefined,
   createdAt: undefined,
+  typeId: undefined,
 })
 
 const subscriptionSelectSelection = ref([])
@@ -36,6 +38,9 @@ const subscriptionSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   }
   if (subscriptionSelectSort.createdAt != null) {
     sort.push('createdAt,' + subscriptionSelectSort.createdAt)
+  }
+  if (subscriptionSelectSort.typeId != null) {
+    sort.push('typeId,' + subscriptionSelectSort.typeId)
   }
   setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
 

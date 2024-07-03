@@ -9,6 +9,7 @@ import SectionHeading from '../partials/SectionHeading.vue';
 import ToolbarEvents from '../toolbars/ToolbarEvents.vue';
 import GridEvents from '../grids/GridEvents.vue';
 
+// @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
 

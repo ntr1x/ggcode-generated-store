@@ -13,6 +13,8 @@ import java.util.Optional;
         @JsonSubTypes.Type(value = SocketIncomingMessage.SUBSCRIBE.class, name = "SUBSCRIBE"),
         @JsonSubTypes.Type(value = SocketIncomingMessage.UNSUBSCRIBE.class, name = "UNSUBSCRIBE"),
         @JsonSubTypes.Type(value = SocketIncomingMessage.DESCRIBE.class, name = "DESCRIBE"),
+        @JsonSubTypes.Type(value = SocketIncomingMessage.LIST.class, name = "LIST"),
+        @JsonSubTypes.Type(value = SocketIncomingMessage.HELLO.class, name = "HELLO"),
 })
 public interface SocketIncomingMessage {
 

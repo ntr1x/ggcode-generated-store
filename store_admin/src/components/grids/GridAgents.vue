@@ -6,7 +6,7 @@ import SymbolId from '../symbols/SymbolId.vue'
 import SymbolCustomer from '../symbols/SymbolCustomer.vue'
 
 export type ResponseData = {
-  content: T[]
+  content: []
 }
 
 export type GridAgentsProps = {

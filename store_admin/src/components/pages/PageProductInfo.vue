@@ -10,6 +10,7 @@ import FieldsetProductInfo from '../fieldsets/FieldsetProductInfo.vue';
 import ToolbarPromotionTargets from '../toolbars/ToolbarPromotionTargets.vue';
 import GridPromotionTargets from '../grids/GridPromotionTargets.vue';
 
+// @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
 

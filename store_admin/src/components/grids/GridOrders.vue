@@ -11,7 +11,7 @@ import SymbolPrice from '../symbols/SymbolPrice.vue'
 import SymbolDatetime from '../symbols/SymbolDatetime.vue'
 
 export type ResponseData = {
-  content: T[]
+  content: []
 }
 
 export type GridOrdersProps = {

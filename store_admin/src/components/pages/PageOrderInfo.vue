@@ -10,6 +10,7 @@ import FieldsetOrderInfo from '../fieldsets/FieldsetOrderInfo.vue';
 import ToolbarPayments from '../toolbars/ToolbarPayments.vue';
 import GridPayments from '../grids/GridPayments.vue';
 
+// @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
 

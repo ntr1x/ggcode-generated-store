@@ -51,6 +51,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
             socketHubService.reply(session, response);
         } catch (SocketCommandException e) {
+            log.warn("Cannot execute command", e);
             socketHubService.replyWithError(session, e.getCommand(), e.getMessage());
         }
     }

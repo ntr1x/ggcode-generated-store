@@ -1,7 +1,18 @@
-import { defineStore } from "pinia"
-import { securityRemote } from "../remotes/securityRemote"
-import { StorageSerializers, useStorage } from "@vueuse/core"
 import { Ref } from "vue"
+import { defineStore } from "pinia"
+import { StorageSerializers, useStorage } from "@vueuse/core"
+import { securityRemote } from "../remotes/securityRemote"
+
+
+export type Principal = {
+  issuer: string
+  subject: string
+  username: string
+  fullName: string
+  email: string
+  token: string
+  authorities: string[]
+}
 
 export type AuthRequest = {
   state: string | null
@@ -21,6 +32,20 @@ export type RefreshResponse = {
   accessExpiresIn: number
   refreshToken: string
   refreshExpiresIn: number
+  principal: Principal
+}
+
+export type SignInRequest = {
+  username: string
+  password: string
+}
+
+export type SignInResponse = {
+  accessToken: string
+  accessExpiresIn: number
+  refreshToken: string
+  refreshExpiresIn: number
+  principal: Principal
 }
 
 export type CallbackRequest = {
@@ -35,6 +60,7 @@ export type CallbackResponse = {
   accessExpiresIn: number
   refreshToken: string
   refreshExpiresIn: number
+  principal: Principal
 }
 
 export type RevokeRequest = {
@@ -55,29 +81,39 @@ export type TokenInfo = {
 }
 
 export type AuthState = {
-  accessToken: TokenInfo | null,
-  refreshToken: Ref<TokenInfo | null>,
+  principal: Principal | null
+  accessToken: TokenInfo | null
+  refreshToken: Ref<TokenInfo | null>
 }
 
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
+    principal: null,
     accessToken: null,
     refreshToken: useStorage('pinia/auth/refresh', null, localStorage || sessionStorage, { serializer: StorageSerializers.object })
   }),
   actions: {
-    async requireToken() {
+    async requireAuth() {
       const now = Date.now()
 
       if (this.accessToken != null && this.accessToken.expiresAt != null) {
         if (now < this.accessToken.expiresAt - this.accessToken.duration) {
-          return this.accessToken.token
+          return {
+            principal: this.principal,
+            accessToken: this.accessToken,
+            refreshToken: this.refreshToken,
+          }
         }
       }
 
       if (this.refreshToken != null && this.refreshToken.expiresAt != null) {
         if (now < this.refreshToken.expiresAt - this.refreshToken.duration) {
           await this.doRefresh()
-          return this.accessToken!.token
+          return {
+            principal: this.principal,
+            accessToken: this.accessToken,
+            refreshToken: this.refreshToken,
+          }
         }
       }
 
@@ -85,17 +121,24 @@ export const useAuthStore = defineStore('auth', {
 
       throw new Error('Not authorized')
     },
+    async requireToken() {
+      const { accessToken } = await this.requireAuth()
+      return accessToken?.token
+    },
     async doRefresh() {
       const now = Date.now()
+
       const { data } = await securityRemote.post<RefreshResponse>('/public/security/refresh', {
         refreshToken: this.refreshToken!.token,
       })
+
+      this.principal = data.principal
 
       this.accessToken = {
         token: data.accessToken,
         expiresIn: data.accessExpiresIn,
         expiresAt: now + data.accessExpiresIn * 1000,
-        duration: 10 * 1000
+        duration: 10 * 1000,
       }
 
       this.refreshToken = {
@@ -105,11 +148,35 @@ export const useAuthStore = defineStore('auth', {
         duration: 10 * 1000
       }
     },
-    async doAuth() {
+    async doSignIn(request: SignInRequest) {
+      const now = Date.now()
+
+      const { data } = await securityRemote.post<SignInResponse>('/public/security/signIn', request)
+
+      this.principal = data.principal
+
+      this.accessToken = {
+        token: data.accessToken,
+        expiresIn: data.accessExpiresIn,
+        expiresAt: now + data.accessExpiresIn * 1000,
+        duration: 10 * 1000,
+      }
+
+      this.refreshToken = {
+        token: data.refreshToken,
+        expiresIn: data.refreshExpiresIn,
+        expiresAt: now + data.refreshExpiresIn * 1000,
+        duration: 10 * 1000
+      }
+    },
+    async doAuth(provider?: string, state?: string) {
       const redirectUri = new URL('/auth/callback', window.location.origin)
       const { data } = await securityRemote.post<AuthResponse>('/public/security/auth', {
-        state: this.$router.currentRoute.value.fullPath,
+        state: state != null
+          ? state
+          : this.$router.currentRoute.value.fullPath,
         redirectUri: redirectUri.toString(),
+        provider
       })
 
       window.location.href = data.authUri
@@ -133,11 +200,13 @@ export const useAuthStore = defineStore('auth', {
         redirectUri: redirectUri.toString()
       })
 
+      this.principal = data.principal
+
       this.accessToken = {
         token: data.accessToken,
         expiresIn: data.accessExpiresIn,
         expiresAt: now + data.accessExpiresIn * 1000,
-        duration: 10 * 1000
+        duration: 10 * 1000,
       }
 
       this.refreshToken = {

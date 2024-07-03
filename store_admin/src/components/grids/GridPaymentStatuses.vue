@@ -5,7 +5,7 @@ import { type State } from '../../hooks/useAxiosRequest';
 import SymbolId from '../symbols/SymbolId.vue'
 
 export type ResponseData = {
-  content: T[]
+  content: []
 }
 
 export type GridPaymentStatusesProps = {

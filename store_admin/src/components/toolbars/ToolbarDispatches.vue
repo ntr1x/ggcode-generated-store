@@ -19,8 +19,7 @@ const sortByCreatedAt = defineModel<'asc' | 'desc' | undefined>('sortByCreatedAt
 const sortByUpdatedAt = defineModel<'asc' | 'desc' | undefined>('sortByUpdatedAt')
 const sortByTypeId = defineModel<'asc' | 'desc' | undefined>('sortByTypeId')
 const sortByStatusId = defineModel<'asc' | 'desc' | undefined>('sortByStatusId')
-
-const selection = defineModel<T[]>('selection')
+const selection = defineModel<T[]>('selection', { required: true })
 
 const filters = reactive<Record<string, Option | undefined>>({
   typeId: undefined,

@@ -10,11 +10,11 @@ import SectionDictionaries from './SectionDictionaries.vue'
   <div class="flex flex-col h-full w-[25rem] shadow">
     <div class="overflow-y-auto mt-4">
       <ul class="list-none px-4 m-0">
-        <li><SectionOrders /></li>
-        <li><SectionProfiles /></li>
-        <li><SectionCatalogue /></li>
-        <li><SectionNotifications /></li>
-        <li><SectionDictionaries /></li>
+        <li class="empty:hidden"><SectionOrders /></li>
+        <li class="empty:hidden"><SectionProfiles /></li>
+        <li class="empty:hidden"><SectionCatalogue /></li>
+        <li class="empty:hidden"><SectionNotifications /></li>
+        <li class="empty:hidden"><SectionDictionaries /></li>
       </ul>
     </div>
   </div>

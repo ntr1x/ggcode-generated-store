@@ -1,9 +1,11 @@
 import { createApp, markRaw } from 'vue'
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config'
-import Lara from './presets/lara';
 import Ripple from 'primevue/ripple';
 import StyleClass from 'primevue/styleclass';
+
+// @ts-ignore
+import Lara from './presets/lara';
 
 import "primeicons/primeicons.css";
 import './style.css'

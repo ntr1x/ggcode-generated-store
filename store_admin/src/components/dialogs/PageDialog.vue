@@ -7,7 +7,6 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from "../../store/authStore";
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
-import PrincipalDialog from "./PrincipalDialog.vue";
 import { menuOrders } from '../../collections/menus/menuOrders'
 import { menuProfiles } from '../../collections/menus/menuProfiles'
 import { menuCatalogue } from '../../collections/menus/menuCatalogue'

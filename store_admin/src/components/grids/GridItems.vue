@@ -6,7 +6,7 @@ import SymbolId from '../symbols/SymbolId.vue'
 import SymbolPrice from '../symbols/SymbolPrice.vue'
 
 export type ResponseData = {
-  content: T[]
+  content: []
 }
 
 export type GridItemsProps = {

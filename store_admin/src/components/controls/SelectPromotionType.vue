@@ -5,11 +5,29 @@ import { paymentsRemote } from '../../remotes/paymentsRemote'
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
 
+type IHaveId = {
+  id: string
+}
+
+type IHaveName = {
+  name: string
+}
+
+type IHaveDescription = {
+  description: string
+}
+
+export type ResponseDataRow = IHaveId & IHaveName & IHaveDescription
+
+export type ResponseData = {
+  content: ResponseDataRow[]
+}
+
 const promotionType = defineModel('promotionType')
 
 const authStore = useAuthStore()
 
-const { state } = useAxiosRequest(paymentsRemote, async () => {
+const { state } = useAxiosRequest<ResponseData>(paymentsRemote, async () => {
   const token = await authStore.requireToken()
   return {
     method: 'POST',

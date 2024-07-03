@@ -16,8 +16,6 @@ const sortById = defineModel<'asc' | 'desc' | undefined>('sortById')
 const sortByCreatedAt = defineModel<'asc' | 'desc' | undefined>('sortByCreatedAt')
 const sortByTypeId = defineModel<'asc' | 'desc' | undefined>('sortByTypeId')
 
-const selection = defineModel<T[]>('selection')
-
 const filters = reactive<Record<string, Option | undefined>>({
   typeId: undefined,
 })

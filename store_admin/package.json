@@ -12,6 +12,8 @@
     "@vueuse/core": "^10.9.0",
     "axios": "^1.6.8",
     "date-fns": "^3.6.0",
+    "events": "^3.3.0",
+    "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",
     "pinia": "^2.1.7",
     "primeicons": "^7.0.0",
@@ -22,6 +24,7 @@
   },
   "devDependencies": {
     "@types/date-fns": "^2.6.0",
+    "@types/events": "^3.0.3",
     "@types/lodash": "^4.17.4",
     "@types/uuid": "^9.0.8",
     "@vitejs/plugin-vue": "^5.0.4",

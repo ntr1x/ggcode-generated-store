@@ -4,7 +4,7 @@ import DataTable from 'primevue/datatable';
 import { type State } from '../../hooks/useAxiosRequest';
 
 export type ResponseData = {
-  content: T[]
+  content: []
 }
 
 export type GridEventTypesProps = {

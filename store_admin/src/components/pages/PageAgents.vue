@@ -8,6 +8,7 @@ import { customersRemote } from '../../remotes/customersRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridAgents from '../grids/GridAgents.vue';
 
+// @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
 

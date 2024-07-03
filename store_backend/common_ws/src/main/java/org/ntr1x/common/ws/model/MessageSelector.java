@@ -17,7 +17,7 @@ public class MessageSelector {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public class Filter {
+    public static class Filter {
         private FilterType type = FilterType.EQUAL;
         private String value;
 

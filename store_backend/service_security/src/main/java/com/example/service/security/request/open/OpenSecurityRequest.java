@@ -20,7 +20,22 @@ public interface OpenSecurityRequest {
         private String __name = "open_security:request:auth";
 
         private String state;
+        private String provider;
         private String redirectUri;
+    }
+
+    @Data
+    @Builder(toBuilder = true)
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Schema(name = "OpenSecurityResponseSignIn")
+    class SignIn {
+        @Hidden
+        @Builder.Default
+        private String __name = "open_security:request:sign_in";
+
+        private String username;
+        private String password;
     }
 
     @Data
