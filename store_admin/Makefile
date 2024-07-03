@@ -1,1 +1,1 @@
-include *.mk
+include make/*.mk
