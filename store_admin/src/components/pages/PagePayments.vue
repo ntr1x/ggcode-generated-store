@@ -36,7 +36,10 @@ const paymentSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
   setProperty(data, 'paymentStatusId', paymentSelectFilter.paymentStatus)
   setProperty(data, 'order.orderTypeId', paymentSelectFilter.orderType)
   setProperty(data, 'order.orderStatusId', paymentSelectFilter.orderStatus)
-  const params = {}
+  const params = {
+  "size": 50,
+  "sort": "id,asc"
+}
   const sort: string[] = []
   setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
 

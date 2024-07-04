@@ -23,7 +23,10 @@ const customerSelectSelection = ref([])
 const customerSelectQuery = useAxiosRequest<any>(customersRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
-  const params = {}
+  const params = {
+  "size": 50,
+  "sort": "created_at,asc"
+}
   const sort: string[] = []
   setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
 

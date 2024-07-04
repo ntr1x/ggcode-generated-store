@@ -7,6 +7,7 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from "../../store/authStore";
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
+import { menuPersonal } from '../../collections/menus/menuPersonal'
 import { menuOrders } from '../../collections/menus/menuOrders'
 import { menuProfiles } from '../../collections/menus/menuProfiles'
 import { menuCatalogue } from '../../collections/menus/menuCatalogue'
@@ -21,6 +22,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const pages: ActionItem[] = [
+  ...menuPersonal(router).items,
   ...menuOrders(router).items,
   ...menuProfiles(router).items,
   ...menuCatalogue(router).items,

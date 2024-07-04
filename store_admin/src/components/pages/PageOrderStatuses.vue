@@ -24,6 +24,7 @@ const orderStatusSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => 
   const token = await authStore.requireToken()
   const data = {}
   const params = {
+  "size": 50,
   "sort": "id,asc"
 }
   const sort: string[] = []

@@ -7,7 +7,7 @@ import { Ref } from 'vue';
 const principal = inject<Ref<PrincipalResponse | null>>('principal')
 
 const hasAnyRole = computed(() => (roles: string[]) => {
-  return (principal?.value?.authorities || []).filter(value => roles.includes(value)).length > 0
+  return roles.length == 0 || (principal?.value?.authorities || []).filter(value => roles.includes(value)).length > 0
 })
 </script>
 

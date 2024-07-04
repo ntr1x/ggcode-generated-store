@@ -40,7 +40,10 @@ const orderSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
   setProperty(data, 'orderStatusId', orderSelectFilter.orderStatus)
   setProperty(data, 'sourceTypeId', orderSelectFilter.sourceType)
   setProperty(data, 'regionId', orderSelectFilter.regionId)
-  const params = {}
+  const params = {
+  "size": 50,
+  "sort": "id,asc"
+}
   const sort: string[] = []
   if (orderSelectSort.orderTypeId != null) {
     sort.push('orderType,' + orderSelectSort.orderTypeId)

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../store/authStore.ts'
+import { personalRouter } from './personalRouter.ts'
 import { adminRouter } from './adminRouter.ts'
 
 import PublicView from '../components/views/PublicView.vue'
@@ -12,6 +13,7 @@ const routes = [
   { path: '/sign-in', component: SignInView },
   { path: '/sign-up', component: SignUpView },
   { path: '/auth/callback', component: AuthCallbackView },
+  personalRouter,
   adminRouter,
 ]
 

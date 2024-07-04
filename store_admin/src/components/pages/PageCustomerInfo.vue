@@ -84,7 +84,10 @@ const orderSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
   setProperty(data, 'orderStatusId', orderSelectFilter.orderStatus)
   setProperty(data, 'sourceTypeId', orderSelectFilter.sourceType)
   setProperty(data, 'regionId', orderSelectFilter.regionId)
-  const params = {}
+  const params = {
+  "size": 50,
+  "sort": "id,asc"
+}
   const sort: string[] = []
   if (orderSelectSort.orderTypeId != null) {
     sort.push('orderType,' + orderSelectSort.orderTypeId)
@@ -140,7 +143,10 @@ const agentSelectQuery = useAxiosRequest<any>(customersRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'customerId', agentSelectFilter.customerId)
-  const params = {}
+  const params = {
+  "size": 50,
+  "sort": "created_at,asc"
+}
   const sort: string[] = []
   setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
 
@@ -240,6 +246,7 @@ const dispatchSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   setProperty(data, 'typeId', dispatchSelectFilter.typeId)
   setProperty(data, 'statusId', dispatchSelectFilter.statusId)
   const params = {
+  "size": 50,
   "sort": "created_at,desc"
 }
   const sort: string[] = []

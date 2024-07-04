@@ -36,6 +36,7 @@ const eventSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   setProperty(data, 'ceType', eventSelectFilter.eventType)
   setProperty(data, 'topic', eventSelectFilter.eventTopic)
   const params = {
+  "size": 50,
   "sort": "created_at,desc"
 }
   const sort: string[] = []

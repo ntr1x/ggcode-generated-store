@@ -36,6 +36,7 @@ const dispatchSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   setProperty(data, 'typeId', dispatchSelectFilter.typeId)
   setProperty(data, 'statusId', dispatchSelectFilter.statusId)
   const params = {
+  "size": 50,
   "sort": "created_at,desc"
 }
   const sort: string[] = []
