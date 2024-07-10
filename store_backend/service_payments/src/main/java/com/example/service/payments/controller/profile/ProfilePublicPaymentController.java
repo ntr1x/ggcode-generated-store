@@ -1,9 +1,12 @@
 package com.example.service.payments.controller.profile;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class ProfilePublicPaymentController {
     @JsonView(Views.Select.class)
     public Page<ProfilePublicPaymentModel> select(
             @Parameter(hidden = true) ProfilePublicPaymentRequest.Context context,
-            @RequestBody ProfilePublicPaymentRequest.Select request,
+            @RequestBody @Valid ProfilePublicPaymentRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return profilePublicPaymentService.select(context, request, pageable);

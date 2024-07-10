@@ -1,9 +1,12 @@
 package com.example.service.events.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicEventSourceInfoController {
     @JsonView(Views.Create.class)
     public SystemPublicEventSourceInfoResponse.Create create(
             @Parameter(hidden = true) SystemPublicEventSourceInfoRequest.Context context,
-            @RequestBody SystemPublicEventSourceInfoRequest.Create request
+            @RequestBody @Valid SystemPublicEventSourceInfoRequest.Create request
     ) {
         return systemPublicEventSourceInfoService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicEventSourceInfoController {
     @JsonView(Views.Remove.class)
     public SystemPublicEventSourceInfoResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicEventSourceInfoRequest.Context context,
-            @RequestBody SystemPublicEventSourceInfoRequest.Id key
+            @RequestBody @Valid SystemPublicEventSourceInfoRequest.Id key
     ) {
         return systemPublicEventSourceInfoService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicEventSourceInfoController {
     public SystemPublicEventSourceInfoResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicEventSourceInfoRequest.Context context,
             @PathVariable("name") java.lang.String name,
-            @RequestBody SystemPublicEventSourceInfoRequest.Replace request
+            @RequestBody @Valid SystemPublicEventSourceInfoRequest.Replace request
     ) {
         SystemPublicEventSourceInfoRequest.Id recordKey = SystemPublicEventSourceInfoRequest.Id.builder()
                 .name(name)
@@ -95,7 +98,7 @@ public class SystemPublicEventSourceInfoController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicEventSourceInfoModel> select(
             @Parameter(hidden = true) SystemPublicEventSourceInfoRequest.Context context,
-            @RequestBody SystemPublicEventSourceInfoRequest.Select request,
+            @RequestBody @Valid SystemPublicEventSourceInfoRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicEventSourceInfoService.select(context, request, pageable);

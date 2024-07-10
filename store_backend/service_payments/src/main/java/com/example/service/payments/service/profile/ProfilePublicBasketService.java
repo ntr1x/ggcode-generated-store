@@ -1,15 +1,15 @@
 package com.example.service.payments.service.profile;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import org.ntr1x.common.api.annotation.Event;
 import org.ntr1x.common.api.service.EvaluatorService;
 import org.ntr1x.common.api.service.GeneratorService;
-import org.ntr1x.common.jpa.criteria.PredicateFactory;
+import org.ntr1x.common.jpa.criteria.SpecificationBuilder;
 import org.ntr1x.common.web.util.Validate;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.jpa.domain.Specification;
@@ -93,14 +93,12 @@ public class ProfilePublicBasketService {
         ProfilePublicBasketRequest.Update request
     ) {
 
-        Specification<PublicBasketEntity> specification = (root, query, cb) -> {
-            PredicateFactory predicateFactory = new PredicateFactory(root, query, cb);
-            Predicate[] predicates = new Predicate [] {
-                    predicateFactory.fromValue("id", request.getId()),
-                    predicateFactory.fromValue("customerId", context.getCustomerId()),
-            };
-            return cb.and(Arrays.stream(predicates).filter(i -> i != null).toArray(Predicate[]::new));
-        };
+        Specification<PublicBasketEntity> specification = (root, query, cb) ->
+            SpecificationBuilder
+                    .create(root, query, cb)
+                    .withValueMatch("id", request.getId())
+                    .withValueMatch("customerId", context.getCustomerId())
+                    .build();
 
         PublicBasketEntity entity = publicBasketRepository
                 .findOne(specification)
@@ -176,17 +174,17 @@ public class ProfilePublicBasketService {
         Pageable pageable
     ) {
 
-        Specification<PublicBasketEntity> specification = (root, query, cb) -> {
-            PredicateFactory predicateFactory = new PredicateFactory(root, query, cb);
-            Predicate[] predicates = new Predicate [] {
-                    predicateFactory.fromOptional("id", request.getId()),
-                    predicateFactory.fromValue("customerId", context.getCustomerId()),
-                    predicateFactory.fromOptional("agentId", request.getAgentId()),
-                    predicateFactory.fromOptional("regionId", request.getRegionId()),
-                    predicateFactory.fromOptional("shopId", request.getShopId()),
-            };
-            return cb.and(Arrays.stream(predicates).filter(i -> i != null).toArray(Predicate[]::new));
-        };
+        Specification<PublicBasketEntity> specification = (root, query, cb) ->
+            SpecificationBuilder
+                    .create(root, query, cb)
+                    .withOptionalMatch("id", request.getId())
+                    .withValueMatch("customerId", context.getCustomerId())
+                    .withOptionalMatch("agentId", request.getAgentId())
+                    .withOptionalMatch("regionId", request.getRegionId())
+                    .withOptionalMatch("shopId", request.getShopId())
+                    .withWhereStatements(request.get__where())
+                    .withOrderStatements(request.get__order())
+                    .build();
 
         return publicBasketRepository
                 .findAll(specification, pageable)

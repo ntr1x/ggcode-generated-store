@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
-import { useRoute } from 'vue-router';
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
 import { eventsRemote } from '../../remotes/eventsRemote';
@@ -35,10 +35,7 @@ const dispatchSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   setProperty(data, 'customerId', dispatchSelectFilter.customerId)
   setProperty(data, 'typeId', dispatchSelectFilter.typeId)
   setProperty(data, 'statusId', dispatchSelectFilter.statusId)
-  const params = {
-  "size": 50,
-  "sort": "created_at,desc"
-}
+  const params: Record<string, any> = {"size":50,"sort":"createdAt,desc"}
   const sort: string[] = []
   if (dispatchSelectSort.id != null) {
     sort.push('id,' + dispatchSelectSort.id)
@@ -55,7 +52,7 @@ const dispatchSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   if (dispatchSelectSort.updatedAt != null) {
     sort.push('updatedAt,' + dispatchSelectSort.updatedAt)
   }
-  setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
+  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
 
   return {
     method: 'POST',
@@ -86,6 +83,7 @@ watch(
     <ToolbarDispatches
       class="rounded-none border-0 border-b"
       v-model:selection="dispatchSelectSelection"
+      v-model:filter-by-customer-id = dispatchSelectFilter.customerId
       v-model:filter-by-type-id = dispatchSelectFilter.typeId
       v-model:filter-by-status-id = dispatchSelectFilter.statusId
       v-model:sort-by-id = dispatchSelectSort.id

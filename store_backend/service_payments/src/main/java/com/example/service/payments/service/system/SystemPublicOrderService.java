@@ -1,15 +1,15 @@
 package com.example.service.payments.service.system;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import org.ntr1x.common.api.annotation.Event;
 import org.ntr1x.common.api.service.EvaluatorService;
 import org.ntr1x.common.api.service.GeneratorService;
-import org.ntr1x.common.jpa.criteria.PredicateFactory;
+import org.ntr1x.common.jpa.criteria.SpecificationBuilder;
 import org.ntr1x.common.web.util.Validate;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.jpa.domain.Specification;
@@ -114,13 +114,11 @@ public class SystemPublicOrderService {
         SystemPublicOrderRequest.Update request
     ) {
 
-        Specification<PublicOrderEntity> specification = (root, query, cb) -> {
-            PredicateFactory predicateFactory = new PredicateFactory(root, query, cb);
-            Predicate[] predicates = new Predicate [] {
-                    predicateFactory.fromValue("id", request.getId()),
-            };
-            return cb.and(Arrays.stream(predicates).filter(i -> i != null).toArray(Predicate[]::new));
-        };
+        Specification<PublicOrderEntity> specification = (root, query, cb) ->
+            SpecificationBuilder
+                    .create(root, query, cb)
+                    .withValueMatch("id", request.getId())
+                    .build();
 
         PublicOrderEntity entity = publicOrderRepository
                 .findOne(specification)
@@ -236,27 +234,27 @@ public class SystemPublicOrderService {
         Pageable pageable
     ) {
 
-        Specification<PublicOrderEntity> specification = (root, query, cb) -> {
-            PredicateFactory predicateFactory = new PredicateFactory(root, query, cb);
-            Predicate[] predicates = new Predicate [] {
-                    predicateFactory.fromOptional("id", request.getId()),
-                    predicateFactory.fromOptional("sourceTypeId", request.getSourceTypeId()),
-                    predicateFactory.fromOptional("customerId", request.getCustomerId()),
-                    predicateFactory.fromOptional("regionId", request.getRegionId()),
-                    predicateFactory.fromOptional("shopId", request.getShopId()),
-                    predicateFactory.fromOptional("basketId", request.getBasketId()),
-                    predicateFactory.fromOptional("agentId", request.getAgentId()),
-                    predicateFactory.fromOptional("orderTypeId", request.getOrderTypeId()),
-                    predicateFactory.fromOptional("orderStatusId", request.getOrderStatusId()),
-                    predicateFactory.fromOptional("price", request.getPrice()),
-                    predicateFactory.fromOptional("spend", request.getSpend()),
-                    predicateFactory.fromOptional("bonus", request.getBonus()),
-                    predicateFactory.fromOptional("discount", request.getDiscount()),
-                    predicateFactory.fromOptional("createdAt", request.getCreatedAt()),
-                    predicateFactory.fromOptional("updatedAt", request.getUpdatedAt()),
-            };
-            return cb.and(Arrays.stream(predicates).filter(i -> i != null).toArray(Predicate[]::new));
-        };
+        Specification<PublicOrderEntity> specification = (root, query, cb) ->
+            SpecificationBuilder
+                    .create(root, query, cb)
+                    .withOptionalMatch("id", request.getId())
+                    .withOptionalMatch("sourceTypeId", request.getSourceTypeId())
+                    .withOptionalMatch("customerId", request.getCustomerId())
+                    .withOptionalMatch("regionId", request.getRegionId())
+                    .withOptionalMatch("shopId", request.getShopId())
+                    .withOptionalMatch("basketId", request.getBasketId())
+                    .withOptionalMatch("agentId", request.getAgentId())
+                    .withOptionalMatch("orderTypeId", request.getOrderTypeId())
+                    .withOptionalMatch("orderStatusId", request.getOrderStatusId())
+                    .withOptionalMatch("price", request.getPrice())
+                    .withOptionalMatch("spend", request.getSpend())
+                    .withOptionalMatch("bonus", request.getBonus())
+                    .withOptionalMatch("discount", request.getDiscount())
+                    .withOptionalMatch("createdAt", request.getCreatedAt())
+                    .withOptionalMatch("updatedAt", request.getUpdatedAt())
+                    .withWhereStatements(request.get__where())
+                    .withOrderStatements(request.get__order())
+                    .build();
 
         return publicOrderRepository
                 .findAll(specification, pageable)

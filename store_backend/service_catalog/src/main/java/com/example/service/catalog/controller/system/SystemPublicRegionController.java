@@ -1,9 +1,12 @@
 package com.example.service.catalog.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicRegionController {
     @JsonView(Views.Create.class)
     public SystemPublicRegionResponse.Create create(
             @Parameter(hidden = true) SystemPublicRegionRequest.Context context,
-            @RequestBody SystemPublicRegionRequest.Create request
+            @RequestBody @Valid SystemPublicRegionRequest.Create request
     ) {
         return systemPublicRegionService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicRegionController {
     @JsonView(Views.Remove.class)
     public SystemPublicRegionResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicRegionRequest.Context context,
-            @RequestBody SystemPublicRegionRequest.Id key
+            @RequestBody @Valid SystemPublicRegionRequest.Id key
     ) {
         return systemPublicRegionService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicRegionController {
     public SystemPublicRegionResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicRegionRequest.Context context,
             @PathVariable("id") java.util.UUID id,
-            @RequestBody SystemPublicRegionRequest.Replace request
+            @RequestBody @Valid SystemPublicRegionRequest.Replace request
     ) {
         SystemPublicRegionRequest.Id recordKey = SystemPublicRegionRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicRegionController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicRegionModel> select(
             @Parameter(hidden = true) SystemPublicRegionRequest.Context context,
-            @RequestBody SystemPublicRegionRequest.Select request,
+            @RequestBody @Valid SystemPublicRegionRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicRegionService.select(context, request, pageable);

@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
 import SectionHeading from '../partials/SectionHeading.vue';
 import WidgetPersonalProfile from '../widgets/WidgetPersonalProfile.vue';
 import WidgetDispatchMessage from '../widgets/WidgetDispatchMessage.vue';
 
-// @ts-ignore
-const route = useRoute()
 
 </script>
 

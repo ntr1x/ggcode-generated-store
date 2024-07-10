@@ -1,15 +1,15 @@
 package com.example.service.events.service.system;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import org.ntr1x.common.api.annotation.Event;
 import org.ntr1x.common.api.service.EvaluatorService;
 import org.ntr1x.common.api.service.GeneratorService;
-import org.ntr1x.common.jpa.criteria.PredicateFactory;
+import org.ntr1x.common.jpa.criteria.SpecificationBuilder;
 import org.ntr1x.common.web.util.Validate;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.jpa.domain.Specification;
@@ -89,13 +89,11 @@ public class SystemPublicEventTypeInfoService {
         SystemPublicEventTypeInfoRequest.Update request
     ) {
 
-        Specification<PublicEventTypeInfoEntity> specification = (root, query, cb) -> {
-            PredicateFactory predicateFactory = new PredicateFactory(root, query, cb);
-            Predicate[] predicates = new Predicate [] {
-                    predicateFactory.fromValue("name", request.getName()),
-            };
-            return cb.and(Arrays.stream(predicates).filter(i -> i != null).toArray(Predicate[]::new));
-        };
+        Specification<PublicEventTypeInfoEntity> specification = (root, query, cb) ->
+            SpecificationBuilder
+                    .create(root, query, cb)
+                    .withValueMatch("name", request.getName())
+                    .build();
 
         PublicEventTypeInfoEntity entity = publicEventTypeInfoRepository
                 .findOne(specification)
@@ -159,14 +157,14 @@ public class SystemPublicEventTypeInfoService {
         Pageable pageable
     ) {
 
-        Specification<PublicEventTypeInfoEntity> specification = (root, query, cb) -> {
-            PredicateFactory predicateFactory = new PredicateFactory(root, query, cb);
-            Predicate[] predicates = new Predicate [] {
-                    predicateFactory.fromOptional("name", request.getName()),
-                    predicateFactory.fromOptional("description", request.getDescription()),
-            };
-            return cb.and(Arrays.stream(predicates).filter(i -> i != null).toArray(Predicate[]::new));
-        };
+        Specification<PublicEventTypeInfoEntity> specification = (root, query, cb) ->
+            SpecificationBuilder
+                    .create(root, query, cb)
+                    .withOptionalMatch("name", request.getName())
+                    .withOptionalMatch("description", request.getDescription())
+                    .withWhereStatements(request.get__where())
+                    .withOrderStatements(request.get__order())
+                    .build();
 
         return publicEventTypeInfoRepository
                 .findAll(specification, pageable)

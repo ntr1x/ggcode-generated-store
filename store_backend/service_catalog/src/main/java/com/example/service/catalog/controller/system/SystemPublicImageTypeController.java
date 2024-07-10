@@ -1,9 +1,12 @@
 package com.example.service.catalog.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicImageTypeController {
     @JsonView(Views.Create.class)
     public SystemPublicImageTypeResponse.Create create(
             @Parameter(hidden = true) SystemPublicImageTypeRequest.Context context,
-            @RequestBody SystemPublicImageTypeRequest.Create request
+            @RequestBody @Valid SystemPublicImageTypeRequest.Create request
     ) {
         return systemPublicImageTypeService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicImageTypeController {
     @JsonView(Views.Remove.class)
     public SystemPublicImageTypeResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicImageTypeRequest.Context context,
-            @RequestBody SystemPublicImageTypeRequest.Id key
+            @RequestBody @Valid SystemPublicImageTypeRequest.Id key
     ) {
         return systemPublicImageTypeService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicImageTypeController {
     public SystemPublicImageTypeResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicImageTypeRequest.Context context,
             @PathVariable("id") java.lang.Integer id,
-            @RequestBody SystemPublicImageTypeRequest.Replace request
+            @RequestBody @Valid SystemPublicImageTypeRequest.Replace request
     ) {
         SystemPublicImageTypeRequest.Id recordKey = SystemPublicImageTypeRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicImageTypeController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicImageTypeModel> select(
             @Parameter(hidden = true) SystemPublicImageTypeRequest.Context context,
-            @RequestBody SystemPublicImageTypeRequest.Select request,
+            @RequestBody @Valid SystemPublicImageTypeRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicImageTypeService.select(context, request, pageable);

@@ -37,10 +37,7 @@ const { state } = useAxiosRequest<ResponseData>(paymentsRemote, async () => {
     method: 'POST',
     url: '/system/public_order_status/select',
     data: {},
-    params: {
-  "size": 50,
-  "sort": "id,asc"
-},
+    params: {"size":50,"sort":"id,asc"},
     headers: {
       Authorization: `Bearer ${token}`
     }

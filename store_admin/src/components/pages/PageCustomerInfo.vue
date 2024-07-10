@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
-import { useRoute } from 'vue-router';
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
 import { customersRemote } from '../../remotes/customersRemote';
@@ -32,9 +32,9 @@ const customerGetSelection = ref([])
 const customerGetQuery = useAxiosRequest<any>(customersRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
-  const params = {}
+  const params: Record<string, any> = {}
   const sort: string[] = []
-  setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
+  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
 
   return {
     method: 'GET',
@@ -84,10 +84,7 @@ const orderSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
   setProperty(data, 'orderStatusId', orderSelectFilter.orderStatus)
   setProperty(data, 'sourceTypeId', orderSelectFilter.sourceType)
   setProperty(data, 'regionId', orderSelectFilter.regionId)
-  const params = {
-  "size": 50,
-  "sort": "id,asc"
-}
+  const params: Record<string, any> = {"size":50,"sort":"id,asc"}
   const sort: string[] = []
   if (orderSelectSort.orderTypeId != null) {
     sort.push('orderType,' + orderSelectSort.orderTypeId)
@@ -107,7 +104,7 @@ const orderSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
   if (orderSelectSort.updatedAt != null) {
     sort.push('updatedAt,' + orderSelectSort.updatedAt)
   }
-  setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
+  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
 
   return {
     method: 'POST',
@@ -143,12 +140,9 @@ const agentSelectQuery = useAxiosRequest<any>(customersRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'customerId', agentSelectFilter.customerId)
-  const params = {
-  "size": 50,
-  "sort": "created_at,asc"
-}
+  const params: Record<string, any> = {"size":50}
   const sort: string[] = []
-  setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
+  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
 
   return {
     method: 'POST',
@@ -189,7 +183,7 @@ const subscriptionSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   const data = {}
   setProperty(data, 'customerId', subscriptionSelectFilter.customerId)
   setProperty(data, 'typeId', subscriptionSelectFilter.typeId)
-  const params = {}
+  const params: Record<string, any> = {}
   const sort: string[] = []
   if (subscriptionSelectSort.id != null) {
     sort.push('id,' + subscriptionSelectSort.id)
@@ -200,7 +194,7 @@ const subscriptionSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   if (subscriptionSelectSort.typeId != null) {
     sort.push('typeId,' + subscriptionSelectSort.typeId)
   }
-  setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
+  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
 
   return {
     method: 'POST',
@@ -245,10 +239,7 @@ const dispatchSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   setProperty(data, 'customerId', dispatchSelectFilter.customerId)
   setProperty(data, 'typeId', dispatchSelectFilter.typeId)
   setProperty(data, 'statusId', dispatchSelectFilter.statusId)
-  const params = {
-  "size": 50,
-  "sort": "created_at,desc"
-}
+  const params: Record<string, any> = {"size":50,"sort":"createdAt,desc"}
   const sort: string[] = []
   if (dispatchSelectSort.id != null) {
     sort.push('id,' + dispatchSelectSort.id)
@@ -265,7 +256,7 @@ const dispatchSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   if (dispatchSelectSort.updatedAt != null) {
     sort.push('updatedAt,' + dispatchSelectSort.updatedAt)
   }
-  setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
+  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
 
   return {
     method: 'POST',
@@ -298,6 +289,7 @@ watch(
     <ToolbarOrders
       class="rounded-none border-0 border-b"
       v-model:selection="orderSelectSelection"
+      v-model:filter-by-customer-id = orderSelectFilter.customerId
       v-model:filter-by-source-type = orderSelectFilter.sourceType
       v-model:filter-by-order-type = orderSelectFilter.orderType
       v-model:filter-by-order-status = orderSelectFilter.orderStatus
@@ -326,6 +318,7 @@ watch(
     <ToolbarSubscriptions
       class="rounded-none border-0 border-b"
       v-model:selection="subscriptionSelectSelection"
+      v-model:filter-by-customer-id = subscriptionSelectFilter.customerId
       v-model:filter-by-type-id = subscriptionSelectFilter.typeId
       v-model:sort-by-id = subscriptionSelectSort.id
       v-model:sort-by-createdAt = subscriptionSelectSort.createdAt
@@ -341,6 +334,7 @@ watch(
     <ToolbarDispatches
       class="rounded-none border-0 border-b"
       v-model:selection="dispatchSelectSelection"
+      v-model:filter-by-customer-id = dispatchSelectFilter.customerId
       v-model:filter-by-type-id = dispatchSelectFilter.typeId
       v-model:filter-by-status-id = dispatchSelectFilter.statusId
       v-model:sort-by-id = dispatchSelectSort.id

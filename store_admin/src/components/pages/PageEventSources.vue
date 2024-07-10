@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
-import { useRoute } from 'vue-router';
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
 import { eventsRemote } from '../../remotes/eventsRemote';
@@ -25,7 +25,7 @@ const eventSourceSelectSelection = ref([])
 const eventSourceSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
-  const params = {}
+  const params: Record<string, any> = {}
   const sort: string[] = []
   if (eventSourceSelectSort.name != null) {
     sort.push('name,' + eventSourceSelectSort.name)
@@ -33,7 +33,7 @@ const eventSourceSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   if (eventSourceSelectSort.description != null) {
     sort.push('description,' + eventSourceSelectSort.description)
   }
-  setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
+  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
 
   return {
     method: 'POST',

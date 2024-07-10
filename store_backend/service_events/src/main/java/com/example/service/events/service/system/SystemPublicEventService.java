@@ -1,15 +1,15 @@
 package com.example.service.events.service.system;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import org.ntr1x.common.api.annotation.Event;
 import org.ntr1x.common.api.service.EvaluatorService;
 import org.ntr1x.common.api.service.GeneratorService;
-import org.ntr1x.common.jpa.criteria.PredicateFactory;
+import org.ntr1x.common.jpa.criteria.SpecificationBuilder;
 import org.ntr1x.common.web.util.Validate;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.jpa.domain.Specification;
@@ -102,13 +102,11 @@ public class SystemPublicEventService {
         SystemPublicEventRequest.Update request
     ) {
 
-        Specification<PublicEventEntity> specification = (root, query, cb) -> {
-            PredicateFactory predicateFactory = new PredicateFactory(root, query, cb);
-            Predicate[] predicates = new Predicate [] {
-                    predicateFactory.fromValue("id", request.getId()),
-            };
-            return cb.and(Arrays.stream(predicates).filter(i -> i != null).toArray(Predicate[]::new));
-        };
+        Specification<PublicEventEntity> specification = (root, query, cb) ->
+            SpecificationBuilder
+                    .create(root, query, cb)
+                    .withValueMatch("id", request.getId())
+                    .build();
 
         PublicEventEntity entity = publicEventRepository
                 .findOne(specification)
@@ -200,21 +198,21 @@ public class SystemPublicEventService {
         Pageable pageable
     ) {
 
-        Specification<PublicEventEntity> specification = (root, query, cb) -> {
-            PredicateFactory predicateFactory = new PredicateFactory(root, query, cb);
-            Predicate[] predicates = new Predicate [] {
-                    predicateFactory.fromOptional("id", request.getId()),
-                    predicateFactory.fromOptional("topic", request.getTopic()),
-                    predicateFactory.fromOptional("contentType", request.getContentType()),
-                    predicateFactory.fromOptional("ceType", request.getCeType()),
-                    predicateFactory.fromOptional("ceSource", request.getCeSource()),
-                    predicateFactory.fromOptional("ceSpecification", request.getCeSpecification()),
-                    predicateFactory.fromOptional("ceId", request.getCeId()),
-                    predicateFactory.fromOptional("createdAt", request.getCreatedAt()),
-                    predicateFactory.fromOptional("payload", request.getPayload()),
-            };
-            return cb.and(Arrays.stream(predicates).filter(i -> i != null).toArray(Predicate[]::new));
-        };
+        Specification<PublicEventEntity> specification = (root, query, cb) ->
+            SpecificationBuilder
+                    .create(root, query, cb)
+                    .withOptionalMatch("id", request.getId())
+                    .withOptionalMatch("topic", request.getTopic())
+                    .withOptionalMatch("contentType", request.getContentType())
+                    .withOptionalMatch("ceType", request.getCeType())
+                    .withOptionalMatch("ceSource", request.getCeSource())
+                    .withOptionalMatch("ceSpecification", request.getCeSpecification())
+                    .withOptionalMatch("ceId", request.getCeId())
+                    .withOptionalMatch("createdAt", request.getCreatedAt())
+                    .withOptionalMatch("payload", request.getPayload())
+                    .withWhereStatements(request.get__where())
+                    .withOrderStatements(request.get__order())
+                    .build();
 
         return publicEventRepository
                 .findAll(specification, pageable)

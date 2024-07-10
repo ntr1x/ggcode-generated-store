@@ -1,9 +1,12 @@
 package com.example.service.profile.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicAgentController {
     @JsonView(Views.Create.class)
     public SystemPublicAgentResponse.Create create(
             @Parameter(hidden = true) SystemPublicAgentRequest.Context context,
-            @RequestBody SystemPublicAgentRequest.Create request
+            @RequestBody @Valid SystemPublicAgentRequest.Create request
     ) {
         return systemPublicAgentService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicAgentController {
     @JsonView(Views.Remove.class)
     public SystemPublicAgentResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicAgentRequest.Context context,
-            @RequestBody SystemPublicAgentRequest.Id key
+            @RequestBody @Valid SystemPublicAgentRequest.Id key
     ) {
         return systemPublicAgentService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicAgentController {
     public SystemPublicAgentResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicAgentRequest.Context context,
             @PathVariable("id") java.util.UUID id,
-            @RequestBody SystemPublicAgentRequest.Replace request
+            @RequestBody @Valid SystemPublicAgentRequest.Replace request
     ) {
         SystemPublicAgentRequest.Id recordKey = SystemPublicAgentRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicAgentController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicAgentModel> select(
             @Parameter(hidden = true) SystemPublicAgentRequest.Context context,
-            @RequestBody SystemPublicAgentRequest.Select request,
+            @RequestBody @Valid SystemPublicAgentRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicAgentService.select(context, request, pageable);

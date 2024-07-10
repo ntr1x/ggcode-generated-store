@@ -1,9 +1,12 @@
 package com.example.service.events.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicDispatchTypeController {
     @JsonView(Views.Create.class)
     public SystemPublicDispatchTypeResponse.Create create(
             @Parameter(hidden = true) SystemPublicDispatchTypeRequest.Context context,
-            @RequestBody SystemPublicDispatchTypeRequest.Create request
+            @RequestBody @Valid SystemPublicDispatchTypeRequest.Create request
     ) {
         return systemPublicDispatchTypeService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicDispatchTypeController {
     @JsonView(Views.Remove.class)
     public SystemPublicDispatchTypeResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicDispatchTypeRequest.Context context,
-            @RequestBody SystemPublicDispatchTypeRequest.Id key
+            @RequestBody @Valid SystemPublicDispatchTypeRequest.Id key
     ) {
         return systemPublicDispatchTypeService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicDispatchTypeController {
     public SystemPublicDispatchTypeResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicDispatchTypeRequest.Context context,
             @PathVariable("id") java.lang.Integer id,
-            @RequestBody SystemPublicDispatchTypeRequest.Replace request
+            @RequestBody @Valid SystemPublicDispatchTypeRequest.Replace request
     ) {
         SystemPublicDispatchTypeRequest.Id recordKey = SystemPublicDispatchTypeRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicDispatchTypeController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicDispatchTypeModel> select(
             @Parameter(hidden = true) SystemPublicDispatchTypeRequest.Context context,
-            @RequestBody SystemPublicDispatchTypeRequest.Select request,
+            @RequestBody @Valid SystemPublicDispatchTypeRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicDispatchTypeService.select(context, request, pageable);

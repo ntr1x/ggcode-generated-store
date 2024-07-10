@@ -27,6 +27,7 @@ public interface SystemPublicCustomerEntityConverter {
                     .name(source.getName())
                     .surname(source.getSurname())
                     .patronymic(source.getPatronymic())
+                    .fullName(source.getFullName())
                     .build();
         }
     }

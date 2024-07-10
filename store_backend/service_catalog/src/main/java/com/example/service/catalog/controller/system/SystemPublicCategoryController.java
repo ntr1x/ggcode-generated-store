@@ -1,9 +1,12 @@
 package com.example.service.catalog.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicCategoryController {
     @JsonView(Views.Create.class)
     public SystemPublicCategoryResponse.Create create(
             @Parameter(hidden = true) SystemPublicCategoryRequest.Context context,
-            @RequestBody SystemPublicCategoryRequest.Create request
+            @RequestBody @Valid SystemPublicCategoryRequest.Create request
     ) {
         return systemPublicCategoryService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicCategoryController {
     @JsonView(Views.Remove.class)
     public SystemPublicCategoryResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicCategoryRequest.Context context,
-            @RequestBody SystemPublicCategoryRequest.Id key
+            @RequestBody @Valid SystemPublicCategoryRequest.Id key
     ) {
         return systemPublicCategoryService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicCategoryController {
     public SystemPublicCategoryResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicCategoryRequest.Context context,
             @PathVariable("id") java.util.UUID id,
-            @RequestBody SystemPublicCategoryRequest.Replace request
+            @RequestBody @Valid SystemPublicCategoryRequest.Replace request
     ) {
         SystemPublicCategoryRequest.Id recordKey = SystemPublicCategoryRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicCategoryController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicCategoryModel> select(
             @Parameter(hidden = true) SystemPublicCategoryRequest.Context context,
-            @RequestBody SystemPublicCategoryRequest.Select request,
+            @RequestBody @Valid SystemPublicCategoryRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicCategoryService.select(context, request, pageable);

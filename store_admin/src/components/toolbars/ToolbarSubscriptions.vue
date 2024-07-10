@@ -7,16 +7,19 @@ import Menu from 'primevue/menu';
 import { type Option } from '../dialogs/FilterDialog.vue';
 
 import { useModalStore } from '../../store/modalStore';
-import PickerSubscriptionType from '../controls/PickerSubscriptionType.vue'
+import SearchPickerCustomerId from '../controls/SearchPickerCustomerId.vue'
+import SelectPickerSubscriptionType from '../controls/SelectPickerSubscriptionType.vue'
 
 const modalStore = useModalStore()
 
+const filterByCustomerId = defineModel('filterByCustomerId')
 const filterByTypeId = defineModel('filterByTypeId')
 const sortById = defineModel<'asc' | 'desc' | undefined>('sortById')
 const sortByCreatedAt = defineModel<'asc' | 'desc' | undefined>('sortByCreatedAt')
 const sortByTypeId = defineModel<'asc' | 'desc' | undefined>('sortByTypeId')
 
 const filters = reactive<Record<string, Option | undefined>>({
+  customerId: undefined,
   typeId: undefined,
 })
 
@@ -33,11 +36,29 @@ const filtersMenuItems = ref([
     label: 'By Property',
     items: [
       {
+        label: 'Customer Id',
+        icon: 'pi pi-plus-circle',
+        command: () => [
+          modalStore.openModal(() => ({
+            component: shallowRef(SearchPickerCustomerId),
+            props: {},
+            handlers: {
+              ['update:model-value'](value: string) {
+                filterByCustomerId.value = value
+              },
+              ['change:option'](option: Option) {
+                filters.customerId = option
+              }
+            }
+          }))
+        ]
+      },
+      {
         label: 'Type Id',
         icon: 'pi pi-plus-circle',
         command: () => [
           modalStore.openModal(() => ({
-            component: shallowRef(PickerSubscriptionType),
+            component: shallowRef(SelectPickerSubscriptionType),
             props: {},
             handlers: {
               ['update:model-value'](value: string) {
@@ -123,6 +144,9 @@ const sortersMenuItems = ref([
             <Menu ref="filtersMenuRef" id="overlay_menu" :model="filtersMenuItems" :popup="true" />
           </div>
           <div class="flex flex-wrap flex-1">
+            <Chip v-if="filterByCustomerId !== undefined" removable @remove="filterByCustomerId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+              <span><b>Customer Id: </b><span v-text="filters.customerId?.title || filterByCustomerId"></span></span>
+            </Chip>
             <Chip v-if="filterByTypeId !== undefined" removable @remove="filterByTypeId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
               <span><b>Type Id: </b><span v-text="filters.typeId?.title || filterByTypeId"></span></span>
             </Chip>

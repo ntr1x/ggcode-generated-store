@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
-import { useRoute } from 'vue-router';
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
 import { eventsRemote } from '../../remotes/eventsRemote';
@@ -31,7 +31,7 @@ const subscriptionSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   const data = {}
   setProperty(data, 'customerId', subscriptionSelectFilter.customerId)
   setProperty(data, 'typeId', subscriptionSelectFilter.typeId)
-  const params = {}
+  const params: Record<string, any> = {}
   const sort: string[] = []
   if (subscriptionSelectSort.id != null) {
     sort.push('id,' + subscriptionSelectSort.id)
@@ -42,7 +42,7 @@ const subscriptionSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   if (subscriptionSelectSort.typeId != null) {
     sort.push('typeId,' + subscriptionSelectSort.typeId)
   }
-  setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
+  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
 
   return {
     method: 'POST',
@@ -73,6 +73,7 @@ watch(
     <ToolbarSubscriptions
       class="rounded-none border-0 border-b"
       v-model:selection="subscriptionSelectSelection"
+      v-model:filter-by-customer-id = subscriptionSelectFilter.customerId
       v-model:filter-by-type-id = subscriptionSelectFilter.typeId
       v-model:sort-by-id = subscriptionSelectSort.id
       v-model:sort-by-createdAt = subscriptionSelectSort.createdAt

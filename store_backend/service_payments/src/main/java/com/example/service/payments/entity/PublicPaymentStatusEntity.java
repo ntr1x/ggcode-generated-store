@@ -1,10 +1,13 @@
 package com.example.service.payments.entity;
 
 import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Type;
 
 import java.util.List;

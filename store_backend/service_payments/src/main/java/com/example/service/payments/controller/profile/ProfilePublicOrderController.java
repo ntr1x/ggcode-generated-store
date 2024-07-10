@@ -1,9 +1,12 @@
 package com.example.service.payments.controller.profile;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class ProfilePublicOrderController {
     @JsonView(Views.Create.class)
     public ProfilePublicOrderResponse.Create create(
             @Parameter(hidden = true) ProfilePublicOrderRequest.Context context,
-            @RequestBody ProfilePublicOrderRequest.Create request
+            @RequestBody @Valid ProfilePublicOrderRequest.Create request
     ) {
         return profilePublicOrderService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class ProfilePublicOrderController {
     @JsonView(Views.Select.class)
     public Page<ProfilePublicOrderModel> select(
             @Parameter(hidden = true) ProfilePublicOrderRequest.Context context,
-            @RequestBody ProfilePublicOrderRequest.Select request,
+            @RequestBody @Valid ProfilePublicOrderRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return profilePublicOrderService.select(context, request, pageable);

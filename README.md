@@ -86,20 +86,9 @@ $ docker compose run env_kcadm
 
 #### Step 7
 
-Build and launch admin application:
-
-```bash
-$ cd $PROJECT_ROOT/store_admin
-$ yarn
-$ yarn dev
-```
-
-#### Step 8
-
 Open in your browser:
 
 - http://admin-ui.local.example.com/
 - http://swagger-ui.local.example.com/
 - http://kafka-ui.local.example.com/
 - http://pgadmin.local.example.com/
-- http://localhost:5173/

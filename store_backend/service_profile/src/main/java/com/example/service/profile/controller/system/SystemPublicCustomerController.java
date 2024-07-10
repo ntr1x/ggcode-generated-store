@@ -1,9 +1,12 @@
 package com.example.service.profile.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicCustomerController {
     @JsonView(Views.Create.class)
     public SystemPublicCustomerResponse.Create create(
             @Parameter(hidden = true) SystemPublicCustomerRequest.Context context,
-            @RequestBody SystemPublicCustomerRequest.Create request
+            @RequestBody @Valid SystemPublicCustomerRequest.Create request
     ) {
         return systemPublicCustomerService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicCustomerController {
     @JsonView(Views.Remove.class)
     public SystemPublicCustomerResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicCustomerRequest.Context context,
-            @RequestBody SystemPublicCustomerRequest.Id key
+            @RequestBody @Valid SystemPublicCustomerRequest.Id key
     ) {
         return systemPublicCustomerService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicCustomerController {
     public SystemPublicCustomerResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicCustomerRequest.Context context,
             @PathVariable("id") java.util.UUID id,
-            @RequestBody SystemPublicCustomerRequest.Replace request
+            @RequestBody @Valid SystemPublicCustomerRequest.Replace request
     ) {
         SystemPublicCustomerRequest.Id recordKey = SystemPublicCustomerRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicCustomerController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicCustomerModel> select(
             @Parameter(hidden = true) SystemPublicCustomerRequest.Context context,
-            @RequestBody SystemPublicCustomerRequest.Select request,
+            @RequestBody @Valid SystemPublicCustomerRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicCustomerService.select(context, request, pageable);

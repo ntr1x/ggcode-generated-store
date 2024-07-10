@@ -1,15 +1,15 @@
 package com.example.service.profile.service.profile;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import org.ntr1x.common.api.annotation.Event;
 import org.ntr1x.common.api.service.EvaluatorService;
 import org.ntr1x.common.api.service.GeneratorService;
-import org.ntr1x.common.jpa.criteria.PredicateFactory;
+import org.ntr1x.common.jpa.criteria.SpecificationBuilder;
 import org.ntr1x.common.web.util.Validate;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.jpa.domain.Specification;
@@ -98,16 +98,14 @@ public class ProfilePublicCustomerVerifyPhoneService {
         Validate.create(400, "Property 'secret' is required'")
                 .notNull(request.getSecret());
 
-        Specification<PublicCustomerVerifyPhoneEntity> specification = (root, query, cb) -> {
-            PredicateFactory predicateFactory = new PredicateFactory(root, query, cb);
-            Predicate[] predicates = new Predicate [] {
-                    predicateFactory.fromValue("id", request.getId()),
-                    predicateFactory.fromValue("customerId", context.getCustomerId()),
-                    predicateFactory.fromValue("isConfirmed", false),
-                    predicateFactory.fromOptional("secret", request.getSecret()),
-            };
-            return cb.and(Arrays.stream(predicates).filter(i -> i != null).toArray(Predicate[]::new));
-        };
+        Specification<PublicCustomerVerifyPhoneEntity> specification = (root, query, cb) ->
+            SpecificationBuilder
+                    .create(root, query, cb)
+                    .withValueMatch("id", request.getId())
+                    .withValueMatch("customerId", context.getCustomerId())
+                    .withValueMatch("isConfirmed", false)
+                    .withOptionalMatch("secret", request.getSecret())
+                    .build();
 
         PublicCustomerVerifyPhoneEntity entity = publicCustomerVerifyPhoneRepository
                 .findOne(specification)
@@ -141,16 +139,16 @@ public class ProfilePublicCustomerVerifyPhoneService {
         Pageable pageable
     ) {
 
-        Specification<PublicCustomerVerifyPhoneEntity> specification = (root, query, cb) -> {
-            PredicateFactory predicateFactory = new PredicateFactory(root, query, cb);
-            Predicate[] predicates = new Predicate [] {
-                    predicateFactory.fromOptional("id", request.getId()),
-                    predicateFactory.fromValue("customerId", context.getCustomerId()),
-                    predicateFactory.fromOptional("phone", request.getPhone()),
-                    predicateFactory.fromOptional("isConfirmed", request.getIsConfirmed()),
-            };
-            return cb.and(Arrays.stream(predicates).filter(i -> i != null).toArray(Predicate[]::new));
-        };
+        Specification<PublicCustomerVerifyPhoneEntity> specification = (root, query, cb) ->
+            SpecificationBuilder
+                    .create(root, query, cb)
+                    .withOptionalMatch("id", request.getId())
+                    .withValueMatch("customerId", context.getCustomerId())
+                    .withOptionalMatch("phone", request.getPhone())
+                    .withOptionalMatch("isConfirmed", request.getIsConfirmed())
+                    .withWhereStatements(request.get__where())
+                    .withOrderStatements(request.get__order())
+                    .build();
 
         return publicCustomerVerifyPhoneRepository
                 .findAll(specification, pageable)

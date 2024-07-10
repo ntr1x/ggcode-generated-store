@@ -1,9 +1,12 @@
 package com.example.service.payments.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicOrderStatusController {
     @JsonView(Views.Create.class)
     public SystemPublicOrderStatusResponse.Create create(
             @Parameter(hidden = true) SystemPublicOrderStatusRequest.Context context,
-            @RequestBody SystemPublicOrderStatusRequest.Create request
+            @RequestBody @Valid SystemPublicOrderStatusRequest.Create request
     ) {
         return systemPublicOrderStatusService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicOrderStatusController {
     @JsonView(Views.Remove.class)
     public SystemPublicOrderStatusResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicOrderStatusRequest.Context context,
-            @RequestBody SystemPublicOrderStatusRequest.Id key
+            @RequestBody @Valid SystemPublicOrderStatusRequest.Id key
     ) {
         return systemPublicOrderStatusService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicOrderStatusController {
     public SystemPublicOrderStatusResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicOrderStatusRequest.Context context,
             @PathVariable("id") java.lang.Integer id,
-            @RequestBody SystemPublicOrderStatusRequest.Replace request
+            @RequestBody @Valid SystemPublicOrderStatusRequest.Replace request
     ) {
         SystemPublicOrderStatusRequest.Id recordKey = SystemPublicOrderStatusRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicOrderStatusController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicOrderStatusModel> select(
             @Parameter(hidden = true) SystemPublicOrderStatusRequest.Context context,
-            @RequestBody SystemPublicOrderStatusRequest.Select request,
+            @RequestBody @Valid SystemPublicOrderStatusRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicOrderStatusService.select(context, request, pageable);

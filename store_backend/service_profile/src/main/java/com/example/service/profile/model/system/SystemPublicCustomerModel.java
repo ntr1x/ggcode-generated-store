@@ -1,10 +1,12 @@
 package com.example.service.profile.model.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import org.ntr1x.common.api.views.Views;
 
 @Data
@@ -30,4 +32,7 @@ public class SystemPublicCustomerModel {
     
     @JsonView(Views.Default.class)
     private java.lang.String patronymic;
+    
+    @JsonView(Views.Default.class)
+    private java.lang.String fullName;
 }

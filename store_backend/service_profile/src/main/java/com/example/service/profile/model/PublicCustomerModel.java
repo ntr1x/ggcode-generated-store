@@ -30,4 +30,7 @@ public class PublicCustomerModel {
     
     @JsonView(Views.Default.class)
     private java.lang.String patronymic;
+    
+    @JsonView(Views.Default.class)
+    private java.lang.String fullName;
 }

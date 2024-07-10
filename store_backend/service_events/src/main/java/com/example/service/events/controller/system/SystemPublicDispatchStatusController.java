@@ -1,9 +1,12 @@
 package com.example.service.events.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicDispatchStatusController {
     @JsonView(Views.Create.class)
     public SystemPublicDispatchStatusResponse.Create create(
             @Parameter(hidden = true) SystemPublicDispatchStatusRequest.Context context,
-            @RequestBody SystemPublicDispatchStatusRequest.Create request
+            @RequestBody @Valid SystemPublicDispatchStatusRequest.Create request
     ) {
         return systemPublicDispatchStatusService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicDispatchStatusController {
     @JsonView(Views.Remove.class)
     public SystemPublicDispatchStatusResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicDispatchStatusRequest.Context context,
-            @RequestBody SystemPublicDispatchStatusRequest.Id key
+            @RequestBody @Valid SystemPublicDispatchStatusRequest.Id key
     ) {
         return systemPublicDispatchStatusService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicDispatchStatusController {
     public SystemPublicDispatchStatusResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicDispatchStatusRequest.Context context,
             @PathVariable("id") java.lang.Integer id,
-            @RequestBody SystemPublicDispatchStatusRequest.Replace request
+            @RequestBody @Valid SystemPublicDispatchStatusRequest.Replace request
     ) {
         SystemPublicDispatchStatusRequest.Id recordKey = SystemPublicDispatchStatusRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicDispatchStatusController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicDispatchStatusModel> select(
             @Parameter(hidden = true) SystemPublicDispatchStatusRequest.Context context,
-            @RequestBody SystemPublicDispatchStatusRequest.Select request,
+            @RequestBody @Valid SystemPublicDispatchStatusRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicDispatchStatusService.select(context, request, pageable);

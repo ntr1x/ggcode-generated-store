@@ -7,9 +7,9 @@ import Menu from 'primevue/menu';
 import { type Option } from '../dialogs/FilterDialog.vue';
 
 import { useModalStore } from '../../store/modalStore';
-import PickerEventSource from '../controls/PickerEventSource.vue'
-import PickerEventTopic from '../controls/PickerEventTopic.vue'
-import PickerEventType from '../controls/PickerEventType.vue'
+import SelectPickerEventSource from '../controls/SelectPickerEventSource.vue'
+import SelectPickerEventTopic from '../controls/SelectPickerEventTopic.vue'
+import SelectPickerEventType from '../controls/SelectPickerEventType.vue'
 
 const modalStore = useModalStore()
 
@@ -47,7 +47,7 @@ const filtersMenuItems = ref([
         icon: 'pi pi-plus-circle',
         command: () => [
           modalStore.openModal(() => ({
-            component: shallowRef(PickerEventSource),
+            component: shallowRef(SelectPickerEventSource),
             props: {},
             handlers: {
               ['update:model-value'](value: string) {
@@ -65,7 +65,7 @@ const filtersMenuItems = ref([
         icon: 'pi pi-plus-circle',
         command: () => [
           modalStore.openModal(() => ({
-            component: shallowRef(PickerEventTopic),
+            component: shallowRef(SelectPickerEventTopic),
             props: {},
             handlers: {
               ['update:model-value'](value: string) {
@@ -83,7 +83,7 @@ const filtersMenuItems = ref([
         icon: 'pi pi-plus-circle',
         command: () => [
           modalStore.openModal(() => ({
-            component: shallowRef(PickerEventType),
+            component: shallowRef(SelectPickerEventType),
             props: {},
             handlers: {
               ['update:model-value'](value: string) {

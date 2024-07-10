@@ -1,15 +1,15 @@
 package com.example.service.payments.service.system;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import org.ntr1x.common.api.annotation.Event;
 import org.ntr1x.common.api.service.EvaluatorService;
 import org.ntr1x.common.api.service.GeneratorService;
-import org.ntr1x.common.jpa.criteria.PredicateFactory;
+import org.ntr1x.common.jpa.criteria.SpecificationBuilder;
 import org.ntr1x.common.web.util.Validate;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.jpa.domain.Specification;
@@ -100,13 +100,11 @@ public class SystemPublicPaymentService {
         SystemPublicPaymentRequest.Update request
     ) {
 
-        Specification<PublicPaymentEntity> specification = (root, query, cb) -> {
-            PredicateFactory predicateFactory = new PredicateFactory(root, query, cb);
-            Predicate[] predicates = new Predicate [] {
-                    predicateFactory.fromValue("id", request.getId()),
-            };
-            return cb.and(Arrays.stream(predicates).filter(i -> i != null).toArray(Predicate[]::new));
-        };
+        Specification<PublicPaymentEntity> specification = (root, query, cb) ->
+            SpecificationBuilder
+                    .create(root, query, cb)
+                    .withValueMatch("id", request.getId())
+                    .build();
 
         PublicPaymentEntity entity = publicPaymentRepository
                 .findOne(specification)
@@ -194,35 +192,35 @@ public class SystemPublicPaymentService {
         Pageable pageable
     ) {
 
-        Specification<PublicPaymentEntity> specification = (root, query, cb) -> {
-            PredicateFactory predicateFactory = new PredicateFactory(root, query, cb);
-            Predicate[] predicates = new Predicate [] {
-                    predicateFactory.fromOptional("id", request.getId()),
-                    predicateFactory.fromOptional("customerId", request.getCustomerId()),
-                    predicateFactory.fromOptional("orderId", request.getOrderId()),
-                    predicateFactory.fromOptional("paymentStatusId", request.getPaymentStatusId()),
-                    predicateFactory.fromOptional("paymentTypeId", request.getPaymentTypeId()),
-                    predicateFactory.fromOptional("value", request.getValue()),
-                    predicateFactory.fromOptional("createdAt", request.getCreatedAt()),
-                    predicateFactory.fromOptional("updatedAt", request.getUpdatedAt()),
-                    predicateFactory.fromOptionalPath("order.id", request, java.util.UUID.class, "order.id"),
-                    predicateFactory.fromOptionalPath("order.sourceTypeId", request, java.lang.Integer.class, "order.sourceTypeId"),
-                    predicateFactory.fromOptionalPath("order.customerId", request, java.util.UUID.class, "order.customerId"),
-                    predicateFactory.fromOptionalPath("order.regionId", request, java.util.UUID.class, "order.regionId"),
-                    predicateFactory.fromOptionalPath("order.shopId", request, java.util.UUID.class, "order.shopId"),
-                    predicateFactory.fromOptionalPath("order.basketId", request, java.util.UUID.class, "order.basketId"),
-                    predicateFactory.fromOptionalPath("order.agentId", request, java.util.UUID.class, "order.agentId"),
-                    predicateFactory.fromOptionalPath("order.orderTypeId", request, java.lang.Integer.class, "order.orderTypeId"),
-                    predicateFactory.fromOptionalPath("order.orderStatusId", request, java.lang.Integer.class, "order.orderStatusId"),
-                    predicateFactory.fromOptionalPath("order.price", request, java.math.BigDecimal.class, "order.price"),
-                    predicateFactory.fromOptionalPath("order.spend", request, java.math.BigDecimal.class, "order.spend"),
-                    predicateFactory.fromOptionalPath("order.bonus", request, java.math.BigDecimal.class, "order.bonus"),
-                    predicateFactory.fromOptionalPath("order.discount", request, java.math.BigDecimal.class, "order.discount"),
-                    predicateFactory.fromOptionalPath("order.createdAt", request, java.time.LocalDateTime.class, "order.createdAt"),
-                    predicateFactory.fromOptionalPath("order.updatedAt", request, java.time.LocalDateTime.class, "order.updatedAt"),
-            };
-            return cb.and(Arrays.stream(predicates).filter(i -> i != null).toArray(Predicate[]::new));
-        };
+        Specification<PublicPaymentEntity> specification = (root, query, cb) ->
+            SpecificationBuilder
+                    .create(root, query, cb)
+                    .withOptionalMatch("id", request.getId())
+                    .withOptionalMatch("customerId", request.getCustomerId())
+                    .withOptionalMatch("orderId", request.getOrderId())
+                    .withOptionalMatch("paymentStatusId", request.getPaymentStatusId())
+                    .withOptionalMatch("paymentTypeId", request.getPaymentTypeId())
+                    .withOptionalMatch("value", request.getValue())
+                    .withOptionalMatch("createdAt", request.getCreatedAt())
+                    .withOptionalMatch("updatedAt", request.getUpdatedAt())
+                    .withOptionalPathMatch("order.id", request, java.util.UUID.class, "order.id")
+                    .withOptionalPathMatch("order.sourceTypeId", request, java.lang.Integer.class, "order.sourceTypeId")
+                    .withOptionalPathMatch("order.customerId", request, java.util.UUID.class, "order.customerId")
+                    .withOptionalPathMatch("order.regionId", request, java.util.UUID.class, "order.regionId")
+                    .withOptionalPathMatch("order.shopId", request, java.util.UUID.class, "order.shopId")
+                    .withOptionalPathMatch("order.basketId", request, java.util.UUID.class, "order.basketId")
+                    .withOptionalPathMatch("order.agentId", request, java.util.UUID.class, "order.agentId")
+                    .withOptionalPathMatch("order.orderTypeId", request, java.lang.Integer.class, "order.orderTypeId")
+                    .withOptionalPathMatch("order.orderStatusId", request, java.lang.Integer.class, "order.orderStatusId")
+                    .withOptionalPathMatch("order.price", request, java.math.BigDecimal.class, "order.price")
+                    .withOptionalPathMatch("order.spend", request, java.math.BigDecimal.class, "order.spend")
+                    .withOptionalPathMatch("order.bonus", request, java.math.BigDecimal.class, "order.bonus")
+                    .withOptionalPathMatch("order.discount", request, java.math.BigDecimal.class, "order.discount")
+                    .withOptionalPathMatch("order.createdAt", request, java.time.LocalDateTime.class, "order.createdAt")
+                    .withOptionalPathMatch("order.updatedAt", request, java.time.LocalDateTime.class, "order.updatedAt")
+                    .withWhereStatements(request.get__where())
+                    .withOrderStatements(request.get__order())
+                    .build();
 
         return publicPaymentRepository
                 .findAll(specification, pageable)

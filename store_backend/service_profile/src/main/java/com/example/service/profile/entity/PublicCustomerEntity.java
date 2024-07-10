@@ -1,10 +1,13 @@
 package com.example.service.profile.entity;
 
 import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.Type;
 
 import java.util.List;
@@ -35,6 +38,9 @@ public class PublicCustomerEntity {
     
     @Column(name = "patronymic", columnDefinition = "text")
     private java.lang.String patronymic;
+    
+    @Formula("CONCAT_WS(' ', {alias}.name, {alias}.patronymic, {alias}.surname)")
+    private java.lang.String fullName;
     
     @OneToMany
     @JoinColumn(name = "customer_id")

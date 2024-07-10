@@ -7,13 +7,15 @@ import Menu from 'primevue/menu';
 import { type Option } from '../dialogs/FilterDialog.vue';
 
 import { useModalStore } from '../../store/modalStore';
-import PickerSourceType from '../controls/PickerSourceType.vue'
-import PickerOrderType from '../controls/PickerOrderType.vue'
-import PickerOrderStatus from '../controls/PickerOrderStatus.vue'
-import PickerRegionId from '../controls/PickerRegionId.vue'
+import SearchPickerCustomerId from '../controls/SearchPickerCustomerId.vue'
+import SelectPickerSourceType from '../controls/SelectPickerSourceType.vue'
+import SelectPickerOrderType from '../controls/SelectPickerOrderType.vue'
+import SelectPickerOrderStatus from '../controls/SelectPickerOrderStatus.vue'
+import SelectPickerRegionId from '../controls/SelectPickerRegionId.vue'
 
 const modalStore = useModalStore()
 
+const filterByCustomerId = defineModel('filterByCustomerId')
 const filterBySourceType = defineModel('filterBySourceType')
 const filterByOrderType = defineModel('filterByOrderType')
 const filterByOrderStatus = defineModel('filterByOrderStatus')
@@ -26,6 +28,7 @@ const sortByCreatedAt = defineModel<'asc' | 'desc' | undefined>('sortByCreatedAt
 const sortByUpdatedAt = defineModel<'asc' | 'desc' | undefined>('sortByUpdatedAt')
 
 const filters = reactive<Record<string, Option | undefined>>({
+  customerId: undefined,
   sourceType: undefined,
   orderType: undefined,
   orderStatus: undefined,
@@ -48,11 +51,29 @@ const filtersMenuItems = ref([
     label: 'By Property',
     items: [
       {
+        label: 'Customer Id',
+        icon: 'pi pi-plus-circle',
+        command: () => [
+          modalStore.openModal(() => ({
+            component: shallowRef(SearchPickerCustomerId),
+            props: {},
+            handlers: {
+              ['update:model-value'](value: string) {
+                filterByCustomerId.value = value
+              },
+              ['change:option'](option: Option) {
+                filters.customerId = option
+              }
+            }
+          }))
+        ]
+      },
+      {
         label: 'Source Type',
         icon: 'pi pi-plus-circle',
         command: () => [
           modalStore.openModal(() => ({
-            component: shallowRef(PickerSourceType),
+            component: shallowRef(SelectPickerSourceType),
             props: {},
             handlers: {
               ['update:model-value'](value: string) {
@@ -70,7 +91,7 @@ const filtersMenuItems = ref([
         icon: 'pi pi-plus-circle',
         command: () => [
           modalStore.openModal(() => ({
-            component: shallowRef(PickerOrderType),
+            component: shallowRef(SelectPickerOrderType),
             props: {},
             handlers: {
               ['update:model-value'](value: string) {
@@ -88,7 +109,7 @@ const filtersMenuItems = ref([
         icon: 'pi pi-plus-circle',
         command: () => [
           modalStore.openModal(() => ({
-            component: shallowRef(PickerOrderStatus),
+            component: shallowRef(SelectPickerOrderStatus),
             props: {},
             handlers: {
               ['update:model-value'](value: string) {
@@ -106,7 +127,7 @@ const filtersMenuItems = ref([
         icon: 'pi pi-plus-circle',
         command: () => [
           modalStore.openModal(() => ({
-            component: shallowRef(PickerRegionId),
+            component: shallowRef(SelectPickerRegionId),
             props: {},
             handlers: {
               ['update:model-value'](value: string) {
@@ -240,6 +261,9 @@ const sortersMenuItems = ref([
             <Menu ref="filtersMenuRef" id="overlay_menu" :model="filtersMenuItems" :popup="true" />
           </div>
           <div class="flex flex-wrap flex-1">
+            <Chip v-if="filterByCustomerId !== undefined" removable @remove="filterByCustomerId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+              <span><b>Customer Id: </b><span v-text="filters.customerId?.title || filterByCustomerId"></span></span>
+            </Chip>
             <Chip v-if="filterBySourceType !== undefined" removable @remove="filterBySourceType = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
               <span><b>Source Type: </b><span v-text="filters.sourceType?.title || filterBySourceType"></span></span>
             </Chip>

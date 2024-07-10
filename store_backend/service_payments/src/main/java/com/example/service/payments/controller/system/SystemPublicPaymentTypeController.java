@@ -1,9 +1,12 @@
 package com.example.service.payments.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicPaymentTypeController {
     @JsonView(Views.Create.class)
     public SystemPublicPaymentTypeResponse.Create create(
             @Parameter(hidden = true) SystemPublicPaymentTypeRequest.Context context,
-            @RequestBody SystemPublicPaymentTypeRequest.Create request
+            @RequestBody @Valid SystemPublicPaymentTypeRequest.Create request
     ) {
         return systemPublicPaymentTypeService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicPaymentTypeController {
     @JsonView(Views.Remove.class)
     public SystemPublicPaymentTypeResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicPaymentTypeRequest.Context context,
-            @RequestBody SystemPublicPaymentTypeRequest.Id key
+            @RequestBody @Valid SystemPublicPaymentTypeRequest.Id key
     ) {
         return systemPublicPaymentTypeService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicPaymentTypeController {
     public SystemPublicPaymentTypeResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicPaymentTypeRequest.Context context,
             @PathVariable("id") java.lang.Integer id,
-            @RequestBody SystemPublicPaymentTypeRequest.Replace request
+            @RequestBody @Valid SystemPublicPaymentTypeRequest.Replace request
     ) {
         SystemPublicPaymentTypeRequest.Id recordKey = SystemPublicPaymentTypeRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicPaymentTypeController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicPaymentTypeModel> select(
             @Parameter(hidden = true) SystemPublicPaymentTypeRequest.Context context,
-            @RequestBody SystemPublicPaymentTypeRequest.Select request,
+            @RequestBody @Valid SystemPublicPaymentTypeRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicPaymentTypeService.select(context, request, pageable);

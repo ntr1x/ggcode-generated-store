@@ -1,10 +1,12 @@
 package com.example.service.payments.model.profile;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import org.ntr1x.common.api.views.Views;
 
 @Data

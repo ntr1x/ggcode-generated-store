@@ -1,9 +1,12 @@
 package com.example.service.payments.controller.profile;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class ProfilePublicBasketEntryController {
     @JsonView(Views.Create.class)
     public ProfilePublicBasketEntryResponse.Create create(
             @Parameter(hidden = true) ProfilePublicBasketEntryRequest.Context context,
-            @RequestBody ProfilePublicBasketEntryRequest.Create request
+            @RequestBody @Valid ProfilePublicBasketEntryRequest.Create request
     ) {
         return profilePublicBasketEntryService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class ProfilePublicBasketEntryController {
     @JsonView(Views.Remove.class)
     public ProfilePublicBasketEntryResponse.Remove remove(
             @Parameter(hidden = true) ProfilePublicBasketEntryRequest.Context context,
-            @RequestBody ProfilePublicBasketEntryRequest.Id key
+            @RequestBody @Valid ProfilePublicBasketEntryRequest.Id key
     ) {
         return profilePublicBasketEntryService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class ProfilePublicBasketEntryController {
     public ProfilePublicBasketEntryResponse.Replace replace(
             @Parameter(hidden = true) ProfilePublicBasketEntryRequest.Context context,
             @PathVariable("id") java.util.UUID id,
-            @RequestBody ProfilePublicBasketEntryRequest.Replace request
+            @RequestBody @Valid ProfilePublicBasketEntryRequest.Replace request
     ) {
         ProfilePublicBasketEntryRequest.Id recordKey = ProfilePublicBasketEntryRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class ProfilePublicBasketEntryController {
     @JsonView(Views.Select.class)
     public Page<ProfilePublicBasketEntryModel> select(
             @Parameter(hidden = true) ProfilePublicBasketEntryRequest.Context context,
-            @RequestBody ProfilePublicBasketEntryRequest.Select request,
+            @RequestBody @Valid ProfilePublicBasketEntryRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return profilePublicBasketEntryService.select(context, request, pageable);

@@ -118,7 +118,7 @@
       hostname: host.docker.internal
       check: true
       optional: true
-    path: /api/service_customers
+    path: /api/service_profile
     cors:
       origin: '*'
   - servers:

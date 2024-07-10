@@ -1,9 +1,12 @@
 package com.example.service.catalog.controller.anonymous;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,7 +34,7 @@ public class AnonymousPublicProductController {
     @JsonView(Views.Select.class)
     public Page<AnonymousPublicProductModel> select(
             @Parameter(hidden = true) AnonymousPublicProductRequest.Context context,
-            @RequestBody AnonymousPublicProductRequest.Select request,
+            @RequestBody @Valid AnonymousPublicProductRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return anonymousPublicProductService.select(context, request, pageable);

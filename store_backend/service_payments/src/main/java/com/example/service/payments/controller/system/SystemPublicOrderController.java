@@ -1,9 +1,12 @@
 package com.example.service.payments.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicOrderController {
     @JsonView(Views.Create.class)
     public SystemPublicOrderResponse.Create create(
             @Parameter(hidden = true) SystemPublicOrderRequest.Context context,
-            @RequestBody SystemPublicOrderRequest.Create request
+            @RequestBody @Valid SystemPublicOrderRequest.Create request
     ) {
         return systemPublicOrderService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicOrderController {
     @JsonView(Views.Remove.class)
     public SystemPublicOrderResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicOrderRequest.Context context,
-            @RequestBody SystemPublicOrderRequest.Id key
+            @RequestBody @Valid SystemPublicOrderRequest.Id key
     ) {
         return systemPublicOrderService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicOrderController {
     public SystemPublicOrderResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicOrderRequest.Context context,
             @PathVariable("id") java.util.UUID id,
-            @RequestBody SystemPublicOrderRequest.Replace request
+            @RequestBody @Valid SystemPublicOrderRequest.Replace request
     ) {
         SystemPublicOrderRequest.Id recordKey = SystemPublicOrderRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicOrderController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicOrderModel> select(
             @Parameter(hidden = true) SystemPublicOrderRequest.Context context,
-            @RequestBody SystemPublicOrderRequest.Select request,
+            @RequestBody @Valid SystemPublicOrderRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicOrderService.select(context, request, pageable);

@@ -1,15 +1,15 @@
 package com.example.service.events.service.system;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import org.ntr1x.common.api.annotation.Event;
 import org.ntr1x.common.api.service.EvaluatorService;
 import org.ntr1x.common.api.service.GeneratorService;
-import org.ntr1x.common.jpa.criteria.PredicateFactory;
+import org.ntr1x.common.jpa.criteria.SpecificationBuilder;
 import org.ntr1x.common.web.util.Validate;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.jpa.domain.Specification;
@@ -96,13 +96,11 @@ public class SystemPublicSubscriptionService {
         SystemPublicSubscriptionRequest.Update request
     ) {
 
-        Specification<PublicSubscriptionEntity> specification = (root, query, cb) -> {
-            PredicateFactory predicateFactory = new PredicateFactory(root, query, cb);
-            Predicate[] predicates = new Predicate [] {
-                    predicateFactory.fromValue("id", request.getId()),
-            };
-            return cb.and(Arrays.stream(predicates).filter(i -> i != null).toArray(Predicate[]::new));
-        };
+        Specification<PublicSubscriptionEntity> specification = (root, query, cb) ->
+            SpecificationBuilder
+                    .create(root, query, cb)
+                    .withValueMatch("id", request.getId())
+                    .build();
 
         PublicSubscriptionEntity entity = publicSubscriptionRepository
                 .findOne(specification)
@@ -182,18 +180,18 @@ public class SystemPublicSubscriptionService {
         Pageable pageable
     ) {
 
-        Specification<PublicSubscriptionEntity> specification = (root, query, cb) -> {
-            PredicateFactory predicateFactory = new PredicateFactory(root, query, cb);
-            Predicate[] predicates = new Predicate [] {
-                    predicateFactory.fromOptional("id", request.getId()),
-                    predicateFactory.fromOptional("customerId", request.getCustomerId()),
-                    predicateFactory.fromOptional("typeId", request.getTypeId()),
-                    predicateFactory.fromOptional("sessionId", request.getSessionId()),
-                    predicateFactory.fromOptional("createdAt", request.getCreatedAt()),
-                    predicateFactory.fromOptional("payload", request.getPayload()),
-            };
-            return cb.and(Arrays.stream(predicates).filter(i -> i != null).toArray(Predicate[]::new));
-        };
+        Specification<PublicSubscriptionEntity> specification = (root, query, cb) ->
+            SpecificationBuilder
+                    .create(root, query, cb)
+                    .withOptionalMatch("id", request.getId())
+                    .withOptionalMatch("customerId", request.getCustomerId())
+                    .withOptionalMatch("typeId", request.getTypeId())
+                    .withOptionalMatch("sessionId", request.getSessionId())
+                    .withOptionalMatch("createdAt", request.getCreatedAt())
+                    .withOptionalMatch("payload", request.getPayload())
+                    .withWhereStatements(request.get__where())
+                    .withOrderStatements(request.get__order())
+                    .build();
 
         return publicSubscriptionRepository
                 .findAll(specification, pageable)

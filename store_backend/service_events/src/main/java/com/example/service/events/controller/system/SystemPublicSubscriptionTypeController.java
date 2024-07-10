@@ -1,9 +1,12 @@
 package com.example.service.events.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicSubscriptionTypeController {
     @JsonView(Views.Create.class)
     public SystemPublicSubscriptionTypeResponse.Create create(
             @Parameter(hidden = true) SystemPublicSubscriptionTypeRequest.Context context,
-            @RequestBody SystemPublicSubscriptionTypeRequest.Create request
+            @RequestBody @Valid SystemPublicSubscriptionTypeRequest.Create request
     ) {
         return systemPublicSubscriptionTypeService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicSubscriptionTypeController {
     @JsonView(Views.Remove.class)
     public SystemPublicSubscriptionTypeResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicSubscriptionTypeRequest.Context context,
-            @RequestBody SystemPublicSubscriptionTypeRequest.Id key
+            @RequestBody @Valid SystemPublicSubscriptionTypeRequest.Id key
     ) {
         return systemPublicSubscriptionTypeService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicSubscriptionTypeController {
     public SystemPublicSubscriptionTypeResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicSubscriptionTypeRequest.Context context,
             @PathVariable("id") java.lang.Integer id,
-            @RequestBody SystemPublicSubscriptionTypeRequest.Replace request
+            @RequestBody @Valid SystemPublicSubscriptionTypeRequest.Replace request
     ) {
         SystemPublicSubscriptionTypeRequest.Id recordKey = SystemPublicSubscriptionTypeRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicSubscriptionTypeController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicSubscriptionTypeModel> select(
             @Parameter(hidden = true) SystemPublicSubscriptionTypeRequest.Context context,
-            @RequestBody SystemPublicSubscriptionTypeRequest.Select request,
+            @RequestBody @Valid SystemPublicSubscriptionTypeRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicSubscriptionTypeService.select(context, request, pageable);

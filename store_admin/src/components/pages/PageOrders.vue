@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
-import { useRoute } from 'vue-router';
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
 import { paymentsRemote } from '../../remotes/paymentsRemote';
@@ -40,10 +40,7 @@ const orderSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
   setProperty(data, 'orderStatusId', orderSelectFilter.orderStatus)
   setProperty(data, 'sourceTypeId', orderSelectFilter.sourceType)
   setProperty(data, 'regionId', orderSelectFilter.regionId)
-  const params = {
-  "size": 50,
-  "sort": "id,asc"
-}
+  const params: Record<string, any> = {"size":50,"sort":"id,asc"}
   const sort: string[] = []
   if (orderSelectSort.orderTypeId != null) {
     sort.push('orderType,' + orderSelectSort.orderTypeId)
@@ -63,7 +60,7 @@ const orderSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
   if (orderSelectSort.updatedAt != null) {
     sort.push('updatedAt,' + orderSelectSort.updatedAt)
   }
-  setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
+  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
 
   return {
     method: 'POST',
@@ -94,6 +91,7 @@ watch(
     <ToolbarOrders
       class="rounded-none border-0 border-b"
       v-model:selection="orderSelectSelection"
+      v-model:filter-by-customer-id = orderSelectFilter.customerId
       v-model:filter-by-source-type = orderSelectFilter.sourceType
       v-model:filter-by-order-type = orderSelectFilter.orderType
       v-model:filter-by-order-status = orderSelectFilter.orderStatus

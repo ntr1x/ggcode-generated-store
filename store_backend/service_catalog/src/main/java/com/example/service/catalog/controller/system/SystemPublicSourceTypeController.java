@@ -1,9 +1,12 @@
 package com.example.service.catalog.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicSourceTypeController {
     @JsonView(Views.Create.class)
     public SystemPublicSourceTypeResponse.Create create(
             @Parameter(hidden = true) SystemPublicSourceTypeRequest.Context context,
-            @RequestBody SystemPublicSourceTypeRequest.Create request
+            @RequestBody @Valid SystemPublicSourceTypeRequest.Create request
     ) {
         return systemPublicSourceTypeService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicSourceTypeController {
     @JsonView(Views.Remove.class)
     public SystemPublicSourceTypeResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicSourceTypeRequest.Context context,
-            @RequestBody SystemPublicSourceTypeRequest.Id key
+            @RequestBody @Valid SystemPublicSourceTypeRequest.Id key
     ) {
         return systemPublicSourceTypeService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicSourceTypeController {
     public SystemPublicSourceTypeResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicSourceTypeRequest.Context context,
             @PathVariable("id") java.lang.Integer id,
-            @RequestBody SystemPublicSourceTypeRequest.Replace request
+            @RequestBody @Valid SystemPublicSourceTypeRequest.Replace request
     ) {
         SystemPublicSourceTypeRequest.Id recordKey = SystemPublicSourceTypeRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicSourceTypeController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicSourceTypeModel> select(
             @Parameter(hidden = true) SystemPublicSourceTypeRequest.Context context,
-            @RequestBody SystemPublicSourceTypeRequest.Select request,
+            @RequestBody @Valid SystemPublicSourceTypeRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicSourceTypeService.select(context, request, pageable);

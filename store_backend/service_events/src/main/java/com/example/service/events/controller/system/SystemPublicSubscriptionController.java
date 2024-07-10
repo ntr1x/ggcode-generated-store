@@ -1,9 +1,12 @@
 package com.example.service.events.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicSubscriptionController {
     @JsonView(Views.Create.class)
     public SystemPublicSubscriptionResponse.Create create(
             @Parameter(hidden = true) SystemPublicSubscriptionRequest.Context context,
-            @RequestBody SystemPublicSubscriptionRequest.Create request
+            @RequestBody @Valid SystemPublicSubscriptionRequest.Create request
     ) {
         return systemPublicSubscriptionService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicSubscriptionController {
     @JsonView(Views.Remove.class)
     public SystemPublicSubscriptionResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicSubscriptionRequest.Context context,
-            @RequestBody SystemPublicSubscriptionRequest.Id key
+            @RequestBody @Valid SystemPublicSubscriptionRequest.Id key
     ) {
         return systemPublicSubscriptionService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicSubscriptionController {
     public SystemPublicSubscriptionResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicSubscriptionRequest.Context context,
             @PathVariable("id") java.util.UUID id,
-            @RequestBody SystemPublicSubscriptionRequest.Replace request
+            @RequestBody @Valid SystemPublicSubscriptionRequest.Replace request
     ) {
         SystemPublicSubscriptionRequest.Id recordKey = SystemPublicSubscriptionRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicSubscriptionController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicSubscriptionModel> select(
             @Parameter(hidden = true) SystemPublicSubscriptionRequest.Context context,
-            @RequestBody SystemPublicSubscriptionRequest.Select request,
+            @RequestBody @Valid SystemPublicSubscriptionRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicSubscriptionService.select(context, request, pageable);

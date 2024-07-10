@@ -1,9 +1,12 @@
 package com.example.service.events.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicEventTopicInfoController {
     @JsonView(Views.Create.class)
     public SystemPublicEventTopicInfoResponse.Create create(
             @Parameter(hidden = true) SystemPublicEventTopicInfoRequest.Context context,
-            @RequestBody SystemPublicEventTopicInfoRequest.Create request
+            @RequestBody @Valid SystemPublicEventTopicInfoRequest.Create request
     ) {
         return systemPublicEventTopicInfoService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicEventTopicInfoController {
     @JsonView(Views.Remove.class)
     public SystemPublicEventTopicInfoResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicEventTopicInfoRequest.Context context,
-            @RequestBody SystemPublicEventTopicInfoRequest.Id key
+            @RequestBody @Valid SystemPublicEventTopicInfoRequest.Id key
     ) {
         return systemPublicEventTopicInfoService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicEventTopicInfoController {
     public SystemPublicEventTopicInfoResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicEventTopicInfoRequest.Context context,
             @PathVariable("name") java.lang.String name,
-            @RequestBody SystemPublicEventTopicInfoRequest.Replace request
+            @RequestBody @Valid SystemPublicEventTopicInfoRequest.Replace request
     ) {
         SystemPublicEventTopicInfoRequest.Id recordKey = SystemPublicEventTopicInfoRequest.Id.builder()
                 .name(name)
@@ -95,7 +98,7 @@ public class SystemPublicEventTopicInfoController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicEventTopicInfoModel> select(
             @Parameter(hidden = true) SystemPublicEventTopicInfoRequest.Context context,
-            @RequestBody SystemPublicEventTopicInfoRequest.Select request,
+            @RequestBody @Valid SystemPublicEventTopicInfoRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicEventTopicInfoService.select(context, request, pageable);

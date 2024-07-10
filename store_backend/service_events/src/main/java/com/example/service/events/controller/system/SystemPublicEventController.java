@@ -1,9 +1,12 @@
 package com.example.service.events.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicEventController {
     @JsonView(Views.Create.class)
     public SystemPublicEventResponse.Create create(
             @Parameter(hidden = true) SystemPublicEventRequest.Context context,
-            @RequestBody SystemPublicEventRequest.Create request
+            @RequestBody @Valid SystemPublicEventRequest.Create request
     ) {
         return systemPublicEventService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicEventController {
     @JsonView(Views.Remove.class)
     public SystemPublicEventResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicEventRequest.Context context,
-            @RequestBody SystemPublicEventRequest.Id key
+            @RequestBody @Valid SystemPublicEventRequest.Id key
     ) {
         return systemPublicEventService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicEventController {
     public SystemPublicEventResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicEventRequest.Context context,
             @PathVariable("id") java.util.UUID id,
-            @RequestBody SystemPublicEventRequest.Replace request
+            @RequestBody @Valid SystemPublicEventRequest.Replace request
     ) {
         SystemPublicEventRequest.Id recordKey = SystemPublicEventRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicEventController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicEventModel> select(
             @Parameter(hidden = true) SystemPublicEventRequest.Context context,
-            @RequestBody SystemPublicEventRequest.Select request,
+            @RequestBody @Valid SystemPublicEventRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicEventService.select(context, request, pageable);

@@ -7,7 +7,7 @@ import Menu from 'primevue/menu';
 import { type Option } from '../dialogs/FilterDialog.vue';
 
 import { useModalStore } from '../../store/modalStore';
-import PickerPromotionType from '../controls/PickerPromotionType.vue'
+import SelectPickerPromotionType from '../controls/SelectPickerPromotionType.vue'
 
 const modalStore = useModalStore()
 
@@ -28,7 +28,7 @@ const filtersMenuItems = ref([
         icon: 'pi pi-plus-circle',
         command: () => [
           modalStore.openModal(() => ({
-            component: shallowRef(PickerPromotionType),
+            component: shallowRef(SelectPickerPromotionType),
             props: {},
             handlers: {
               ['update:model-value'](value: string) {

@@ -14,8 +14,8 @@
       "url": "http://api.local.example.com/api/service_catalog/v3/api-docs"
     },
     {
-      "name": "Service Customers",
-      "url": "http://api.local.example.com/api/service_customers/v3/api-docs"
+      "name": "Service Profiles",
+      "url": "http://api.local.example.com/api/service_profile/v3/api-docs"
     },
     {
       "name": "Service Events",

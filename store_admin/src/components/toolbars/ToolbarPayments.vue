@@ -7,10 +7,10 @@ import Menu from 'primevue/menu';
 import { type Option } from '../dialogs/FilterDialog.vue';
 
 import { useModalStore } from '../../store/modalStore';
-import PickerPaymentType from '../controls/PickerPaymentType.vue'
-import PickerPaymentStatus from '../controls/PickerPaymentStatus.vue'
-import PickerOrderType from '../controls/PickerOrderType.vue'
-import PickerOrderStatus from '../controls/PickerOrderStatus.vue'
+import SelectPickerPaymentType from '../controls/SelectPickerPaymentType.vue'
+import SelectPickerPaymentStatus from '../controls/SelectPickerPaymentStatus.vue'
+import SelectPickerOrderType from '../controls/SelectPickerOrderType.vue'
+import SelectPickerOrderStatus from '../controls/SelectPickerOrderStatus.vue'
 
 const modalStore = useModalStore()
 
@@ -37,7 +37,7 @@ const filtersMenuItems = ref([
         icon: 'pi pi-plus-circle',
         command: () => [
           modalStore.openModal(() => ({
-            component: shallowRef(PickerPaymentType),
+            component: shallowRef(SelectPickerPaymentType),
             props: {},
             handlers: {
               ['update:model-value'](value: string) {
@@ -55,7 +55,7 @@ const filtersMenuItems = ref([
         icon: 'pi pi-plus-circle',
         command: () => [
           modalStore.openModal(() => ({
-            component: shallowRef(PickerPaymentStatus),
+            component: shallowRef(SelectPickerPaymentStatus),
             props: {},
             handlers: {
               ['update:model-value'](value: string) {
@@ -73,7 +73,7 @@ const filtersMenuItems = ref([
         icon: 'pi pi-plus-circle',
         command: () => [
           modalStore.openModal(() => ({
-            component: shallowRef(PickerOrderType),
+            component: shallowRef(SelectPickerOrderType),
             props: {},
             handlers: {
               ['update:model-value'](value: string) {
@@ -91,7 +91,7 @@ const filtersMenuItems = ref([
         icon: 'pi pi-plus-circle',
         command: () => [
           modalStore.openModal(() => ({
-            component: shallowRef(PickerOrderStatus),
+            component: shallowRef(SelectPickerOrderStatus),
             props: {},
             handlers: {
               ['update:model-value'](value: string) {

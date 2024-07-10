@@ -1,15 +1,15 @@
 package com.example.service.catalog.service.system;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import org.ntr1x.common.api.annotation.Event;
 import org.ntr1x.common.api.service.EvaluatorService;
 import org.ntr1x.common.api.service.GeneratorService;
-import org.ntr1x.common.jpa.criteria.PredicateFactory;
+import org.ntr1x.common.jpa.criteria.SpecificationBuilder;
 import org.ntr1x.common.web.util.Validate;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.jpa.domain.Specification;
@@ -98,13 +98,11 @@ public class SystemPublicPromotionTargetService {
         SystemPublicPromotionTargetRequest.Update request
     ) {
 
-        Specification<PublicPromotionTargetEntity> specification = (root, query, cb) -> {
-            PredicateFactory predicateFactory = new PredicateFactory(root, query, cb);
-            Predicate[] predicates = new Predicate [] {
-                    predicateFactory.fromValue("id", request.getId()),
-            };
-            return cb.and(Arrays.stream(predicates).filter(i -> i != null).toArray(Predicate[]::new));
-        };
+        Specification<PublicPromotionTargetEntity> specification = (root, query, cb) ->
+            SpecificationBuilder
+                    .create(root, query, cb)
+                    .withValueMatch("id", request.getId())
+                    .build();
 
         PublicPromotionTargetEntity entity = publicPromotionTargetRepository
                 .findOne(specification)
@@ -188,19 +186,19 @@ public class SystemPublicPromotionTargetService {
         Pageable pageable
     ) {
 
-        Specification<PublicPromotionTargetEntity> specification = (root, query, cb) -> {
-            PredicateFactory predicateFactory = new PredicateFactory(root, query, cb);
-            Predicate[] predicates = new Predicate [] {
-                    predicateFactory.fromOptional("id", request.getId()),
-                    predicateFactory.fromOptional("sourceTypeId", request.getSourceTypeId()),
-                    predicateFactory.fromOptional("promotionId", request.getPromotionId()),
-                    predicateFactory.fromOptional("categoryId", request.getCategoryId()),
-                    predicateFactory.fromOptional("productId", request.getProductId()),
-                    predicateFactory.fromOptional("regionId", request.getRegionId()),
-                    predicateFactory.fromOptional("shopId", request.getShopId()),
-            };
-            return cb.and(Arrays.stream(predicates).filter(i -> i != null).toArray(Predicate[]::new));
-        };
+        Specification<PublicPromotionTargetEntity> specification = (root, query, cb) ->
+            SpecificationBuilder
+                    .create(root, query, cb)
+                    .withOptionalMatch("id", request.getId())
+                    .withOptionalMatch("sourceTypeId", request.getSourceTypeId())
+                    .withOptionalMatch("promotionId", request.getPromotionId())
+                    .withOptionalMatch("categoryId", request.getCategoryId())
+                    .withOptionalMatch("productId", request.getProductId())
+                    .withOptionalMatch("regionId", request.getRegionId())
+                    .withOptionalMatch("shopId", request.getShopId())
+                    .withWhereStatements(request.get__where())
+                    .withOrderStatements(request.get__order())
+                    .build();
 
         return publicPromotionTargetRepository
                 .findAll(specification, pageable)

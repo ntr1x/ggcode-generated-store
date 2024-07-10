@@ -1,9 +1,12 @@
 package com.example.service.payments.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicOrderTypeController {
     @JsonView(Views.Create.class)
     public SystemPublicOrderTypeResponse.Create create(
             @Parameter(hidden = true) SystemPublicOrderTypeRequest.Context context,
-            @RequestBody SystemPublicOrderTypeRequest.Create request
+            @RequestBody @Valid SystemPublicOrderTypeRequest.Create request
     ) {
         return systemPublicOrderTypeService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicOrderTypeController {
     @JsonView(Views.Remove.class)
     public SystemPublicOrderTypeResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicOrderTypeRequest.Context context,
-            @RequestBody SystemPublicOrderTypeRequest.Id key
+            @RequestBody @Valid SystemPublicOrderTypeRequest.Id key
     ) {
         return systemPublicOrderTypeService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicOrderTypeController {
     public SystemPublicOrderTypeResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicOrderTypeRequest.Context context,
             @PathVariable("id") java.lang.Integer id,
-            @RequestBody SystemPublicOrderTypeRequest.Replace request
+            @RequestBody @Valid SystemPublicOrderTypeRequest.Replace request
     ) {
         SystemPublicOrderTypeRequest.Id recordKey = SystemPublicOrderTypeRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicOrderTypeController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicOrderTypeModel> select(
             @Parameter(hidden = true) SystemPublicOrderTypeRequest.Context context,
-            @RequestBody SystemPublicOrderTypeRequest.Select request,
+            @RequestBody @Valid SystemPublicOrderTypeRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicOrderTypeService.select(context, request, pageable);

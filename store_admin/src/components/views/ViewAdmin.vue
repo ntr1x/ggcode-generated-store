@@ -7,11 +7,16 @@ import MainReference from '../partials/MainReference.vue';
 import SocketConnection from '../providers/SocketConnection.vue';
 import SocketSubscription from '../providers/SocketSubscription.vue';
 
+const connections = {
+  events: window.__APP_CONFIG__?.socket?.events?.baseURL
+    || import.meta.env.VITE_SOCKET_EVENTS_BASE_URL
+    || 'ws://api.local.example.com/api/assembly_web/ws',
+}
 </script>
 
 <template>
   <PrincipalProvider>
-    <SocketConnection name="events" uri="ws://api.local.example.com/api/assembly_web/ws" />
+    <SocketConnection name="events" :uri="connections.events" />
     <SocketSubscription
       socket-name="events"
       :selectors='[{"headers":{"channel":{"type":"EQUAL","value":"public_dispatch"}}}]'

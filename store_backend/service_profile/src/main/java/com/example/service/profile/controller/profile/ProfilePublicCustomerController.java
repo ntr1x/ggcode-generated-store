@@ -1,9 +1,12 @@
 package com.example.service.profile.controller.profile;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class ProfilePublicCustomerController {
     @JsonView(Views.Update.class)
     public ProfilePublicCustomerResponse.Upsert upsert(
             @Parameter(hidden = true) ProfilePublicCustomerRequest.Context context,
-            @RequestBody ProfilePublicCustomerRequest.Upsert request
+            @RequestBody @Valid ProfilePublicCustomerRequest.Upsert request
     ) {
         return profilePublicCustomerService.upsert(context, request);
     }
@@ -44,7 +47,7 @@ public class ProfilePublicCustomerController {
     @JsonView(Views.Select.class)
     public ProfilePublicCustomerModel find(
             @Parameter(hidden = true) ProfilePublicCustomerRequest.Context context,
-            @ParameterObject @ModelAttribute ProfilePublicCustomerRequest.Find request
+            @ParameterObject @ModelAttribute @Valid ProfilePublicCustomerRequest.Find request
     ) {
         return profilePublicCustomerService.find(context, request);
     }

@@ -1,13 +1,23 @@
 package com.example.service.catalog.request.anonymous;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import jakarta.validation.Valid;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import org.ntr1x.common.jpa.criteria.OrderStatement;
+import org.ntr1x.common.jpa.criteria.WhereStatement;
+
 import org.springdoc.core.annotations.ParameterObject;
 
+import java.util.Collection;
 import java.util.Optional;
 
 public interface AnonymousPublicItemRequest {
@@ -51,5 +61,15 @@ public interface AnonymousPublicItemRequest {
         private Optional<java.lang.String> ean13;
         
         private Optional<java.lang.String> code128;
+
+        @Valid
+        @Hidden
+        @JsonProperty("$where")
+        private Collection<@Valid WhereStatement> __where;
+
+        @Valid
+        @Hidden
+        @JsonProperty("$order")
+        private Collection<@Valid OrderStatement> __order;
     }
 }

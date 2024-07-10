@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
-import { useRoute } from 'vue-router';
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
 import { eventsRemote } from '../../remotes/eventsRemote';
@@ -30,7 +30,7 @@ const subscriptionTypeSelectQuery = useAxiosRequest<any>(eventsRemote, async () 
   const data = {}
   setProperty(data, 'customerId', subscriptionTypeSelectFilter.customerId)
   setProperty(data, 'typeId', subscriptionTypeSelectFilter.typeId)
-  const params = {}
+  const params: Record<string, any> = {}
   const sort: string[] = []
   if (subscriptionTypeSelectSort.id != null) {
     sort.push('id,' + subscriptionTypeSelectSort.id)
@@ -41,7 +41,7 @@ const subscriptionTypeSelectQuery = useAxiosRequest<any>(eventsRemote, async () 
   if (subscriptionTypeSelectSort.description != null) {
     sort.push('description,' + subscriptionTypeSelectSort.description)
   }
-  setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
+  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
 
   return {
     method: 'POST',

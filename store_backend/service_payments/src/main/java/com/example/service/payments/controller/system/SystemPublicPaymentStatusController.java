@@ -1,9 +1,12 @@
 package com.example.service.payments.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicPaymentStatusController {
     @JsonView(Views.Create.class)
     public SystemPublicPaymentStatusResponse.Create create(
             @Parameter(hidden = true) SystemPublicPaymentStatusRequest.Context context,
-            @RequestBody SystemPublicPaymentStatusRequest.Create request
+            @RequestBody @Valid SystemPublicPaymentStatusRequest.Create request
     ) {
         return systemPublicPaymentStatusService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicPaymentStatusController {
     @JsonView(Views.Remove.class)
     public SystemPublicPaymentStatusResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicPaymentStatusRequest.Context context,
-            @RequestBody SystemPublicPaymentStatusRequest.Id key
+            @RequestBody @Valid SystemPublicPaymentStatusRequest.Id key
     ) {
         return systemPublicPaymentStatusService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicPaymentStatusController {
     public SystemPublicPaymentStatusResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicPaymentStatusRequest.Context context,
             @PathVariable("id") java.lang.Integer id,
-            @RequestBody SystemPublicPaymentStatusRequest.Replace request
+            @RequestBody @Valid SystemPublicPaymentStatusRequest.Replace request
     ) {
         SystemPublicPaymentStatusRequest.Id recordKey = SystemPublicPaymentStatusRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicPaymentStatusController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicPaymentStatusModel> select(
             @Parameter(hidden = true) SystemPublicPaymentStatusRequest.Context context,
-            @RequestBody SystemPublicPaymentStatusRequest.Select request,
+            @RequestBody @Valid SystemPublicPaymentStatusRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicPaymentStatusService.select(context, request, pageable);

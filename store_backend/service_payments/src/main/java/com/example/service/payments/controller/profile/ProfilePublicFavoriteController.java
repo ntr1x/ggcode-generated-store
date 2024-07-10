@@ -1,9 +1,12 @@
 package com.example.service.payments.controller.profile;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class ProfilePublicFavoriteController {
     @JsonView(Views.Create.class)
     public ProfilePublicFavoriteResponse.Create create(
             @Parameter(hidden = true) ProfilePublicFavoriteRequest.Context context,
-            @RequestBody ProfilePublicFavoriteRequest.Create request
+            @RequestBody @Valid ProfilePublicFavoriteRequest.Create request
     ) {
         return profilePublicFavoriteService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class ProfilePublicFavoriteController {
     @JsonView(Views.Remove.class)
     public ProfilePublicFavoriteResponse.Remove remove(
             @Parameter(hidden = true) ProfilePublicFavoriteRequest.Context context,
-            @RequestBody ProfilePublicFavoriteRequest.Id key
+            @RequestBody @Valid ProfilePublicFavoriteRequest.Id key
     ) {
         return profilePublicFavoriteService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class ProfilePublicFavoriteController {
     public ProfilePublicFavoriteResponse.Replace replace(
             @Parameter(hidden = true) ProfilePublicFavoriteRequest.Context context,
             @PathVariable("id") java.util.UUID id,
-            @RequestBody ProfilePublicFavoriteRequest.Replace request
+            @RequestBody @Valid ProfilePublicFavoriteRequest.Replace request
     ) {
         ProfilePublicFavoriteRequest.Id recordKey = ProfilePublicFavoriteRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class ProfilePublicFavoriteController {
     @JsonView(Views.Select.class)
     public Page<ProfilePublicFavoriteModel> select(
             @Parameter(hidden = true) ProfilePublicFavoriteRequest.Context context,
-            @RequestBody ProfilePublicFavoriteRequest.Select request,
+            @RequestBody @Valid ProfilePublicFavoriteRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return profilePublicFavoriteService.select(context, request, pageable);

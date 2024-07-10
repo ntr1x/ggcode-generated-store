@@ -1,9 +1,12 @@
 package com.example.service.catalog.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicShopController {
     @JsonView(Views.Create.class)
     public SystemPublicShopResponse.Create create(
             @Parameter(hidden = true) SystemPublicShopRequest.Context context,
-            @RequestBody SystemPublicShopRequest.Create request
+            @RequestBody @Valid SystemPublicShopRequest.Create request
     ) {
         return systemPublicShopService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicShopController {
     @JsonView(Views.Remove.class)
     public SystemPublicShopResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicShopRequest.Context context,
-            @RequestBody SystemPublicShopRequest.Id key
+            @RequestBody @Valid SystemPublicShopRequest.Id key
     ) {
         return systemPublicShopService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicShopController {
     public SystemPublicShopResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicShopRequest.Context context,
             @PathVariable("id") java.util.UUID id,
-            @RequestBody SystemPublicShopRequest.Replace request
+            @RequestBody @Valid SystemPublicShopRequest.Replace request
     ) {
         SystemPublicShopRequest.Id recordKey = SystemPublicShopRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicShopController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicShopModel> select(
             @Parameter(hidden = true) SystemPublicShopRequest.Context context,
-            @RequestBody SystemPublicShopRequest.Select request,
+            @RequestBody @Valid SystemPublicShopRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicShopService.select(context, request, pageable);

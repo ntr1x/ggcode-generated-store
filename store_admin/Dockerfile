@@ -3,8 +3,8 @@ FROM node:latest AS builder
 WORKDIR /usr/src/app
 ENV PATH=/usr/src/node_modules/.bin:$PATH
 
-ARG VITE_BACKEND_URL
-ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
+ARG BUILD_MODE=development
+ENV BUILD_MODE=$BUILD_MODE
 
 COPY package.json ./
 
@@ -16,7 +16,7 @@ FROM builder AS dev
 CMD ["yarn", "dev"]
 
 FROM builder AS prod-builder
-RUN yarn build
+RUN yarn vue-tsc && yarn vite build --mode $BUILD_MODE
 
 FROM nginx:latest AS prod
 

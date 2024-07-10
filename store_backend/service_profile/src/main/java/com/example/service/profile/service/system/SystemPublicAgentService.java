@@ -1,15 +1,15 @@
 package com.example.service.profile.service.system;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import org.ntr1x.common.api.annotation.Event;
 import org.ntr1x.common.api.service.EvaluatorService;
 import org.ntr1x.common.api.service.GeneratorService;
-import org.ntr1x.common.jpa.criteria.PredicateFactory;
+import org.ntr1x.common.jpa.criteria.SpecificationBuilder;
 import org.ntr1x.common.web.util.Validate;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.jpa.domain.Specification;
@@ -113,13 +113,11 @@ public class SystemPublicAgentService {
         SystemPublicAgentRequest.Update request
     ) {
 
-        Specification<PublicAgentEntity> specification = (root, query, cb) -> {
-            PredicateFactory predicateFactory = new PredicateFactory(root, query, cb);
-            Predicate[] predicates = new Predicate [] {
-                    predicateFactory.fromValue("id", request.getId()),
-            };
-            return cb.and(Arrays.stream(predicates).filter(i -> i != null).toArray(Predicate[]::new));
-        };
+        Specification<PublicAgentEntity> specification = (root, query, cb) ->
+            SpecificationBuilder
+                    .create(root, query, cb)
+                    .withValueMatch("id", request.getId())
+                    .build();
 
         PublicAgentEntity entity = publicAgentRepository
                 .findOne(specification)
@@ -229,25 +227,25 @@ public class SystemPublicAgentService {
         Pageable pageable
     ) {
 
-        Specification<PublicAgentEntity> specification = (root, query, cb) -> {
-            PredicateFactory predicateFactory = new PredicateFactory(root, query, cb);
-            Predicate[] predicates = new Predicate [] {
-                    predicateFactory.fromOptional("id", request.getId()),
-                    predicateFactory.fromOptional("customerId", request.getCustomerId()),
-                    predicateFactory.fromOptional("kind", request.getKind()),
-                    predicateFactory.fromOptional("title", request.getTitle()),
-                    predicateFactory.fromOptional("inn", request.getInn()),
-                    predicateFactory.fromOptional("kpp", request.getKpp()),
-                    predicateFactory.fromOptional("bic", request.getBic()),
-                    predicateFactory.fromOptional("bank", request.getBank()),
-                    predicateFactory.fromOptional("okved", request.getOkved()),
-                    predicateFactory.fromOptional("address", request.getAddress()),
-                    predicateFactory.fromOptional("phone", request.getPhone()),
-                    predicateFactory.fromOptional("email", request.getEmail()),
-                    predicateFactory.fromOptional("registrationAddress", request.getRegistrationAddress()),
-            };
-            return cb.and(Arrays.stream(predicates).filter(i -> i != null).toArray(Predicate[]::new));
-        };
+        Specification<PublicAgentEntity> specification = (root, query, cb) ->
+            SpecificationBuilder
+                    .create(root, query, cb)
+                    .withOptionalMatch("id", request.getId())
+                    .withOptionalMatch("customerId", request.getCustomerId())
+                    .withOptionalMatch("kind", request.getKind())
+                    .withOptionalMatch("title", request.getTitle())
+                    .withOptionalMatch("inn", request.getInn())
+                    .withOptionalMatch("kpp", request.getKpp())
+                    .withOptionalMatch("bic", request.getBic())
+                    .withOptionalMatch("bank", request.getBank())
+                    .withOptionalMatch("okved", request.getOkved())
+                    .withOptionalMatch("address", request.getAddress())
+                    .withOptionalMatch("phone", request.getPhone())
+                    .withOptionalMatch("email", request.getEmail())
+                    .withOptionalMatch("registrationAddress", request.getRegistrationAddress())
+                    .withWhereStatements(request.get__where())
+                    .withOrderStatements(request.get__order())
+                    .build();
 
         return publicAgentRepository
                 .findAll(specification, pageable)

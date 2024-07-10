@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
-import { useRoute } from 'vue-router';
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
 import { productsRemote } from '../../remotes/productsRemote';
@@ -28,7 +28,7 @@ const productSelectQuery = useAxiosRequest<any>(productsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'categoryId', productSelectFilter.categoryId)
-  const params = {}
+  const params: Record<string, any> = {}
   const sort: string[] = []
   if (productSelectSort.id != null) {
     sort.push('id,' + productSelectSort.id)
@@ -36,7 +36,7 @@ const productSelectQuery = useAxiosRequest<any>(productsRemote, async () => {
   if (productSelectSort.name != null) {
     sort.push('name,' + productSelectSort.name)
   }
-  setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
+  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
 
   return {
     method: 'POST',

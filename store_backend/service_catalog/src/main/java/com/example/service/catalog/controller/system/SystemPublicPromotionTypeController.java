@@ -1,9 +1,12 @@
 package com.example.service.catalog.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicPromotionTypeController {
     @JsonView(Views.Create.class)
     public SystemPublicPromotionTypeResponse.Create create(
             @Parameter(hidden = true) SystemPublicPromotionTypeRequest.Context context,
-            @RequestBody SystemPublicPromotionTypeRequest.Create request
+            @RequestBody @Valid SystemPublicPromotionTypeRequest.Create request
     ) {
         return systemPublicPromotionTypeService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicPromotionTypeController {
     @JsonView(Views.Remove.class)
     public SystemPublicPromotionTypeResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicPromotionTypeRequest.Context context,
-            @RequestBody SystemPublicPromotionTypeRequest.Id key
+            @RequestBody @Valid SystemPublicPromotionTypeRequest.Id key
     ) {
         return systemPublicPromotionTypeService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicPromotionTypeController {
     public SystemPublicPromotionTypeResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicPromotionTypeRequest.Context context,
             @PathVariable("id") java.lang.Integer id,
-            @RequestBody SystemPublicPromotionTypeRequest.Replace request
+            @RequestBody @Valid SystemPublicPromotionTypeRequest.Replace request
     ) {
         SystemPublicPromotionTypeRequest.Id recordKey = SystemPublicPromotionTypeRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicPromotionTypeController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicPromotionTypeModel> select(
             @Parameter(hidden = true) SystemPublicPromotionTypeRequest.Context context,
-            @RequestBody SystemPublicPromotionTypeRequest.Select request,
+            @RequestBody @Valid SystemPublicPromotionTypeRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicPromotionTypeService.select(context, request, pageable);

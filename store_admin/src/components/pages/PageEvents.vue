@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
-import { useRoute } from 'vue-router';
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
 import { eventsRemote } from '../../remotes/eventsRemote';
@@ -35,10 +35,7 @@ const eventSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   setProperty(data, 'ceSource', eventSelectFilter.eventSource)
   setProperty(data, 'ceType', eventSelectFilter.eventType)
   setProperty(data, 'topic', eventSelectFilter.eventTopic)
-  const params = {
-  "size": 50,
-  "sort": "created_at,desc"
-}
+  const params: Record<string, any> = {"size":50,"sort":"createdAt,desc"}
   const sort: string[] = []
   if (eventSelectSort.id != null) {
     sort.push('id,' + eventSelectSort.id)
@@ -55,7 +52,7 @@ const eventSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   if (eventSelectSort.createdAt != null) {
     sort.push('createdAt,' + eventSelectSort.createdAt)
   }
-  setProperty(params, 'sort', sort.length > 0 ? sort : undefined)
+  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
 
   return {
     method: 'POST',

@@ -1,9 +1,12 @@
 package com.example.service.payments.controller.profile;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class ProfilePublicBasketController {
     @JsonView(Views.Create.class)
     public ProfilePublicBasketResponse.Create create(
             @Parameter(hidden = true) ProfilePublicBasketRequest.Context context,
-            @RequestBody ProfilePublicBasketRequest.Create request
+            @RequestBody @Valid ProfilePublicBasketRequest.Create request
     ) {
         return profilePublicBasketService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class ProfilePublicBasketController {
     @JsonView(Views.Remove.class)
     public ProfilePublicBasketResponse.Remove remove(
             @Parameter(hidden = true) ProfilePublicBasketRequest.Context context,
-            @RequestBody ProfilePublicBasketRequest.Id key
+            @RequestBody @Valid ProfilePublicBasketRequest.Id key
     ) {
         return profilePublicBasketService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class ProfilePublicBasketController {
     public ProfilePublicBasketResponse.Replace replace(
             @Parameter(hidden = true) ProfilePublicBasketRequest.Context context,
             @PathVariable("id") java.util.UUID id,
-            @RequestBody ProfilePublicBasketRequest.Replace request
+            @RequestBody @Valid ProfilePublicBasketRequest.Replace request
     ) {
         ProfilePublicBasketRequest.Id recordKey = ProfilePublicBasketRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class ProfilePublicBasketController {
     @JsonView(Views.Select.class)
     public Page<ProfilePublicBasketModel> select(
             @Parameter(hidden = true) ProfilePublicBasketRequest.Context context,
-            @RequestBody ProfilePublicBasketRequest.Select request,
+            @RequestBody @Valid ProfilePublicBasketRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return profilePublicBasketService.select(context, request, pageable);

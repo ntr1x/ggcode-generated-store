@@ -1,9 +1,12 @@
 package com.example.service.catalog.controller.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class SystemPublicAttachmentTypeController {
     @JsonView(Views.Create.class)
     public SystemPublicAttachmentTypeResponse.Create create(
             @Parameter(hidden = true) SystemPublicAttachmentTypeRequest.Context context,
-            @RequestBody SystemPublicAttachmentTypeRequest.Create request
+            @RequestBody @Valid SystemPublicAttachmentTypeRequest.Create request
     ) {
         return systemPublicAttachmentTypeService.create(context, request);
     }
@@ -44,7 +47,7 @@ public class SystemPublicAttachmentTypeController {
     @JsonView(Views.Remove.class)
     public SystemPublicAttachmentTypeResponse.Remove remove(
             @Parameter(hidden = true) SystemPublicAttachmentTypeRequest.Context context,
-            @RequestBody SystemPublicAttachmentTypeRequest.Id key
+            @RequestBody @Valid SystemPublicAttachmentTypeRequest.Id key
     ) {
         return systemPublicAttachmentTypeService.remove(context, key);
     }
@@ -81,7 +84,7 @@ public class SystemPublicAttachmentTypeController {
     public SystemPublicAttachmentTypeResponse.Replace replace(
             @Parameter(hidden = true) SystemPublicAttachmentTypeRequest.Context context,
             @PathVariable("id") java.lang.Integer id,
-            @RequestBody SystemPublicAttachmentTypeRequest.Replace request
+            @RequestBody @Valid SystemPublicAttachmentTypeRequest.Replace request
     ) {
         SystemPublicAttachmentTypeRequest.Id recordKey = SystemPublicAttachmentTypeRequest.Id.builder()
                 .id(id)
@@ -95,7 +98,7 @@ public class SystemPublicAttachmentTypeController {
     @JsonView(Views.Select.class)
     public Page<SystemPublicAttachmentTypeModel> select(
             @Parameter(hidden = true) SystemPublicAttachmentTypeRequest.Context context,
-            @RequestBody SystemPublicAttachmentTypeRequest.Select request,
+            @RequestBody @Valid SystemPublicAttachmentTypeRequest.Select request,
             @ParameterObject Pageable pageable
     ) {
         return systemPublicAttachmentTypeService.select(context, request, pageable);
