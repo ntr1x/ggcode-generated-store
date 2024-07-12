@@ -39,6 +39,9 @@ public class PublicDispatchEntity {
     @Column(name = "status_id")
     private java.lang.Integer statusId;
     
+    @Column(name = "template_type_id")
+    private java.lang.Integer templateTypeId;
+    
     @Column(name = "created_at")
     private java.time.LocalDateTime createdAt;
     
@@ -65,4 +68,8 @@ public class PublicDispatchEntity {
     @ManyToOne
     @JoinColumn(name = "status_id", insertable = false, updatable = false)
     private com.example.service.events.entity.PublicDispatchStatusEntity status;
+    
+    @ManyToOne
+    @JoinColumn(name = "template_type_id", insertable = false, updatable = false)
+    private com.example.service.events.entity.PublicTemplateTypeEntity templateType;
 }

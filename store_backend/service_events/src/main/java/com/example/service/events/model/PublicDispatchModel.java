@@ -32,6 +32,9 @@ public class PublicDispatchModel {
     private java.lang.Integer statusId;
     
     @JsonView(Views.Default.class)
+    private java.lang.Integer templateTypeId;
+    
+    @JsonView(Views.Default.class)
     private java.time.LocalDateTime createdAt;
     
     @JsonView(Views.Default.class)
@@ -51,4 +54,7 @@ public class PublicDispatchModel {
     
     @JsonView(Views.Default.class)
     private com.example.service.events.model.PublicDispatchStatusModel status;
+    
+    @JsonView(Views.Default.class)
+    private com.example.service.events.model.PublicTemplateTypeModel templateType;
 }

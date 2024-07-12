@@ -4,6 +4,7 @@ import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { customersRemote } from '../../remotes/customersRemote';
 import { paymentsRemote } from '../../remotes/paymentsRemote';
 import { eventsRemote } from '../../remotes/eventsRemote';
@@ -20,6 +21,8 @@ import GridDispatches from '../grids/GridDispatches.vue';
 // @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
+// @ts-ignore
+const security = useSecurityContext()
 
 const customerGetFilter = reactive({
 })
@@ -279,13 +282,22 @@ watch(
     dispatchSelectSelection.value = []
   }
 )
+
 </script>
 
 <template>
-  <div class="flex flex-col overflow-auto">
-    <SectionHeading tag="h1" title="Customer" />
-    <FieldsetCustomerInfo :state="customerGetQuery.state"/>
-    <SectionHeading tag="h3" title="Orders" />
+  <div class="flex flex-col flex-1 overflow-auto">
+    <SectionHeading
+      tag="h1"
+      title="Customer"
+    />
+    <FieldsetCustomerInfo
+      :state="customerGetQuery.state"
+    />
+    <SectionHeading
+      tag="h3"
+      title="Orders"
+    />
     <ToolbarOrders
       class="rounded-none border-0 border-b"
       v-model:selection="orderSelectSelection"
@@ -295,11 +307,11 @@ watch(
       v-model:filter-by-order-status = orderSelectFilter.orderStatus
       v-model:filter-by-region-id = orderSelectFilter.regionId
       v-model:sort-by-id = orderSelectSort.id
-      v-model:sort-by-customerId = orderSelectSort.customerId
-      v-model:sort-by-orderTypeId = orderSelectSort.orderTypeId
-      v-model:sort-by-orderStatusId = orderSelectSort.orderStatusId
-      v-model:sort-by-createdAt = orderSelectSort.createdAt
-      v-model:sort-by-updatedAt = orderSelectSort.updatedAt
+      v-model:sort-by-customer-id = orderSelectSort.customerId
+      v-model:sort-by-order-type-id = orderSelectSort.orderTypeId
+      v-model:sort-by-order-status-id = orderSelectSort.orderStatusId
+      v-model:sort-by-created-at = orderSelectSort.createdAt
+      v-model:sort-by-updated-at = orderSelectSort.updatedAt
     />
     <GridOrders
       :state="orderSelectQuery.state"
@@ -307,22 +319,28 @@ watch(
       :scrollable="false"
       :hide-customer="true"
     />
-    <SectionHeading tag="h3" title="Agents" />
+    <SectionHeading
+      tag="h3"
+      title="Agents"
+    />
     <GridAgents
       :state="agentSelectQuery.state"
       v-model:selection="agentSelectSelection"
       :scrollable="false"
       :hide-customer="true"
     />
-    <SectionHeading tag="h3" title="Subscriptions" />
+    <SectionHeading
+      tag="h3"
+      title="Subscriptions"
+    />
     <ToolbarSubscriptions
       class="rounded-none border-0 border-b"
       v-model:selection="subscriptionSelectSelection"
       v-model:filter-by-customer-id = subscriptionSelectFilter.customerId
       v-model:filter-by-type-id = subscriptionSelectFilter.typeId
       v-model:sort-by-id = subscriptionSelectSort.id
-      v-model:sort-by-createdAt = subscriptionSelectSort.createdAt
-      v-model:sort-by-typeId = subscriptionSelectSort.typeId
+      v-model:sort-by-created-at = subscriptionSelectSort.createdAt
+      v-model:sort-by-type-id = subscriptionSelectSort.typeId
     />
     <GridSubscriptions
       :state="subscriptionSelectQuery.state"
@@ -330,7 +348,10 @@ watch(
       :scrollable="false"
       :hide-customer="true"
     />
-    <SectionHeading tag="h3" title="Dispatches" />
+    <SectionHeading
+      tag="h3"
+      title="Dispatches"
+    />
     <ToolbarDispatches
       class="rounded-none border-0 border-b"
       v-model:selection="dispatchSelectSelection"
@@ -338,10 +359,10 @@ watch(
       v-model:filter-by-type-id = dispatchSelectFilter.typeId
       v-model:filter-by-status-id = dispatchSelectFilter.statusId
       v-model:sort-by-id = dispatchSelectSort.id
-      v-model:sort-by-createdAt = dispatchSelectSort.createdAt
-      v-model:sort-by-updatedAt = dispatchSelectSort.updatedAt
-      v-model:sort-by-typeId = dispatchSelectSort.typeId
-      v-model:sort-by-statusId = dispatchSelectSort.statusId
+      v-model:sort-by-created-at = dispatchSelectSort.createdAt
+      v-model:sort-by-updated-at = dispatchSelectSort.updatedAt
+      v-model:sort-by-type-id = dispatchSelectSort.typeId
+      v-model:sort-by-status-id = dispatchSelectSort.statusId
     />
     <GridDispatches
       :state="dispatchSelectQuery.state"

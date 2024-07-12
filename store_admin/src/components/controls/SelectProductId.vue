@@ -59,6 +59,6 @@ const options = computed(() => {
     optionValue="id"
     optionLabel="label"
     placeholder="Product Id"
-    class="w-full md:w-[14rem]"
+    class="w-full"
   />
 </template>

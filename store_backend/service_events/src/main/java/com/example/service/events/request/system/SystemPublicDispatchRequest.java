@@ -62,6 +62,8 @@ public interface SystemPublicDispatchRequest {
         
         private Optional<java.lang.Integer> statusId;
         
+        private Optional<java.lang.Integer> templateTypeId;
+        
         private Optional<java.time.LocalDateTime> createdAt;
         
         private Optional<java.time.LocalDateTime> updatedAt;
@@ -90,6 +92,8 @@ public interface SystemPublicDispatchRequest {
         
         private Optional<java.lang.Integer> statusId;
         
+        private Optional<java.lang.Integer> templateTypeId;
+        
         private Optional<java.time.LocalDateTime> createdAt;
         
         private Optional<java.time.LocalDateTime> updatedAt;
@@ -117,6 +121,8 @@ public interface SystemPublicDispatchRequest {
         private Optional<java.lang.Integer> typeId;
         
         private Optional<java.lang.Integer> statusId;
+        
+        private Optional<java.lang.Integer> templateTypeId;
         
         private Optional<java.time.LocalDateTime> createdAt;
         
@@ -157,6 +163,8 @@ public interface SystemPublicDispatchRequest {
         private Optional<java.lang.Integer> typeId;
         
         private Optional<java.lang.Integer> statusId;
+        
+        private Optional<java.lang.Integer> templateTypeId;
         
         private Optional<java.time.LocalDateTime> createdAt;
         

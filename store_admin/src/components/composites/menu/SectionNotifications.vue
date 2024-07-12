@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import { inject } from 'vue';
+import { Ref, inject, computed } from 'vue';
 import { PrincipalResponse } from '../../../store/profileStore';
-import { computed } from 'vue';
-import { Ref } from 'vue';
 
 const principal = inject<Ref<PrincipalResponse | null>>('principal')
 
@@ -43,6 +41,12 @@ const hasAnyRole = computed(() => (roles: string[]) => {
         <router-link to="/admin/events" class="flex items-center cursor-pointer p-1 rounded-md text-surface-700 dark:text-surface-0/80 hover:bg-surface-100 dark:hover:bg-surface-700 duration-200 transition-colors">
           <i class="pi pi-bolt mr-2"></i>
           <span class="font-medium">Events</span>
+        </router-link>
+      </li>
+      <li v-if='hasAnyRole(["realm:developer","realm:admin","realm:support"])'>
+        <router-link to="/admin/templates" class="flex items-center cursor-pointer p-1 rounded-md text-surface-700 dark:text-surface-0/80 hover:bg-surface-100 dark:hover:bg-surface-700 duration-200 transition-colors">
+          <i class="pi pi-file mr-2"></i>
+          <span class="font-medium">Templates</span>
         </router-link>
       </li>
     </ul>

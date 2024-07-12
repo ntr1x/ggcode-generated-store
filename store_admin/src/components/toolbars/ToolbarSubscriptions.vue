@@ -98,7 +98,7 @@ const sortersMenuItems = ref([
         }
       },
       {
-        label: 'CreatedAt (Ascending)',
+        label: 'Created At (Ascending)',
         icon: 'pi pi-sort-alpha-down',
         command: () => {
           sortings.createdAt = 'asc'
@@ -107,14 +107,14 @@ const sortersMenuItems = ref([
       },
       {
         icon: 'pi pi-sort-alpha-up',
-        label: 'CreatedAt (Descending)',
+        label: 'Created At (Descending)',
         command: () => {
           sortings.createdAt = 'desc'
           sortByCreatedAt.value = 'desc'
         }
       },
       {
-        label: 'TypeId (Ascending)',
+        label: 'Type Id (Ascending)',
         icon: 'pi pi-sort-alpha-down',
         command: () => {
           sortings.typeId = 'asc'
@@ -123,7 +123,7 @@ const sortersMenuItems = ref([
       },
       {
         icon: 'pi pi-sort-alpha-up',
-        label: 'TypeId (Descending)',
+        label: 'Type Id (Descending)',
         command: () => {
           sortings.typeId = 'desc'
           sortByTypeId.value = 'desc'
@@ -162,10 +162,10 @@ const sortersMenuItems = ref([
               <span><b>Id: </b><span v-text="sortings.id || sortById"></span></span>
             </Chip>
             <Chip v-if="sortByCreatedAt !== undefined" removable @remove="sortByCreatedAt = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
-              <span><b>CreatedAt: </b><span v-text="sortings.createdAt || sortByCreatedAt"></span></span>
+              <span><b>Created At: </b><span v-text="sortings.createdAt || sortByCreatedAt"></span></span>
             </Chip>
             <Chip v-if="sortByTypeId !== undefined" removable @remove="sortByTypeId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
-              <span><b>TypeId: </b><span v-text="sortings.typeId || sortByTypeId"></span></span>
+              <span><b>Type Id: </b><span v-text="sortings.typeId || sortByTypeId"></span></span>
             </Chip>
           </div>
         </div>

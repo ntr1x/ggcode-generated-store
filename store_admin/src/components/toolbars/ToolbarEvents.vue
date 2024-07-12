@@ -123,7 +123,7 @@ const sortersMenuItems = ref([
         }
       },
       {
-        label: 'CeSource (Ascending)',
+        label: 'Ce Source (Ascending)',
         icon: 'pi pi-sort-alpha-down',
         command: () => {
           sortings.ceSource = 'asc'
@@ -132,14 +132,14 @@ const sortersMenuItems = ref([
       },
       {
         icon: 'pi pi-sort-alpha-up',
-        label: 'CeSource (Descending)',
+        label: 'Ce Source (Descending)',
         command: () => {
           sortings.ceSource = 'desc'
           sortByCeSource.value = 'desc'
         }
       },
       {
-        label: 'CeType (Ascending)',
+        label: 'Ce Type (Ascending)',
         icon: 'pi pi-sort-alpha-down',
         command: () => {
           sortings.ceType = 'asc'
@@ -148,7 +148,7 @@ const sortersMenuItems = ref([
       },
       {
         icon: 'pi pi-sort-alpha-up',
-        label: 'CeType (Descending)',
+        label: 'Ce Type (Descending)',
         command: () => {
           sortings.ceType = 'desc'
           sortByCeType.value = 'desc'
@@ -171,7 +171,7 @@ const sortersMenuItems = ref([
         }
       },
       {
-        label: 'CreatedAt (Ascending)',
+        label: 'Created At (Ascending)',
         icon: 'pi pi-sort-alpha-down',
         command: () => {
           sortings.createdAt = 'asc'
@@ -180,7 +180,7 @@ const sortersMenuItems = ref([
       },
       {
         icon: 'pi pi-sort-alpha-up',
-        label: 'CreatedAt (Descending)',
+        label: 'Created At (Descending)',
         command: () => {
           sortings.createdAt = 'desc'
           sortByCreatedAt.value = 'desc'
@@ -222,16 +222,16 @@ const sortersMenuItems = ref([
               <span><b>Id: </b><span v-text="sortings.id || sortById"></span></span>
             </Chip>
             <Chip v-if="sortByCeSource !== undefined" removable @remove="sortByCeSource = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
-              <span><b>CeSource: </b><span v-text="sortings.ceSource || sortByCeSource"></span></span>
+              <span><b>Ce Source: </b><span v-text="sortings.ceSource || sortByCeSource"></span></span>
             </Chip>
             <Chip v-if="sortByCeType !== undefined" removable @remove="sortByCeType = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
-              <span><b>CeType: </b><span v-text="sortings.ceType || sortByCeType"></span></span>
+              <span><b>Ce Type: </b><span v-text="sortings.ceType || sortByCeType"></span></span>
             </Chip>
             <Chip v-if="sortByTopic !== undefined" removable @remove="sortByTopic = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
               <span><b>Topic: </b><span v-text="sortings.topic || sortByTopic"></span></span>
             </Chip>
             <Chip v-if="sortByCreatedAt !== undefined" removable @remove="sortByCreatedAt = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
-              <span><b>CreatedAt: </b><span v-text="sortings.createdAt || sortByCreatedAt"></span></span>
+              <span><b>Created At: </b><span v-text="sortings.createdAt || sortByCreatedAt"></span></span>
             </Chip>
           </div>
         </div>

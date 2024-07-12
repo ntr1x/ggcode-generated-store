@@ -14,7 +14,7 @@ public class UpdateEmailListener {
 
     @KafkaListener(
         containerFactory = CloudEventsConstants.CONTAINER_FACTORY_CLOUD_EVENT,
-        groupId = "${app.service_profile.listener.update_email.group_id:service_profile}",
+        groupId = "${app.service_profile.listener.update_email.group_id:service_profile.update_email}",
         topicPattern = "${app.service_profile.listener.update_email.topic_pattern:update_email}"
     )
     public void listen(ConsumerRecord<String, CloudEvent> record, Acknowledgment ack) {

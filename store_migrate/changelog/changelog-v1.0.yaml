@@ -217,6 +217,15 @@ databaseChangeLog:
             path: ddl/public/create/subscription.sql
             relativeToChangelogFile: true
         - sqlFile:
+            path: ddl/public/create/template_type.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            path: ddl/public/create/template_shape.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            path: ddl/public/create/template.sql
+            relativeToChangelogFile: true
+        - sqlFile:
             path: ddl/public/create/dispatch_type.sql
             relativeToChangelogFile: true
         - sqlFile:
@@ -234,6 +243,15 @@ databaseChangeLog:
             relativeToChangelogFile: true
         - sqlFile:
             path: ddl/public/drop/dispatch_type.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            path: ddl/public/drop/template.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            path: ddl/public/drop/template_shape.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            path: ddl/public/drop/template_type.sql
             relativeToChangelogFile: true
         - sqlFile:
             path: ddl/public/drop/subscription.sql

@@ -10,7 +10,7 @@ export type State<T> = {
   data?: T
 }
 
-export function useAxiosRequest<T>(instance: AxiosInstance, requestFactory: AxiosRequestConfigFactory) {
+export function useAxiosRequest<T>(instance: AxiosInstance, requestFactory: AxiosRequestConfigFactory, manual: boolean = false) {
   const state = reactive<State<T>>({
     isLoading: false,
     isLoaded: false,
@@ -40,7 +40,9 @@ export function useAxiosRequest<T>(instance: AxiosInstance, requestFactory: Axio
     return state
   }
 
-  onMounted(refresh)
+  if (!manual) {
+    onMounted(refresh)
+  }
 
   return { state, refresh }
 }

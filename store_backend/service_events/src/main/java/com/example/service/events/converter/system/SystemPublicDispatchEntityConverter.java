@@ -27,6 +27,7 @@ public interface SystemPublicDispatchEntityConverter {
                     .subscriptionId(source.getSubscriptionId())
                     .typeId(source.getTypeId())
                     .statusId(source.getStatusId())
+                    .templateTypeId(source.getTemplateTypeId())
                     .createdAt(source.getCreatedAt())
                     .updatedAt(source.getUpdatedAt())
                     .payload(source.getPayload())
@@ -42,6 +43,9 @@ public interface SystemPublicDispatchEntityConverter {
                     .status(conversionService.convert(
                             source.getStatus(),
                             com.example.service.events.model.PublicDispatchStatusModel.class))
+                    .templateType(conversionService.convert(
+                            source.getTemplateType(),
+                            com.example.service.events.model.PublicTemplateTypeModel.class))
                     .build();
         }
     }

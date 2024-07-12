@@ -14,7 +14,7 @@ public class UpdatePhoneListener {
 
     @KafkaListener(
         containerFactory = CloudEventsConstants.CONTAINER_FACTORY_CLOUD_EVENT,
-        groupId = "${app.service_profile.listener.update_phone.group_id:service_profile}",
+        groupId = "${app.service_profile.listener.update_phone.group_id:service_profile.update_phone}",
         topicPattern = "${app.service_profile.listener.update_phone.topic_pattern:update_phone}"
     )
     public void listen(ConsumerRecord<String, CloudEvent> record, Acknowledgment ack) {

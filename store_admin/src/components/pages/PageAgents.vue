@@ -4,6 +4,7 @@ import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { customersRemote } from '../../remotes/customersRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridAgents from '../grids/GridAgents.vue';
@@ -11,6 +12,8 @@ import GridAgents from '../grids/GridAgents.vue';
 // @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
+// @ts-ignore
+const security = useSecurityContext()
 
 const agentSelectFilter = reactive({
   customerId: route.params.customerId,
@@ -50,11 +53,15 @@ watch(
     agentSelectSelection.value = []
   }
 )
+
 </script>
 
 <template>
-  <div class="flex flex-col overflow-auto">
-    <SectionHeading tag="h1" title="Agents" />
+  <div class="flex flex-col flex-1 overflow-auto">
+    <SectionHeading
+      tag="h1"
+      title="Agents"
+    />
     <GridAgents
       :state="agentSelectQuery.state"
       v-model:selection="agentSelectSelection"

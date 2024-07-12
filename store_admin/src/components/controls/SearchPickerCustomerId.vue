@@ -49,7 +49,7 @@ const response = useAxiosRequest<ResponseData>(customersRemote, async () => {
               }
             }
           },
-          b: { value: '0.05' }
+          b: { value: '0.2' }
         }
       }
     ],

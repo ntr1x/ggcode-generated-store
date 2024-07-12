@@ -4,6 +4,7 @@ import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { paymentsRemote } from '../../remotes/paymentsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
 import ToolbarOrders from '../toolbars/ToolbarOrders.vue';
@@ -12,6 +13,8 @@ import GridOrders from '../grids/GridOrders.vue';
 // @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
+// @ts-ignore
+const security = useSecurityContext()
 
 const orderSelectFilter = reactive({
   customerId: route.params.customerId,
@@ -83,11 +86,15 @@ watch(
     orderSelectSelection.value = []
   }
 )
+
 </script>
 
 <template>
-  <div class="flex flex-col overflow-hidden">
-    <SectionHeading tag="h1" title="Orders" />
+  <div class="flex flex-col flex-1 overflow-hidden">
+    <SectionHeading
+      tag="h1"
+      title="Orders"
+    />
     <ToolbarOrders
       class="rounded-none border-0 border-b"
       v-model:selection="orderSelectSelection"
@@ -97,11 +104,11 @@ watch(
       v-model:filter-by-order-status = orderSelectFilter.orderStatus
       v-model:filter-by-region-id = orderSelectFilter.regionId
       v-model:sort-by-id = orderSelectSort.id
-      v-model:sort-by-customerId = orderSelectSort.customerId
-      v-model:sort-by-orderTypeId = orderSelectSort.orderTypeId
-      v-model:sort-by-orderStatusId = orderSelectSort.orderStatusId
-      v-model:sort-by-createdAt = orderSelectSort.createdAt
-      v-model:sort-by-updatedAt = orderSelectSort.updatedAt
+      v-model:sort-by-customer-id = orderSelectSort.customerId
+      v-model:sort-by-order-type-id = orderSelectSort.orderTypeId
+      v-model:sort-by-order-status-id = orderSelectSort.orderStatusId
+      v-model:sort-by-created-at = orderSelectSort.createdAt
+      v-model:sort-by-updated-at = orderSelectSort.updatedAt
     />
     <GridOrders
       :state="orderSelectQuery.state"

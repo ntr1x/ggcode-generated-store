@@ -4,6 +4,7 @@ import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { paymentsRemote } from '../../remotes/paymentsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridPromotionTypes from '../grids/GridPromotionTypes.vue';
@@ -11,6 +12,8 @@ import GridPromotionTypes from '../grids/GridPromotionTypes.vue';
 // @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
+// @ts-ignore
+const security = useSecurityContext()
 
 const promotionTypeSelectFilter = reactive({
 })
@@ -48,11 +51,15 @@ watch(
     promotionTypeSelectSelection.value = []
   }
 )
+
 </script>
 
 <template>
-  <div class="flex flex-col overflow-hidden">
-    <SectionHeading tag="h1" title="Promotion Types" />
+  <div class="flex flex-col flex-1 overflow-hidden">
+    <SectionHeading
+      tag="h1"
+      title="Promotion Types"
+    />
     <GridPromotionTypes
       :state="promotionTypeSelectQuery.state"
       v-model:selection="promotionTypeSelectSelection"

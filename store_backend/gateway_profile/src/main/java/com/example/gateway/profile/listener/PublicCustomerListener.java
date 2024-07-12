@@ -14,7 +14,7 @@ public class PublicCustomerListener {
 
     @KafkaListener(
         containerFactory = CloudEventsConstants.CONTAINER_FACTORY_CLOUD_EVENT,
-        groupId = "${app.gateway_profile.listener.public_customer.group_id:gateway_profile}",
+        groupId = "${app.gateway_profile.listener.public_customer.group_id:gateway_profile.public_customer}",
         topicPattern = "${app.gateway_profile.listener.public_customer.topic_pattern:public_customer}"
     )
     public void listen(ConsumerRecord<String, CloudEvent> record, Acknowledgment ack) {

@@ -14,7 +14,7 @@ public class VerifyEmailListener {
 
     @KafkaListener(
         containerFactory = CloudEventsConstants.CONTAINER_FACTORY_CLOUD_EVENT,
-        groupId = "${app.gateway_profile.listener.verify_email.group_id:gateway_profile}",
+        groupId = "${app.gateway_profile.listener.verify_email.group_id:gateway_profile.verify_email}",
         topicPattern = "${app.gateway_profile.listener.verify_email.topic_pattern:verify_email}"
     )
     public void listen(ConsumerRecord<String, CloudEvent> record, Acknowledgment ack) {

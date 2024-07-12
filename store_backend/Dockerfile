@@ -7,6 +7,7 @@ ADD common_jpa/pom.xml ./common_jpa/pom.xml
 ADD common_web/pom.xml ./common_web/pom.xml
 ADD common_ws/pom.xml ./common_ws/pom.xml
 ADD common_events/pom.xml ./common_events/pom.xml
+ADD shared_api/pom.xml ./shared_api/pom.xml
 ADD service_catalog/pom.xml ./service_catalog/pom.xml
 ADD service_profile/pom.xml ./service_profile/pom.xml
 ADD service_events/pom.xml ./service_events/pom.xml
@@ -26,6 +27,7 @@ ADD common_jpa/src ./common_jpa/src
 ADD common_web/src ./common_web/src
 ADD common_ws/src ./common_ws/src
 ADD common_events/src ./common_events/src
+ADD shared_api/src ./shared_api/src
 ADD service_catalog/src ./service_catalog/src
 ADD service_profile/src ./service_profile/src
 ADD service_events/src ./service_events/src

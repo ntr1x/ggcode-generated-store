@@ -1,17 +1,47 @@
 <script setup lang="ts">
-import { shallowRef } from 'vue';
-import Button from 'primevue/button';
-import Panel from 'primevue/panel';
-
+import { shallowRef, inject } from 'vue'
+import Button from 'primevue/button'
+import Panel from 'primevue/panel'
 import { useModalStore } from '../../store/modalStore'
-import DispatchMessageDialog from '../dialogs/custom/DispatchMessageDialog.vue';
+import DispatchMessageDialog from '../dialogs/custom/DispatchMessageDialog.vue'
+import { eventsRemote } from '../../remotes/eventsRemote'
+import { type PrincipalResponse } from '../../store/profileStore'
+import { useAuthStore } from '../../store/authStore'
+import { Ref } from 'vue'
 
 const modalStore = useModalStore()
+const authStore = useAuthStore()
+
+const principal = inject<Ref<PrincipalResponse | null>>('principal')!
 
 function handleOpenModal() {
   modalStore.openModal(() => ({
     component: shallowRef(DispatchMessageDialog),
   }))
+}
+
+async function handleTest() {
+  const token = await authStore.requireToken()
+
+  const data = {
+    customerId: principal.value?.subject,
+    sessionId: null,
+    subscriptionId: null,
+    typeId: 1,
+    statusId: 1,
+    createdAt: new Date().toISOString(),
+    updatedAt: null,
+    payload: {
+      title: "Test",
+      detail: "How are you doing?",
+    }
+  }
+
+  await eventsRemote.post('/system/public_dispatch', data, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
 }
 
 </script>
@@ -29,7 +59,7 @@ function handleOpenModal() {
     </div>
     <div class="flex gap-2">
       <Button size="small" label="Send" @click="handleOpenModal" />
-      <Button size="small" label="Test" />
+      <Button size="small" label="Test" @click="handleTest"/>
     </div>
   </Panel>
 </template>

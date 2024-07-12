@@ -167,7 +167,7 @@ const sortersMenuItems = ref([
         }
       },
       {
-        label: 'CustomerId (Ascending)',
+        label: 'Customer Id (Ascending)',
         icon: 'pi pi-sort-alpha-down',
         command: () => {
           sortings.customerId = 'asc'
@@ -176,14 +176,14 @@ const sortersMenuItems = ref([
       },
       {
         icon: 'pi pi-sort-alpha-up',
-        label: 'CustomerId (Descending)',
+        label: 'Customer Id (Descending)',
         command: () => {
           sortings.customerId = 'desc'
           sortByCustomerId.value = 'desc'
         }
       },
       {
-        label: 'OrderTypeId (Ascending)',
+        label: 'Order Type Id (Ascending)',
         icon: 'pi pi-sort-alpha-down',
         command: () => {
           sortings.orderTypeId = 'asc'
@@ -192,14 +192,14 @@ const sortersMenuItems = ref([
       },
       {
         icon: 'pi pi-sort-alpha-up',
-        label: 'OrderTypeId (Descending)',
+        label: 'Order Type Id (Descending)',
         command: () => {
           sortings.orderTypeId = 'desc'
           sortByOrderTypeId.value = 'desc'
         }
       },
       {
-        label: 'OrderStatusId (Ascending)',
+        label: 'Order Status Id (Ascending)',
         icon: 'pi pi-sort-alpha-down',
         command: () => {
           sortings.orderStatusId = 'asc'
@@ -208,14 +208,14 @@ const sortersMenuItems = ref([
       },
       {
         icon: 'pi pi-sort-alpha-up',
-        label: 'OrderStatusId (Descending)',
+        label: 'Order Status Id (Descending)',
         command: () => {
           sortings.orderStatusId = 'desc'
           sortByOrderStatusId.value = 'desc'
         }
       },
       {
-        label: 'CreatedAt (Ascending)',
+        label: 'Created At (Ascending)',
         icon: 'pi pi-sort-alpha-down',
         command: () => {
           sortings.createdAt = 'asc'
@@ -224,14 +224,14 @@ const sortersMenuItems = ref([
       },
       {
         icon: 'pi pi-sort-alpha-up',
-        label: 'CreatedAt (Descending)',
+        label: 'Created At (Descending)',
         command: () => {
           sortings.createdAt = 'desc'
           sortByCreatedAt.value = 'desc'
         }
       },
       {
-        label: 'UpdatedAt (Ascending)',
+        label: 'Updated At (Ascending)',
         icon: 'pi pi-sort-alpha-down',
         command: () => {
           sortings.updatedAt = 'asc'
@@ -240,7 +240,7 @@ const sortersMenuItems = ref([
       },
       {
         icon: 'pi pi-sort-alpha-up',
-        label: 'UpdatedAt (Descending)',
+        label: 'Updated At (Descending)',
         command: () => {
           sortings.updatedAt = 'desc'
           sortByUpdatedAt.value = 'desc'
@@ -288,19 +288,19 @@ const sortersMenuItems = ref([
               <span><b>Id: </b><span v-text="sortings.id || sortById"></span></span>
             </Chip>
             <Chip v-if="sortByCustomerId !== undefined" removable @remove="sortByCustomerId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
-              <span><b>CustomerId: </b><span v-text="sortings.customerId || sortByCustomerId"></span></span>
+              <span><b>Customer Id: </b><span v-text="sortings.customerId || sortByCustomerId"></span></span>
             </Chip>
             <Chip v-if="sortByOrderTypeId !== undefined" removable @remove="sortByOrderTypeId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
-              <span><b>OrderTypeId: </b><span v-text="sortings.orderTypeId || sortByOrderTypeId"></span></span>
+              <span><b>Order Type Id: </b><span v-text="sortings.orderTypeId || sortByOrderTypeId"></span></span>
             </Chip>
             <Chip v-if="sortByOrderStatusId !== undefined" removable @remove="sortByOrderStatusId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
-              <span><b>OrderStatusId: </b><span v-text="sortings.orderStatusId || sortByOrderStatusId"></span></span>
+              <span><b>Order Status Id: </b><span v-text="sortings.orderStatusId || sortByOrderStatusId"></span></span>
             </Chip>
             <Chip v-if="sortByCreatedAt !== undefined" removable @remove="sortByCreatedAt = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
-              <span><b>CreatedAt: </b><span v-text="sortings.createdAt || sortByCreatedAt"></span></span>
+              <span><b>Created At: </b><span v-text="sortings.createdAt || sortByCreatedAt"></span></span>
             </Chip>
             <Chip v-if="sortByUpdatedAt !== undefined" removable @remove="sortByUpdatedAt = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
-              <span><b>UpdatedAt: </b><span v-text="sortings.updatedAt || sortByUpdatedAt"></span></span>
+              <span><b>Updated At: </b><span v-text="sortings.updatedAt || sortByUpdatedAt"></span></span>
             </Chip>
           </div>
         </div>

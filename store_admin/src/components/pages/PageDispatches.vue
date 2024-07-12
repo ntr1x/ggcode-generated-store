@@ -4,6 +4,7 @@ import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { eventsRemote } from '../../remotes/eventsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
 import ToolbarDispatches from '../toolbars/ToolbarDispatches.vue';
@@ -12,6 +13,8 @@ import GridDispatches from '../grids/GridDispatches.vue';
 // @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
+// @ts-ignore
+const security = useSecurityContext()
 
 const dispatchSelectFilter = reactive({
   customerId: route.params.customerId,
@@ -75,11 +78,15 @@ watch(
     dispatchSelectSelection.value = []
   }
 )
+
 </script>
 
 <template>
-  <div class="flex flex-col overflow-hidden">
-    <SectionHeading tag="h1" title="Dispatches" />
+  <div class="flex flex-col flex-1 overflow-hidden">
+    <SectionHeading
+      tag="h1"
+      title="Dispatches"
+    />
     <ToolbarDispatches
       class="rounded-none border-0 border-b"
       v-model:selection="dispatchSelectSelection"
@@ -87,10 +94,10 @@ watch(
       v-model:filter-by-type-id = dispatchSelectFilter.typeId
       v-model:filter-by-status-id = dispatchSelectFilter.statusId
       v-model:sort-by-id = dispatchSelectSort.id
-      v-model:sort-by-createdAt = dispatchSelectSort.createdAt
-      v-model:sort-by-updatedAt = dispatchSelectSort.updatedAt
-      v-model:sort-by-typeId = dispatchSelectSort.typeId
-      v-model:sort-by-statusId = dispatchSelectSort.statusId
+      v-model:sort-by-created-at = dispatchSelectSort.createdAt
+      v-model:sort-by-updated-at = dispatchSelectSort.updatedAt
+      v-model:sort-by-type-id = dispatchSelectSort.typeId
+      v-model:sort-by-status-id = dispatchSelectSort.statusId
     />
     <GridDispatches
       :state="dispatchSelectQuery.state"

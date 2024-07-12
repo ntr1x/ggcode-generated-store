@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { useWebSocket } from '@vueuse/core';
+import { onMounted, onBeforeUnmount } from 'vue';
 import { EventEmitter } from 'events';
-import { useSocketStore } from '../../store/socketStore';
 import { v4 } from 'uuid';
+import { useWebSocket } from '@vueuse/core';
+import { useToast } from "primevue/usetoast";
+import { useSocketStore } from '../../store/socketStore';
 import { useAuthStore } from '../../store/authStore';
-import { onMounted } from 'vue';
-import { onBeforeUnmount } from 'vue';
 
 const authStore = useAuthStore()
 const socketStore = useSocketStore()
+const toast = useToast();
 
 const emitter = new EventEmitter()
 
@@ -26,7 +27,7 @@ onBeforeUnmount(() => {
 })
 
 const { status, send } = useWebSocket(props.uri, {
-  autoReconnect: false,
+  autoReconnect: true,
   heartbeat: {
     message: '{"@type":"HELLO"}',
     interval: 30000,
@@ -35,6 +36,7 @@ const { status, send } = useWebSocket(props.uri, {
 
   async onConnected(_) {
     try {
+      console.log('On connected')
       const subscriptions = socketStore.getSubscriptions(props.name)
       const accessToken = await authStore.requireToken()
       for (const subscription of Object.values(subscriptions)) {
@@ -52,12 +54,19 @@ const { status, send } = useWebSocket(props.uri, {
     }
   },
 
+  onDisconnected() {
+    console.log('On disconnected')
+  },
+
   onError(_, event) {
     console.log(event)
   },
 
   onMessage(_, event) {
-    emitter.emit('message', event);
+    const message = JSON.parse(event.data)
+    if (message['@type'] == 'MESSAGE') {
+      emitter.emit('message', message)
+    }
   },
 })
 
@@ -86,6 +95,16 @@ emitter.on('unsubscribe', async (subscription) => {
   if (status.value == 'OPEN') {
     send(JSON.stringify(message))
   }
+})
+
+emitter.on('message', (message) => {
+  const payload = message?.payload?.payload
+  toast.add({
+    severity: 'info',
+    summary: payload?.title || 'Info',
+    detail: payload?.detail || 'Info Description',
+    life: 3000
+  });
 })
 
 </script>

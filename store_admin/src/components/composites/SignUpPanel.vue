@@ -4,11 +4,18 @@ import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
+import { useAuthStore } from '../../store/authStore';
+
+const authStore = useAuthStore()
 
 const name = ref<string | undefined>()
 const email = ref<string | undefined>()
 const password = ref<string | undefined>()
 const confirmation = ref<string | undefined>()
+
+const handleAuth = async (provider?: string, state?: string) => {
+  await authStore.doAuth(provider, state)
+}
 </script>
 
 <template>
@@ -60,10 +67,24 @@ const confirmation = ref<string | undefined>()
         <Button label="Sign Up" class="w-full" severity="info" />
         <div class="text-center text-slate-500">or sign in with</div>
         <div class="flex gap-1 justify-center">
-          <Button icon="pi pi-google" severity="secondary" rounded outlined aria-label="Google" class="w-[2rem] h-[2rem]" />
-          <RouterLink to="/admin" custom v-slot="{ navigate }">
-            <Button @click="navigate" icon="pi pi-user" severity="secondary" rounded outlined aria-label="Credentials" class="w-[2rem] h-[2rem]" />
-          </RouterLink>
+          <Button
+              icon="pi pi-google"
+              severity="secondary"
+              rounded
+              outlined
+              aria-label="Google"
+              class="w-[2rem] h-[2rem]"
+              @click="() => handleAuth('google', '/personal')"
+            />
+            <Button
+              icon="pi pi-user"
+              severity="secondary"
+              rounded
+              outlined
+              aria-label="Credentials"
+              class="w-[2rem] h-[2rem]"
+              @click="() => handleAuth(undefined, '/personal')"
+            />
         </div>
       </div>
     </div>

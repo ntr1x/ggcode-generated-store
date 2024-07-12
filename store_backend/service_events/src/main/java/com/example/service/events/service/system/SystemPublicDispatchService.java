@@ -59,6 +59,8 @@ public class SystemPublicDispatchService {
                 .ifPresent((value) -> builder.typeId(value.orElse(null)));
         Optional.ofNullable(request.getStatusId())
                 .ifPresent((value) -> builder.statusId(value.orElse(null)));
+        Optional.ofNullable(request.getTemplateTypeId())
+                .ifPresent((value) -> builder.templateTypeId(value.orElse(null)));
         Optional.ofNullable(request.getCreatedAt())
                 .ifPresent((value) -> builder.createdAt(value.orElse(null)));
         Optional.ofNullable(request.getUpdatedAt())
@@ -129,6 +131,8 @@ public class SystemPublicDispatchService {
                 .ifPresent((value) -> builder.typeId(value.orElse(null)));
         Optional.ofNullable(request.getStatusId())
                 .ifPresent((value) -> builder.statusId(value.orElse(null)));
+        Optional.ofNullable(request.getTemplateTypeId())
+                .ifPresent((value) -> builder.templateTypeId(value.orElse(null)));
         Optional.ofNullable(request.getCreatedAt())
                 .ifPresent((value) -> builder.createdAt(value.orElse(null)));
         Optional.ofNullable(request.getUpdatedAt())
@@ -176,6 +180,8 @@ public class SystemPublicDispatchService {
                 .ifPresent((value) -> builder.typeId(value.orElse(null)));
         Optional.ofNullable(request.getStatusId())
                 .ifPresent((value) -> builder.statusId(value.orElse(null)));
+        Optional.ofNullable(request.getTemplateTypeId())
+                .ifPresent((value) -> builder.templateTypeId(value.orElse(null)));
         Optional.ofNullable(request.getCreatedAt())
                 .ifPresent((value) -> builder.createdAt(value.orElse(null)));
         Optional.ofNullable(request.getUpdatedAt())
@@ -212,6 +218,7 @@ public class SystemPublicDispatchService {
                     .withOptionalMatch("subscriptionId", request.getSubscriptionId())
                     .withOptionalMatch("typeId", request.getTypeId())
                     .withOptionalMatch("statusId", request.getStatusId())
+                    .withOptionalMatch("templateTypeId", request.getTemplateTypeId())
                     .withOptionalMatch("createdAt", request.getCreatedAt())
                     .withOptionalMatch("updatedAt", request.getUpdatedAt())
                     .withOptionalMatch("payload", request.getPayload())

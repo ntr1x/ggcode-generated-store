@@ -14,7 +14,7 @@ public class PublicOrderListener {
 
     @KafkaListener(
         containerFactory = CloudEventsConstants.CONTAINER_FACTORY_CLOUD_EVENT,
-        groupId = "${app.gateway_payments.listener.public_order.group_id:gateway_payments}",
+        groupId = "${app.gateway_payments.listener.public_order.group_id:gateway_payments.public_order}",
         topicPattern = "${app.gateway_payments.listener.public_order.topic_pattern:public_order}"
     )
     public void listen(ConsumerRecord<String, CloudEvent> record, Acknowledgment ack) {

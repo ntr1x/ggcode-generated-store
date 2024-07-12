@@ -4,6 +4,7 @@ import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { productsRemote } from '../../remotes/productsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
 import ToolbarShops from '../toolbars/ToolbarShops.vue';
@@ -12,6 +13,8 @@ import GridShops from '../grids/GridShops.vue';
 // @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
+// @ts-ignore
+const security = useSecurityContext()
 
 const shopSelectFilter = reactive({
   regionId: undefined,
@@ -51,11 +54,15 @@ watch(
     shopSelectSelection.value = []
   }
 )
+
 </script>
 
 <template>
-  <div class="flex flex-col overflow-hidden">
-    <SectionHeading tag="h1" title="Shops" />
+  <div class="flex flex-col flex-1 overflow-hidden">
+    <SectionHeading
+      tag="h1"
+      title="Shops"
+    />
     <ToolbarShops
       class="rounded-none border-0 border-b"
       v-model:selection="shopSelectSelection"

@@ -4,6 +4,7 @@ import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { eventsRemote } from '../../remotes/eventsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridEventSources from '../grids/GridEventSources.vue';
@@ -11,6 +12,8 @@ import GridEventSources from '../grids/GridEventSources.vue';
 // @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
+// @ts-ignore
+const security = useSecurityContext()
 
 const eventSourceSelectFilter = reactive({
 })
@@ -56,11 +59,15 @@ watch(
     eventSourceSelectSelection.value = []
   }
 )
+
 </script>
 
 <template>
-  <div class="flex flex-col overflow-hidden">
-    <SectionHeading tag="h1" title="Event Sources" />
+  <div class="flex flex-col flex-1 overflow-hidden">
+    <SectionHeading
+      tag="h1"
+      title="Event Sources"
+    />
     <GridEventSources
       :state="eventSourceSelectQuery.state"
       v-model:selection="eventSourceSelectSelection"

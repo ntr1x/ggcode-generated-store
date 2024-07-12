@@ -2,6 +2,7 @@ import { createApp, markRaw } from 'vue'
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config'
 import Ripple from 'primevue/ripple';
+import ToastService from 'primevue/toastservice';
 import StyleClass from 'primevue/styleclass';
 
 // @ts-ignore
@@ -27,6 +28,7 @@ app.use(PrimeVue, {
   pt: Lara,
   // ripple: true
 })
+app.use(ToastService)
 
 app.directive('ripple', Ripple)
 app.directive('styleclass', StyleClass)

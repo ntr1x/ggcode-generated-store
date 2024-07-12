@@ -22,7 +22,7 @@ const handleSubmit = async () => {
         username: username.value!,
         password: password.value!
       })
-      router.push('/admin')
+      router.push('/personal')
     } catch (e) {
       isFailed.value = true
     }
@@ -73,7 +73,7 @@ const handleDisposeError = () => {
               outlined
               aria-label="Google"
               class="w-[2rem] h-[2rem]"
-              @click="() => handleAuth('google', '/admin')"
+              @click="() => handleAuth('google', '/personal')"
             />
             <Button
               icon="pi pi-user"
@@ -82,7 +82,7 @@ const handleDisposeError = () => {
               outlined
               aria-label="Credentials"
               class="w-[2rem] h-[2rem]"
-              @click="() => handleAuth(undefined, '/admin')"
+              @click="() => handleAuth(undefined, '/personal')"
             />
           </div>
         </div>

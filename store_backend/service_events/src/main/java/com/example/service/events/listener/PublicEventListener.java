@@ -40,7 +40,7 @@ public class PublicEventListener {
     @KafkaListener(
             containerFactory = CloudEventsConstants.CONTAINER_FACTORY_CLOUD_EVENT,
             batch = "true",
-            groupId = "${app.service_events.listener.public_event.group_id:service_events}",
+            groupId = "${app.service_events.listener.public_event.group_id:service_events.public_event}",
             topicPattern = "${app.service_events.listener.public_event.topic_pattern:public_.*}"
     )
     public void listen(List<ConsumerRecord<String, CloudEvent>> list, Acknowledgment ack) {

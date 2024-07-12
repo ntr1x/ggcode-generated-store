@@ -14,7 +14,7 @@ public class VerifyPhoneListener {
 
     @KafkaListener(
         containerFactory = CloudEventsConstants.CONTAINER_FACTORY_CLOUD_EVENT,
-        groupId = "${app.gateway_profile.listener.verify_phone.group_id:gateway_profile}",
+        groupId = "${app.gateway_profile.listener.verify_phone.group_id:gateway_profile.verify_phone}",
         topicPattern = "${app.gateway_profile.listener.verify_phone.topic_pattern:verify_phone}"
     )
     public void listen(ConsumerRecord<String, CloudEvent> record, Acknowledgment ack) {

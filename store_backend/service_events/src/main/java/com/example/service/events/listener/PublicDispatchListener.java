@@ -1,6 +1,10 @@
 package com.example.service.events.listener;
 
 import com.example.service.events.model.PublicDispatchModel;
+import com.example.service.events.model.PublicDispatchStatusModel;
+import com.example.service.events.model.PublicDispatchTypeModel;
+import com.example.shared.api.reference.PublicDispatchStatus;
+import com.example.shared.api.reference.PublicDispatchType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.CloudEventData;
@@ -32,7 +36,7 @@ public class PublicDispatchListener {
     @KafkaListener(
             containerFactory = CloudEventsConstants.CONTAINER_FACTORY_CLOUD_EVENT,
             batch = "true",
-            groupId = "${app.service_events.listener.public_dispatch.group_id:service_events}",
+            groupId = "${app.service_events.listener.public_dispatch.group_id:service_events.public_dispatch}",
             topicPattern = "${app.service_events.listener.public_dispatch.topic_pattern:public_dispatch}"
     )
     public void listen(List<ConsumerRecord<String, CloudEvent>> list, Acknowledgment ack) {
@@ -56,6 +60,7 @@ public class PublicDispatchListener {
                         .orElse(Try.success(null));
 
                 if (result.isSuccess()) {
+
                     PublicDispatchModel payload = result.get();
 
                     Map<String, String> attributes = new LinkedHashMap<>();
@@ -73,17 +78,43 @@ public class PublicDispatchListener {
 
                     socketHubService.dispatch(message, securityExpressionRoot -> {
                         try {
+
+                            PublicDispatchStatus knownStatus = Optional
+                                    .ofNullable(payload.getStatus())
+                                    .map(PublicDispatchStatusModel::getId)
+                                    .flatMap(PublicDispatchStatus::fromCode)
+                                    .orElse(null);
+
+                            if (knownStatus != PublicDispatchStatus.NEW) {
+                                return false;
+                            }
+
                             if (securityExpressionRoot.hasAuthority("realm:admin")) {
                                 return true;
                             }
-                            String sessionId = securityExpressionRoot.getClaimAsString("session_id");
-                            if (Objects.equals(sessionId, payload.getSessionId())) {
-                                return true;
+
+                            PublicDispatchType knownType = Optional
+                                    .ofNullable(payload.getType())
+                                    .map(PublicDispatchTypeModel::getId)
+                                    .flatMap(PublicDispatchType::fromCode)
+                                    .orElse(null);
+
+                            if (knownType == PublicDispatchType.SESSION) {
+                                String sessionId = securityExpressionRoot.getClaimAsString("session_id");
+                                String payloadSessionId = payload.getSessionId();
+                                if (payloadSessionId != null && Objects.equals(sessionId, payloadSessionId)) {
+                                    return true;
+                                }
                             }
-                            String customerId = securityExpressionRoot.getSubject();
-                            if (Objects.equals(UUID.fromString(customerId), payload.getCustomerId())) {
-                                return true;
+
+                            if (knownType == PublicDispatchType.CUSTOMER) {
+                                String customerId = securityExpressionRoot.getSubject();
+                                UUID payloadCustomerId = payload.getCustomerId();
+                                if (payloadCustomerId != null && Objects.equals(UUID.fromString(customerId), payloadCustomerId)) {
+                                    return true;
+                                }
                             }
+
                         } catch (Exception e) {
                             log.warn("Cannot check authorities", e);
                         }

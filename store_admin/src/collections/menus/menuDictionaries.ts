@@ -16,5 +16,7 @@ export const menuDictionaries = (router: Router): Menu => ({
     { type: 'page', label: 'Event Sources', description: 'View Dictionaries → Event Sources page', execute: () => router.push('/admin/event_sources') },
     { type: 'page', label: 'Event Topics', description: 'View Dictionaries → Event Topics page', execute: () => router.push('/admin/event_topics') },
     { type: 'page', label: 'Event Types', description: 'View Dictionaries → Event Types page', execute: () => router.push('/admin/event_types') },
+    { type: 'page', label: 'Template Types', description: 'View Dictionaries → Template Types page', execute: () => router.push('/admin/template_types') },
+    { type: 'page', label: 'Template Shapes', description: 'View Dictionaries → Template Shapes page', execute: () => router.push('/admin/template_shapes') },
   ]
 })

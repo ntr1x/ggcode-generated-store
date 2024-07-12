@@ -4,6 +4,7 @@ import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { paymentsRemote } from '../../remotes/paymentsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridPaymentTypes from '../grids/GridPaymentTypes.vue';
@@ -11,6 +12,8 @@ import GridPaymentTypes from '../grids/GridPaymentTypes.vue';
 // @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
+// @ts-ignore
+const security = useSecurityContext()
 
 const paymentTypeSelectFilter = reactive({
 })
@@ -48,11 +51,15 @@ watch(
     paymentTypeSelectSelection.value = []
   }
 )
+
 </script>
 
 <template>
-  <div class="flex flex-col overflow-hidden">
-    <SectionHeading tag="h1" title="Payment Types" />
+  <div class="flex flex-col flex-1 overflow-hidden">
+    <SectionHeading
+      tag="h1"
+      title="Payment Types"
+    />
     <GridPaymentTypes
       :state="paymentTypeSelectQuery.state"
       v-model:selection="paymentTypeSelectSelection"

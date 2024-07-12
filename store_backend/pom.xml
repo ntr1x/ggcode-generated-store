@@ -21,6 +21,7 @@
         <module>common_web</module>
         <module>common_ws</module>
         <module>common_events</module>
+        <module>shared_api</module>
         <module>service_catalog</module>
         <module>service_profile</module>
         <module>service_events</module>

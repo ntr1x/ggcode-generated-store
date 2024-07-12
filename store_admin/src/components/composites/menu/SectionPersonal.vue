@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import { inject } from 'vue';
+import { Ref, inject, computed } from 'vue';
 import { PrincipalResponse } from '../../../store/profileStore';
-import { computed } from 'vue';
-import { Ref } from 'vue';
 
 const principal = inject<Ref<PrincipalResponse | null>>('principal')
 

@@ -29,7 +29,7 @@ withDefaults(defineProps<GridPromotionsProps>(), {
 
 <template>
   <DataTable
-    v-if="state.isLoaded"
+    :loading="state.isLoading"
     v-model:selection="selection"
     :value="state.data?.content || []"
     :scrollable="scrollable"

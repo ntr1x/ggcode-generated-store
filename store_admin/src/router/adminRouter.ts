@@ -28,6 +28,9 @@ import PageSubscriptionTypes from '../components/pages/PageSubscriptionTypes.vue
 import PageDispatches from '../components/pages/PageDispatches.vue'
 import PageDispatchStatuses from '../components/pages/PageDispatchStatuses.vue'
 import PageDispatchTypes from '../components/pages/PageDispatchTypes.vue'
+import PageTemplates from '../components/pages/PageTemplates.vue'
+import PageTemplateShapes from '../components/pages/PageTemplateShapes.vue'
+import PageTemplateTypes from '../components/pages/PageTemplateTypes.vue'
 
 export const adminRouter = {
   path: '/admin',
@@ -260,6 +263,30 @@ export const adminRouter = {
     {
       path: 'dispatch_types',
       component: PageDispatchTypes,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
+    },
+    {
+      path: 'templates',
+      component: PageTemplates,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin","realm:support"]
+      }
+    },
+    {
+      path: 'template_shapes',
+      component: PageTemplateShapes,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
+    },
+    {
+      path: 'template_types',
+      component: PageTemplateTypes,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]

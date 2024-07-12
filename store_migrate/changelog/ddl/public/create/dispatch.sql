@@ -5,6 +5,7 @@ create table "public"."dispatch" (
   "subscription_id" uuid,
   "type_id" int4,
   "status_id" int4,
+  "template_type_id" int4,
   "created_at" timestamp(6),
   "updated_at" timestamp(6),
   "payload" jsonb,

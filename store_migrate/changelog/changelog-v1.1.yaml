@@ -193,6 +193,15 @@ databaseChangeLog:
             path: v1.1/public/insert/subscription.sql
             relativeToChangelogFile: true
         - sqlFile:
+            path: v1.1/public/insert/template_type.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            path: v1.1/public/insert/template_shape.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            path: v1.1/public/insert/template.sql
+            relativeToChangelogFile: true
+        - sqlFile:
             path: v1.1/public/insert/dispatch_type.sql
             relativeToChangelogFile: true
         - sqlFile:
@@ -210,6 +219,15 @@ databaseChangeLog:
             relativeToChangelogFile: true
         - sqlFile:
             path: v1.1/public/delete/dispatch_type.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            path: v1.1/public/delete/template.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            path: v1.1/public/delete/template_shape.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            path: v1.1/public/delete/template_type.sql
             relativeToChangelogFile: true
         - sqlFile:
             path: v1.1/public/delete/subscription.sql

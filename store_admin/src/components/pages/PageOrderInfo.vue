@@ -4,6 +4,7 @@ import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { paymentsRemote } from '../../remotes/paymentsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
 import FieldsetOrderInfo from '../fieldsets/FieldsetOrderInfo.vue';
@@ -13,6 +14,8 @@ import GridPayments from '../grids/GridPayments.vue';
 // @ts-ignore
 const route = useRoute()
 const authStore = useAuthStore()
+// @ts-ignore
+const security = useSecurityContext()
 
 const orderGetFilter = reactive({
 })
@@ -98,13 +101,22 @@ watch(
     paymentSelectSelection.value = []
   }
 )
+
 </script>
 
 <template>
-  <div class="flex flex-col overflow-auto">
-    <SectionHeading tag="h1" title="Order" />
-    <FieldsetOrderInfo :state="orderGetQuery.state"/>
-    <SectionHeading tag="h3" title="Payments" />
+  <div class="flex flex-col flex-1 overflow-auto">
+    <SectionHeading
+      tag="h1"
+      title="Order"
+    />
+    <FieldsetOrderInfo
+      :state="orderGetQuery.state"
+    />
+    <SectionHeading
+      tag="h3"
+      title="Payments"
+    />
     <ToolbarPayments
       class="rounded-none border-0 border-b"
       v-model:selection="paymentSelectSelection"
