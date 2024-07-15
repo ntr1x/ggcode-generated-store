@@ -5,13 +5,19 @@ import Button from 'primevue/button'
 import Chip from 'primevue/chip'
 import Menu from 'primevue/menu';
 import { type Option } from '../dialogs/FilterDialog.vue';
+import DispatchMessageDialog from '../dialogs/custom/DispatchMessageDialog.vue'
 
 import { useModalStore } from '../../store/modalStore';
 import SearchPickerCustomerId from '../controls/SearchPickerCustomerId.vue'
 import SelectPickerDispatchType from '../controls/SelectPickerDispatchType.vue'
 import SelectPickerDispatchStatus from '../controls/SelectPickerDispatchStatus.vue'
+import { useAuthStore } from '../../store/authStore';
+import { eventsRemote } from '../../remotes/eventsRemote';
+
+type Item = T & { id: string }
 
 const modalStore = useModalStore()
+const authStore = useAuthStore()
 
 const filterByCustomerId = defineModel('filterByCustomerId')
 const filterByTypeId = defineModel('filterByTypeId')
@@ -21,7 +27,11 @@ const sortByCreatedAt = defineModel<'asc' | 'desc' | undefined>('sortByCreatedAt
 const sortByUpdatedAt = defineModel<'asc' | 'desc' | undefined>('sortByUpdatedAt')
 const sortByTypeId = defineModel<'asc' | 'desc' | undefined>('sortByTypeId')
 const sortByStatusId = defineModel<'asc' | 'desc' | undefined>('sortByStatusId')
-const selection = defineModel<T[]>('selection', { required: true })
+const selection = defineModel<Item[]>('selection', { required: true })
+
+const emit = defineEmits<{
+  (e: 'refresh'): void
+}>()
 
 const filters = reactive<Record<string, Option | undefined>>({
   customerId: undefined,
@@ -191,11 +201,28 @@ const sortersMenuItems = ref([
   }
 ])
 
-function handleRemoveSelected() {
-  console.log('remove_selected')
+async function handleRemoveSelected() {
+  const token = await authStore.requireToken()
+
+  console.log('selection.value', selection.value)
+
+  const data = selection.value.map(item => ({
+    id: item.id
+  }))
+
+  await eventsRemote.post('/system/public_dispatch/remove-all', data, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  emit('refresh')
 }
+
 function handleCreateDispatch() {
-  console.log('create_dispatch')
+  modalStore.openModal(() => ({
+    component: shallowRef(DispatchMessageDialog),
+  }))
 }
 </script>
 

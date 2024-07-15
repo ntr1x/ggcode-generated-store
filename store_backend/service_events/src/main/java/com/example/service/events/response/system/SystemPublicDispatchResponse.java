@@ -1,13 +1,15 @@
 package com.example.service.events.response.system;
 
+import com.example.service.events.model.system.SystemPublicDispatchModel;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.example.service.events.model.system.SystemPublicDispatchModel;
 import org.ntr1x.common.api.views.Views;
+
+import java.util.Collection;
 
 public interface SystemPublicDispatchResponse {
     @Data
@@ -44,10 +46,20 @@ public interface SystemPublicDispatchResponse {
     @Builder(toBuilder = true)
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(name = "SystemPublicDispatchResponseUpdate")
+    @Schema(name = "SystemPublicDispatchResponseRemove")
     class Remove {
         @JsonView(Views.Default.class)
         private SystemPublicDispatchModel removed;
+    }
+
+    @Data
+    @Builder(toBuilder = true)
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Schema(name = "SystemPublicDispatchResponseUpdate")
+    class RemoveAll {
+        @JsonView(Views.Default.class)
+        private Collection<SystemPublicDispatchModel> removed;
     }
 
     @Data

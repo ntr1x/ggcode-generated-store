@@ -29,6 +29,7 @@ import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -243,6 +244,88 @@ public class OpenSecurityService {
                     .block();
         } catch (WebClientResponseException e) {
             throw new ResponseStatusException(e.getStatusCode(), e.getMessage(), e);
+        }
+    }
+
+    public OpenSecurityResponse.SignUp signUp(OpenSecurityRequest.SignUp signUpRequest) {
+        AppOpenidClientProperty config = serviceSecurityAppOpenidConfig.getClient();
+
+        String id = UUID.randomUUID().toString();
+
+        KeycloakSignUpRequest keycloakSignUpRequest = KeycloakSignUpRequest
+                .builder()
+                .id(id)
+                .username(signUpRequest.getUsername())
+                .email(signUpRequest.getEmail())
+                .firstName(signUpRequest.getFirstName())
+                .lastName(signUpRequest.getLastName())
+                .emailVerified(false)
+                .credentials(KeycloakSignUpRequest.Credentials
+                        .builder()
+                        .type("password")
+                        .value(signUpRequest.getPassword())
+                        .temporary(false)
+                        .build())
+                .build();
+
+        try {
+            WebClient
+                    .builder()
+                    .clientConnector(new ReactorClientHttpConnector(
+                            HttpClient.create().wiretap(true)
+                    ))
+                    .baseUrl(config.getIssuerUri())
+                    .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .build()
+                    .post()
+                    .uri(config.getTokenPath())
+                    .body(Mono.just(keycloakSignUpRequest), KeycloakSignUpRequest.class)
+                    .retrieve()
+                    .toBodilessEntity()
+                    .doOnError(err -> log.warn("Failed to register user", err))
+                    .block();
+
+            WebClient
+                    .builder()
+                    .clientConnector(new ReactorClientHttpConnector(
+                            HttpClient.create().wiretap(true)
+                    ))
+                    .baseUrl(config.getIssuerUri())
+                    .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .build()
+                    .post()
+                    .uri(config.getTokenPath())
+                    .body(Mono.just(new String[] { "VERIFY_EMAIL" }), String[].class)
+                    .retrieve()
+                    .toBodilessEntity()
+                    .doOnError(err -> log.warn("Failed to register user", err))
+                    .block();
+        } catch (WebClientResponseException e) {
+            throw new ResponseStatusException(e.getStatusCode(), e.getMessage(), e);
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder(toBuilder = true)
+    public static class KeycloakSignUpRequest {
+        private String id;
+        private String username;
+        private String email;
+        private String firstName;
+        private String lastName;
+        private boolean emailVerified;
+        private Credentials credentials;
+
+        @Data
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Builder(toBuilder = true)
+        public static class Credentials {
+            private String type;
+            private String value;
+            private boolean temporary;
         }
     }
 

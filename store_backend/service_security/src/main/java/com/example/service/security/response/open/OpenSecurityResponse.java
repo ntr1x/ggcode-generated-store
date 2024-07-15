@@ -34,6 +34,19 @@ public interface OpenSecurityResponse {
     @Builder(toBuilder = true)
     @NoArgsConstructor
     @AllArgsConstructor
+    @Schema(name = "OpenSecurityResponseCallback")
+    class SignUp {
+        private String accessToken;
+        private Long accessExpiresIn;
+        private String refreshToken;
+        private Long refreshExpiresIn;
+        private PrincipalModel principal;
+    }
+
+    @Data
+    @Builder(toBuilder = true)
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Schema(name = "OpenSecurityResponseRefresh")
     class Refresh {
         private String accessToken;

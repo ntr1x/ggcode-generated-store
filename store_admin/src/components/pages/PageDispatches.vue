@@ -79,6 +79,11 @@ watch(
   }
 )
 
+function handleRefreshDispatches() {
+  dispatchSelectQuery.refresh()
+  dispatchSelectSelection.value = []
+}
+
 </script>
 
 <template>
@@ -98,6 +103,7 @@ watch(
       v-model:sort-by-updated-at = dispatchSelectSort.updatedAt
       v-model:sort-by-type-id = dispatchSelectSort.typeId
       v-model:sort-by-status-id = dispatchSelectSort.statusId
+      @refresh="handleRefreshDispatches"
     />
     <GridDispatches
       :state="dispatchSelectQuery.state"

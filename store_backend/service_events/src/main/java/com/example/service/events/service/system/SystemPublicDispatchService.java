@@ -1,30 +1,27 @@
 package com.example.service.events.service.system;
 
+import com.example.service.events.entity.PublicDispatchEntity;
+import com.example.service.events.model.system.SystemPublicDispatchModel;
+import com.example.service.events.repository.PublicDispatchRepository;
+import com.example.service.events.request.system.SystemPublicDispatchRequest;
+import com.example.service.events.response.system.SystemPublicDispatchResponse;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-
 import lombok.RequiredArgsConstructor;
 import org.ntr1x.common.api.annotation.Event;
 import org.ntr1x.common.api.service.EvaluatorService;
 import org.ntr1x.common.api.service.GeneratorService;
 import org.ntr1x.common.jpa.criteria.SpecificationBuilder;
 import org.ntr1x.common.web.util.Validate;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.example.service.events.entity.*;
-import com.example.service.events.repository.PublicDispatchRepository;
-import com.example.service.events.model.system.SystemPublicDispatchModel;
-import com.example.service.events.request.system.SystemPublicDispatchRequest;
-import com.example.service.events.response.system.SystemPublicDispatchResponse;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -98,6 +95,28 @@ public class SystemPublicDispatchService {
             .builder()
             .removed(removed)
             .build();
+    }
+
+    @Transactional
+    @Event(topic = "public_dispatch", type = "removed", source = "service:service_events", payloadEl = "#result.removed", unwind = true)
+    public SystemPublicDispatchResponse.RemoveAll removeAll(
+            SystemPublicDispatchRequest.Context context,
+            Collection<SystemPublicDispatchRequest.Id> keys
+    ) {
+        List<PublicDispatchEntity> entities = publicDispatchRepository
+                .findAllById(keys.stream().map(key -> key.getId()).toList());
+
+        List<SystemPublicDispatchModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, SystemPublicDispatchModel.class))
+                .toList();
+
+        publicDispatchRepository.deleteAll(entities);
+
+        return SystemPublicDispatchResponse.RemoveAll
+                .builder()
+                .removed(removed)
+                .build();
     }
     
     @Transactional

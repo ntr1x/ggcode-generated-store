@@ -42,6 +42,23 @@ public interface OpenSecurityRequest {
     @Builder(toBuilder = true)
     @NoArgsConstructor
     @AllArgsConstructor
+    @Schema(name = "OpenSecurityResponseSignUp")
+    class SignUp {
+        @Hidden
+        @Builder.Default
+        private String __name = "open_security:request:sign_up";
+
+        private String email;
+        private String firstName;
+        private String lastName;
+        private String username;
+        private String password;
+    }
+
+    @Data
+    @Builder(toBuilder = true)
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Schema(name = "OpenSecurityRefreshRequest")
     class Refresh {
         @Hidden
