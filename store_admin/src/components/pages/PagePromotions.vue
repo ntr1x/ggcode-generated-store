@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { productsRemote } from '../../remotes/productsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -25,7 +25,7 @@ const promotionSelectSort = reactive({
 
 const promotionSelectSelection = ref([])
 
-const promotionSelectQuery = useAxiosRequest<any>(productsRemote, async () => {
+const promotionSelectQuery = useAxiosAutoRequest<any>(productsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'typeId', promotionSelectFilter.promotionType)
@@ -47,12 +47,14 @@ const promotionSelectQuery = useAxiosRequest<any>(productsRemote, async () => {
   }
 })
 
+const handleRefreshPromotionSelect = () => {
+  promotionSelectQuery.refresh()
+  promotionSelectSelection.value = []
+}
+
 watch(
   [promotionSelectFilter, promotionSelectSort],
-  () => {
-    promotionSelectQuery.refresh()
-    promotionSelectSelection.value = []
-  }
+  handleRefreshPromotionSelect
 )
 
 </script>
@@ -67,6 +69,7 @@ watch(
       class="rounded-none border-0 border-b"
       v-model:selection="promotionSelectSelection"
       v-model:filter-by-promotion-type = promotionSelectFilter.promotionType
+      @refresh="handleRefreshPromotionSelect"
     />
     <GridPromotions
       :state="promotionSelectQuery.state"

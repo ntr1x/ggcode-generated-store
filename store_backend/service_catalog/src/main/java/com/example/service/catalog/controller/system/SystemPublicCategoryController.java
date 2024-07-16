@@ -16,11 +16,15 @@ import com.example.service.catalog.request.system.SystemPublicCategoryRequest;
 import com.example.service.catalog.response.system.SystemPublicCategoryResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Product Categories")
@@ -50,6 +54,17 @@ public class SystemPublicCategoryController {
             @RequestBody @Valid SystemPublicCategoryRequest.Id key
     ) {
         return systemPublicCategoryService.remove(context, key);
+    }
+    
+    @PostMapping("/removeAll")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
+    @SecurityRequirement(name = "Bearer")
+    @JsonView(Views.Remove.class)
+    public SystemPublicCategoryResponse.RemoveAll removeAll(
+            @Parameter(hidden = true) SystemPublicCategoryRequest.Context context,
+            @RequestBody @Valid Collection<SystemPublicCategoryRequest.Id> keys
+    ) {
+        return systemPublicCategoryService.removeAll(context, keys);
     }
     
     @PutMapping("/update")

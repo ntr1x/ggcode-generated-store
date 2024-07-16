@@ -1,13 +1,19 @@
 package com.example.service.catalog.response.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import com.example.service.catalog.model.system.SystemPublicProductModel;
+
 import org.ntr1x.common.api.views.Views;
+
+import java.util.Collection;
 
 public interface SystemPublicProductResponse {
     @Data
@@ -44,10 +50,20 @@ public interface SystemPublicProductResponse {
     @Builder(toBuilder = true)
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(name = "SystemPublicProductResponseUpdate")
+    @Schema(name = "SystemPublicProductResponseRemove")
     class Remove {
         @JsonView(Views.Default.class)
         private SystemPublicProductModel removed;
+    }
+
+    @Data
+    @Builder(toBuilder = true)
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Schema(name = "SystemPublicProductResponseRemoveAll")
+    class RemoveAll {
+        @JsonView(Views.Default.class)
+        private Collection<SystemPublicProductModel> removed;
     }
 
     @Data

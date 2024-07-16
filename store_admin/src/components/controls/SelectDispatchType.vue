@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import Dropdown from 'primevue/dropdown'
 import { eventsRemote } from '../../remotes/eventsRemote'
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 
 type IHaveId = {
   id: string
@@ -27,7 +27,7 @@ const dispatchType = defineModel('dispatchType')
 
 const authStore = useAuthStore()
 
-const { state } = useAxiosRequest<ResponseData>(eventsRemote, async () => {
+const { state } = useAxiosAutoRequest<ResponseData>(eventsRemote, async () => {
   const token = await authStore.requireToken()
   return {
     method: 'POST',

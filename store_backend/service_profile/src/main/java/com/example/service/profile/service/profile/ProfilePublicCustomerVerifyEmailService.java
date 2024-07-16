@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -87,6 +88,27 @@ public class ProfilePublicCustomerVerifyEmailService {
     }
     
     @Transactional
+    public ProfilePublicCustomerVerifyEmailResponse.RemoveAll removeAll(
+        ProfilePublicCustomerVerifyEmailRequest.Context context,
+        Collection<ProfilePublicCustomerVerifyEmailRequest.Id> keys
+    ) {
+        Collection<PublicCustomerVerifyEmailEntity> entities = publicCustomerVerifyEmailRepository
+                .findAllById(keys.stream().map(ProfilePublicCustomerVerifyEmailRequest.Id::getId).toList());
+
+        Collection<ProfilePublicCustomerVerifyEmailModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, ProfilePublicCustomerVerifyEmailModel.class))
+                .toList();
+
+        publicCustomerVerifyEmailRepository.deleteAll(entities);
+
+        return ProfilePublicCustomerVerifyEmailResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     @Event(topic = "update_email", type = "updated", source = "service:service_profile", payloadEl = "#result.updated")
     public ProfilePublicCustomerVerifyEmailResponse.Update update(
         ProfilePublicCustomerVerifyEmailRequest.Context context,
@@ -109,9 +131,7 @@ public class ProfilePublicCustomerVerifyEmailService {
 
         PublicCustomerVerifyEmailEntity entity = publicCustomerVerifyEmailRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicCustomerVerifyEmailEntity.PublicCustomerVerifyEmailEntityBuilder builder = entity.toBuilder();
         

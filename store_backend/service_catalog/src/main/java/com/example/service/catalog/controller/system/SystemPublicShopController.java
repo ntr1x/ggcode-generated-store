@@ -16,11 +16,15 @@ import com.example.service.catalog.request.system.SystemPublicShopRequest;
 import com.example.service.catalog.response.system.SystemPublicShopResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Shops")
@@ -50,6 +54,17 @@ public class SystemPublicShopController {
             @RequestBody @Valid SystemPublicShopRequest.Id key
     ) {
         return systemPublicShopService.remove(context, key);
+    }
+    
+    @PostMapping("/removeAll")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
+    @SecurityRequirement(name = "Bearer")
+    @JsonView(Views.Remove.class)
+    public SystemPublicShopResponse.RemoveAll removeAll(
+            @Parameter(hidden = true) SystemPublicShopRequest.Context context,
+            @RequestBody @Valid Collection<SystemPublicShopRequest.Id> keys
+    ) {
+        return systemPublicShopService.removeAll(context, keys);
     }
     
     @PutMapping("/update")

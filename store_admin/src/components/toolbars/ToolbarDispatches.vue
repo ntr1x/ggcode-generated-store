@@ -1,17 +1,23 @@
-<script setup lang="ts" generic="T">
+<script setup lang="ts" generic="T extends { id: string }">
 import { ref, shallowRef, reactive } from 'vue';
 import Menubar from 'primevue/menubar'
 import Button from 'primevue/button'
 import Chip from 'primevue/chip'
 import Menu from 'primevue/menu';
-import { type Option } from '../dialogs/FilterDialog.vue';
+import { type Option } from '../dialogs/PlatformDialogFilter.vue';
 
 import { useModalStore } from '../../store/modalStore';
 import SearchPickerCustomerId from '../controls/SearchPickerCustomerId.vue'
 import SelectPickerDispatchType from '../controls/SelectPickerDispatchType.vue'
 import SelectPickerDispatchStatus from '../controls/SelectPickerDispatchStatus.vue'
+import { useActionDispatchRemoveSelected } from '../../actions/useActionDispatchRemoveSelected'
+import { useActionDispatchMessage } from '../../actions/useActionDispatchMessage'
 
 const modalStore = useModalStore()
+
+const emit = defineEmits<{
+  (e: 'refresh'): void
+}>()
 
 const filterByCustomerId = defineModel('filterByCustomerId')
 const filterByTypeId = defineModel('filterByTypeId')
@@ -191,11 +197,15 @@ const sortersMenuItems = ref([
   }
 ])
 
+const actionDispatchRemoveSelected = useActionDispatchRemoveSelected()
+const actionDispatchMessage = useActionDispatchMessage()
+
 function handleRemoveSelected() {
-  console.log('remove_selected')
+  actionDispatchRemoveSelected.execute(selection.value.map(item => ({ id: item.id })))
 }
+
 function handleCreateDispatch() {
-  console.log('create_dispatch')
+  actionDispatchMessage.execute()
 }
 </script>
 
@@ -241,6 +251,11 @@ function handleCreateDispatch() {
             <Chip v-if="sortByStatusId !== undefined" removable @remove="sortByStatusId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
               <span><b>Status Id: </b><span v-text="sortings.statusId || sortByStatusId"></span></span>
             </Chip>
+          </div>
+        </div>
+        <div class="flex items-center group-sort">
+          <div class="flex flex-none">
+            <Button text label="Refresh" icon="pi pi-refresh" @click="emit('refresh')" />
           </div>
         </div>
       </div>

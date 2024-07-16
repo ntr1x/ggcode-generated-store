@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { productsRemote } from '../../remotes/productsRemote';
 import { paymentsRemote } from '../../remotes/paymentsRemote';
@@ -26,7 +26,7 @@ const productGetSort = reactive({
 
 const productGetSelection = ref([])
 
-const productGetQuery = useAxiosRequest<any>(productsRemote, async () => {
+const productGetQuery = useAxiosAutoRequest<any>(productsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   const params: Record<string, any> = {}
@@ -47,12 +47,14 @@ const productGetQuery = useAxiosRequest<any>(productsRemote, async () => {
   }
 })
 
+const handleRefreshProductGet = () => {
+  productGetQuery.refresh()
+  productGetSelection.value = []
+}
+
 watch(
   [productGetFilter, productGetSort],
-  () => {
-    productGetQuery.refresh()
-    productGetSelection.value = []
-  }
+  handleRefreshProductGet
 )
 const promotionTargetSelectFilter = reactive({
   productId: route.params.productId,
@@ -64,7 +66,7 @@ const promotionTargetSelectSort = reactive({
 
 const promotionTargetSelectSelection = ref([])
 
-const promotionTargetSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
+const promotionTargetSelectQuery = useAxiosAutoRequest<any>(paymentsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'productId', promotionTargetSelectFilter.productId)
@@ -87,12 +89,14 @@ const promotionTargetSelectQuery = useAxiosRequest<any>(paymentsRemote, async ()
   }
 })
 
+const handleRefreshPromotionTargetSelect = () => {
+  promotionTargetSelectQuery.refresh()
+  promotionTargetSelectSelection.value = []
+}
+
 watch(
   [promotionTargetSelectFilter, promotionTargetSelectSort],
-  () => {
-    promotionTargetSelectQuery.refresh()
-    promotionTargetSelectSelection.value = []
-  }
+  handleRefreshPromotionTargetSelect
 )
 
 </script>
@@ -114,6 +118,7 @@ watch(
       class="rounded-none border-0 border-b"
       v-model:selection="promotionTargetSelectSelection"
       v-model:filter-by-promotion-id = promotionTargetSelectFilter.promotionId
+      @refresh="handleRefreshPromotionTargetSelect"
     />
     <GridPromotionTargets
       :state="promotionTargetSelectQuery.state"

@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -91,6 +92,27 @@ public class SystemPublicSubscriptionService {
     }
     
     @Transactional
+    public SystemPublicSubscriptionResponse.RemoveAll removeAll(
+        SystemPublicSubscriptionRequest.Context context,
+        Collection<SystemPublicSubscriptionRequest.Id> keys
+    ) {
+        Collection<PublicSubscriptionEntity> entities = publicSubscriptionRepository
+                .findAllById(keys.stream().map(SystemPublicSubscriptionRequest.Id::getId).toList());
+
+        Collection<SystemPublicSubscriptionModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, SystemPublicSubscriptionModel.class))
+                .toList();
+
+        publicSubscriptionRepository.deleteAll(entities);
+
+        return SystemPublicSubscriptionResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     public SystemPublicSubscriptionResponse.Update update(
         SystemPublicSubscriptionRequest.Context context,
         SystemPublicSubscriptionRequest.Update request
@@ -104,9 +126,7 @@ public class SystemPublicSubscriptionService {
 
         PublicSubscriptionEntity entity = publicSubscriptionRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicSubscriptionEntity.PublicSubscriptionEntityBuilder builder = entity.toBuilder();
         

@@ -10,14 +10,18 @@ export type State<T> = {
   data?: T
 }
 
-export function useAxiosRequest<T>(instance: AxiosInstance, requestFactory: AxiosRequestConfigFactory, manual: boolean = false) {
+export type Config = {
+  auto: boolean
+}
+
+export function useAxiosRequest<T>(instance: AxiosInstance, requestFactory: AxiosRequestConfigFactory, config: Config) {
   const state = reactive<State<T>>({
     isLoading: false,
     isLoaded: false,
     isFailed: false,
   })
 
-  const refresh = async () => {
+  const execute = async () => {
     try {
       Object.assign(state, {
         isLoading: true,
@@ -40,9 +44,17 @@ export function useAxiosRequest<T>(instance: AxiosInstance, requestFactory: Axio
     return state
   }
 
-  if (!manual) {
-    onMounted(refresh)
+  if (config.auto) {
+    onMounted(execute)
   }
 
-  return { state, refresh }
+  return { state, execute, refresh: execute }
+}
+
+export function useAxiosAutoRequest<T>(instance: AxiosInstance, requestFactory: AxiosRequestConfigFactory) {
+  return useAxiosRequest<T>(instance, requestFactory, { auto: true })
+}
+
+export function useAxiosManualRequest<T>(instance: AxiosInstance, requestFactory: AxiosRequestConfigFactory) {
+  return useAxiosRequest<T>(instance, requestFactory, { auto: false })
 }

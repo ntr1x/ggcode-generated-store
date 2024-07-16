@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -93,6 +94,28 @@ public class SystemPublicCustomerService {
     }
     
     @Transactional
+    @Event(topic = "public_customer", type = "removed", source = "service:service_profile", payloadEl = "#result.removed", unwind = true)
+    public SystemPublicCustomerResponse.RemoveAll removeAll(
+        SystemPublicCustomerRequest.Context context,
+        Collection<SystemPublicCustomerRequest.Id> keys
+    ) {
+        Collection<PublicCustomerEntity> entities = publicCustomerRepository
+                .findAllById(keys.stream().map(SystemPublicCustomerRequest.Id::getId).toList());
+
+        Collection<SystemPublicCustomerModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, SystemPublicCustomerModel.class))
+                .toList();
+
+        publicCustomerRepository.deleteAll(entities);
+
+        return SystemPublicCustomerResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     @Event(topic = "public_customer", type = "updated", source = "service:service_profile", payloadEl = "#result.updated")
     public SystemPublicCustomerResponse.Update update(
         SystemPublicCustomerRequest.Context context,
@@ -107,9 +130,7 @@ public class SystemPublicCustomerService {
 
         PublicCustomerEntity entity = publicCustomerRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicCustomerEntity.PublicCustomerEntityBuilder builder = entity.toBuilder();
         

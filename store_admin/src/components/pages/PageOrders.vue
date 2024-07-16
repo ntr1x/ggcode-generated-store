@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { paymentsRemote } from '../../remotes/paymentsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -35,7 +35,7 @@ const orderSelectSort = reactive({
 
 const orderSelectSelection = ref([])
 
-const orderSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
+const orderSelectQuery = useAxiosAutoRequest<any>(paymentsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'customerId', orderSelectFilter.customerId)
@@ -79,12 +79,14 @@ const orderSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
   }
 })
 
+const handleRefreshOrderSelect = () => {
+  orderSelectQuery.refresh()
+  orderSelectSelection.value = []
+}
+
 watch(
   [orderSelectFilter, orderSelectSort],
-  () => {
-    orderSelectQuery.refresh()
-    orderSelectSelection.value = []
-  }
+  handleRefreshOrderSelect
 )
 
 </script>
@@ -109,6 +111,7 @@ watch(
       v-model:sort-by-order-status-id = orderSelectSort.orderStatusId
       v-model:sort-by-created-at = orderSelectSort.createdAt
       v-model:sort-by-updated-at = orderSelectSort.updatedAt
+      @refresh="handleRefreshOrderSelect"
     />
     <GridOrders
       :state="orderSelectQuery.state"

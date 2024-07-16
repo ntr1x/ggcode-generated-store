@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -87,6 +88,28 @@ public class SystemPublicCategoryService {
     }
     
     @Transactional
+    @Event(topic = "public_category", type = "removed", source = "service:service_catalog", payloadEl = "#result.removed", unwind = true)
+    public SystemPublicCategoryResponse.RemoveAll removeAll(
+        SystemPublicCategoryRequest.Context context,
+        Collection<SystemPublicCategoryRequest.Id> keys
+    ) {
+        Collection<PublicCategoryEntity> entities = publicCategoryRepository
+                .findAllById(keys.stream().map(SystemPublicCategoryRequest.Id::getId).toList());
+
+        Collection<SystemPublicCategoryModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, SystemPublicCategoryModel.class))
+                .toList();
+
+        publicCategoryRepository.deleteAll(entities);
+
+        return SystemPublicCategoryResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     @Event(topic = "public_category", type = "updated", source = "service:service_catalog", payloadEl = "#result.updated")
     public SystemPublicCategoryResponse.Update update(
         SystemPublicCategoryRequest.Context context,
@@ -101,9 +124,7 @@ public class SystemPublicCategoryService {
 
         PublicCategoryEntity entity = publicCategoryRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicCategoryEntity.PublicCategoryEntityBuilder builder = entity.toBuilder();
         

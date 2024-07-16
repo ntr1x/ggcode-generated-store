@@ -16,11 +16,15 @@ import com.example.service.profile.request.system.SystemPublicAgentRequest;
 import com.example.service.profile.response.system.SystemPublicAgentResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Agents")
@@ -50,6 +54,17 @@ public class SystemPublicAgentController {
             @RequestBody @Valid SystemPublicAgentRequest.Id key
     ) {
         return systemPublicAgentService.remove(context, key);
+    }
+    
+    @PostMapping("/removeAll")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
+    @SecurityRequirement(name = "Bearer")
+    @JsonView(Views.Remove.class)
+    public SystemPublicAgentResponse.RemoveAll removeAll(
+            @Parameter(hidden = true) SystemPublicAgentRequest.Context context,
+            @RequestBody @Valid Collection<SystemPublicAgentRequest.Id> keys
+    ) {
+        return systemPublicAgentService.removeAll(context, keys);
     }
     
     @PutMapping("/update")

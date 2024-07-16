@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -88,6 +89,27 @@ public class ProfilePublicBasketService {
     }
     
     @Transactional
+    public ProfilePublicBasketResponse.RemoveAll removeAll(
+        ProfilePublicBasketRequest.Context context,
+        Collection<ProfilePublicBasketRequest.Id> keys
+    ) {
+        Collection<PublicBasketEntity> entities = publicBasketRepository
+                .findAllById(keys.stream().map(ProfilePublicBasketRequest.Id::getId).toList());
+
+        Collection<ProfilePublicBasketModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, ProfilePublicBasketModel.class))
+                .toList();
+
+        publicBasketRepository.deleteAll(entities);
+
+        return ProfilePublicBasketResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     public ProfilePublicBasketResponse.Update update(
         ProfilePublicBasketRequest.Context context,
         ProfilePublicBasketRequest.Update request
@@ -102,9 +124,7 @@ public class ProfilePublicBasketService {
 
         PublicBasketEntity entity = publicBasketRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicBasketEntity.PublicBasketEntityBuilder builder = entity.toBuilder();
         

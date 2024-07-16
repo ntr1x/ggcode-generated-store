@@ -16,11 +16,15 @@ import com.example.service.catalog.request.anonymous.AnonymousPublicPromotionReq
 import com.example.service.catalog.response.anonymous.AnonymousPublicPromotionResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Public")

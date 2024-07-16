@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -85,6 +86,27 @@ public class SystemPublicDispatchStatusService {
     }
     
     @Transactional
+    public SystemPublicDispatchStatusResponse.RemoveAll removeAll(
+        SystemPublicDispatchStatusRequest.Context context,
+        Collection<SystemPublicDispatchStatusRequest.Id> keys
+    ) {
+        Collection<PublicDispatchStatusEntity> entities = publicDispatchStatusRepository
+                .findAllById(keys.stream().map(SystemPublicDispatchStatusRequest.Id::getId).toList());
+
+        Collection<SystemPublicDispatchStatusModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, SystemPublicDispatchStatusModel.class))
+                .toList();
+
+        publicDispatchStatusRepository.deleteAll(entities);
+
+        return SystemPublicDispatchStatusResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     public SystemPublicDispatchStatusResponse.Update update(
         SystemPublicDispatchStatusRequest.Context context,
         SystemPublicDispatchStatusRequest.Update request
@@ -98,9 +120,7 @@ public class SystemPublicDispatchStatusService {
 
         PublicDispatchStatusEntity entity = publicDispatchStatusRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicDispatchStatusEntity.PublicDispatchStatusEntityBuilder builder = entity.toBuilder();
         

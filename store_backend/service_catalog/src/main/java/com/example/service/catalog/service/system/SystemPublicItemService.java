@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -91,6 +92,28 @@ public class SystemPublicItemService {
     }
     
     @Transactional
+    @Event(topic = "public_item", type = "removed", source = "service:service_catalog", payloadEl = "#result.removed", unwind = true)
+    public SystemPublicItemResponse.RemoveAll removeAll(
+        SystemPublicItemRequest.Context context,
+        Collection<SystemPublicItemRequest.Id> keys
+    ) {
+        Collection<PublicItemEntity> entities = publicItemRepository
+                .findAllById(keys.stream().map(SystemPublicItemRequest.Id::getId).toList());
+
+        Collection<SystemPublicItemModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, SystemPublicItemModel.class))
+                .toList();
+
+        publicItemRepository.deleteAll(entities);
+
+        return SystemPublicItemResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     @Event(topic = "public_item", type = "updated", source = "service:service_catalog", payloadEl = "#result.updated")
     public SystemPublicItemResponse.Update update(
         SystemPublicItemRequest.Context context,
@@ -105,9 +128,7 @@ public class SystemPublicItemService {
 
         PublicItemEntity entity = publicItemRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicItemEntity.PublicItemEntityBuilder builder = entity.toBuilder();
         

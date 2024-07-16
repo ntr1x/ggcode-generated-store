@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -97,6 +98,27 @@ public class SystemPublicEventService {
     }
     
     @Transactional
+    public SystemPublicEventResponse.RemoveAll removeAll(
+        SystemPublicEventRequest.Context context,
+        Collection<SystemPublicEventRequest.Id> keys
+    ) {
+        Collection<PublicEventEntity> entities = publicEventRepository
+                .findAllById(keys.stream().map(SystemPublicEventRequest.Id::getId).toList());
+
+        Collection<SystemPublicEventModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, SystemPublicEventModel.class))
+                .toList();
+
+        publicEventRepository.deleteAll(entities);
+
+        return SystemPublicEventResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     public SystemPublicEventResponse.Update update(
         SystemPublicEventRequest.Context context,
         SystemPublicEventRequest.Update request
@@ -110,9 +132,7 @@ public class SystemPublicEventService {
 
         PublicEventEntity entity = publicEventRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicEventEntity.PublicEventEntityBuilder builder = entity.toBuilder();
         

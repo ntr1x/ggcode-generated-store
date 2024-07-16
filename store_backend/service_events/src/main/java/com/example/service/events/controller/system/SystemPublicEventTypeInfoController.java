@@ -16,11 +16,15 @@ import com.example.service.events.request.system.SystemPublicEventTypeInfoReques
 import com.example.service.events.response.system.SystemPublicEventTypeInfoResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Event Types")
@@ -50,6 +54,17 @@ public class SystemPublicEventTypeInfoController {
             @RequestBody @Valid SystemPublicEventTypeInfoRequest.Id key
     ) {
         return systemPublicEventTypeInfoService.remove(context, key);
+    }
+    
+    @PostMapping("/removeAll")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
+    @SecurityRequirement(name = "Bearer")
+    @JsonView(Views.Remove.class)
+    public SystemPublicEventTypeInfoResponse.RemoveAll removeAll(
+            @Parameter(hidden = true) SystemPublicEventTypeInfoRequest.Context context,
+            @RequestBody @Valid Collection<SystemPublicEventTypeInfoRequest.Id> keys
+    ) {
+        return systemPublicEventTypeInfoService.removeAll(context, keys);
     }
     
     @PutMapping("/update")

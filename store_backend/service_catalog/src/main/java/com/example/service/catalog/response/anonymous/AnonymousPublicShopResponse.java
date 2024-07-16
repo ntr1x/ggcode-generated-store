@@ -1,13 +1,19 @@
 package com.example.service.catalog.response.anonymous;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import com.example.service.catalog.model.anonymous.AnonymousPublicShopModel;
+
 import org.ntr1x.common.api.views.Views;
+
+import java.util.Collection;
 
 public interface AnonymousPublicShopResponse {
     @Data
@@ -44,10 +50,20 @@ public interface AnonymousPublicShopResponse {
     @Builder(toBuilder = true)
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(name = "AnonymousPublicShopResponseUpdate")
+    @Schema(name = "AnonymousPublicShopResponseRemove")
     class Remove {
         @JsonView(Views.Default.class)
         private AnonymousPublicShopModel removed;
+    }
+
+    @Data
+    @Builder(toBuilder = true)
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Schema(name = "AnonymousPublicShopResponseRemoveAll")
+    class RemoveAll {
+        @JsonView(Views.Default.class)
+        private Collection<AnonymousPublicShopModel> removed;
     }
 
     @Data

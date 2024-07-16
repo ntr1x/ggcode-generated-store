@@ -16,11 +16,15 @@ import com.example.service.events.request.system.SystemPublicEventRequest;
 import com.example.service.events.response.system.SystemPublicEventResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Events")
@@ -50,6 +54,17 @@ public class SystemPublicEventController {
             @RequestBody @Valid SystemPublicEventRequest.Id key
     ) {
         return systemPublicEventService.remove(context, key);
+    }
+    
+    @PostMapping("/removeAll")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
+    @SecurityRequirement(name = "Bearer")
+    @JsonView(Views.Remove.class)
+    public SystemPublicEventResponse.RemoveAll removeAll(
+            @Parameter(hidden = true) SystemPublicEventRequest.Context context,
+            @RequestBody @Valid Collection<SystemPublicEventRequest.Id> keys
+    ) {
+        return systemPublicEventService.removeAll(context, keys);
     }
     
     @PutMapping("/update")

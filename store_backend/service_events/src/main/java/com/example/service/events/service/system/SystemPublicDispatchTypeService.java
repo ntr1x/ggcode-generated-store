@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -85,6 +86,27 @@ public class SystemPublicDispatchTypeService {
     }
     
     @Transactional
+    public SystemPublicDispatchTypeResponse.RemoveAll removeAll(
+        SystemPublicDispatchTypeRequest.Context context,
+        Collection<SystemPublicDispatchTypeRequest.Id> keys
+    ) {
+        Collection<PublicDispatchTypeEntity> entities = publicDispatchTypeRepository
+                .findAllById(keys.stream().map(SystemPublicDispatchTypeRequest.Id::getId).toList());
+
+        Collection<SystemPublicDispatchTypeModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, SystemPublicDispatchTypeModel.class))
+                .toList();
+
+        publicDispatchTypeRepository.deleteAll(entities);
+
+        return SystemPublicDispatchTypeResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     public SystemPublicDispatchTypeResponse.Update update(
         SystemPublicDispatchTypeRequest.Context context,
         SystemPublicDispatchTypeRequest.Update request
@@ -98,9 +120,7 @@ public class SystemPublicDispatchTypeService {
 
         PublicDispatchTypeEntity entity = publicDispatchTypeRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicDispatchTypeEntity.PublicDispatchTypeEntityBuilder builder = entity.toBuilder();
         

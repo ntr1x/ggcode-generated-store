@@ -16,11 +16,15 @@ import com.example.service.profile.request.profile.ProfilePublicCustomerRequest;
 import com.example.service.profile.response.profile.ProfilePublicCustomerResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Customer Profile")

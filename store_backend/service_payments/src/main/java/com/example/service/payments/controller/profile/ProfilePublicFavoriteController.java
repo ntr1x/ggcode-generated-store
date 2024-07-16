@@ -16,11 +16,15 @@ import com.example.service.payments.request.profile.ProfilePublicFavoriteRequest
 import com.example.service.payments.response.profile.ProfilePublicFavoriteResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Favorites")
@@ -50,6 +54,17 @@ public class ProfilePublicFavoriteController {
             @RequestBody @Valid ProfilePublicFavoriteRequest.Id key
     ) {
         return profilePublicFavoriteService.remove(context, key);
+    }
+    
+    @PostMapping("/removeAll")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "Bearer")
+    @JsonView(Views.Remove.class)
+    public ProfilePublicFavoriteResponse.RemoveAll removeAll(
+            @Parameter(hidden = true) ProfilePublicFavoriteRequest.Context context,
+            @RequestBody @Valid Collection<ProfilePublicFavoriteRequest.Id> keys
+    ) {
+        return profilePublicFavoriteService.removeAll(context, keys);
     }
     
     @PutMapping("/update")

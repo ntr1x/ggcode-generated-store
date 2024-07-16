@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { paymentsRemote } from '../../remotes/paymentsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -23,7 +23,7 @@ const paymentStatusSelectSort = reactive({
 
 const paymentStatusSelectSelection = ref([])
 
-const paymentStatusSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
+const paymentStatusSelectQuery = useAxiosAutoRequest<any>(paymentsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   const params: Record<string, any> = {}
@@ -44,12 +44,14 @@ const paymentStatusSelectQuery = useAxiosRequest<any>(paymentsRemote, async () =
   }
 })
 
+const handleRefreshPaymentStatusSelect = () => {
+  paymentStatusSelectQuery.refresh()
+  paymentStatusSelectSelection.value = []
+}
+
 watch(
   [paymentStatusSelectFilter, paymentStatusSelectSort],
-  () => {
-    paymentStatusSelectQuery.refresh()
-    paymentStatusSelectSelection.value = []
-  }
+  handleRefreshPaymentStatusSelect
 )
 
 </script>

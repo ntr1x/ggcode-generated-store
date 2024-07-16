@@ -16,11 +16,15 @@ import com.example.service.events.request.system.SystemPublicSubscriptionTypeReq
 import com.example.service.events.response.system.SystemPublicSubscriptionTypeResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Subscription Types")
@@ -50,6 +54,17 @@ public class SystemPublicSubscriptionTypeController {
             @RequestBody @Valid SystemPublicSubscriptionTypeRequest.Id key
     ) {
         return systemPublicSubscriptionTypeService.remove(context, key);
+    }
+    
+    @PostMapping("/removeAll")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
+    @SecurityRequirement(name = "Bearer")
+    @JsonView(Views.Remove.class)
+    public SystemPublicSubscriptionTypeResponse.RemoveAll removeAll(
+            @Parameter(hidden = true) SystemPublicSubscriptionTypeRequest.Context context,
+            @RequestBody @Valid Collection<SystemPublicSubscriptionTypeRequest.Id> keys
+    ) {
+        return systemPublicSubscriptionTypeService.removeAll(context, keys);
     }
     
     @PutMapping("/update")

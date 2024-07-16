@@ -27,6 +27,7 @@
         <module>service_events</module>
         <module>service_payments</module>
         <module>service_security</module>
+        <module>service_structure</module>
         <module>gateway_events</module>
         <module>gateway_payments</module>
         <module>gateway_profile</module>

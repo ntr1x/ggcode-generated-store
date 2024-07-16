@@ -2,8 +2,8 @@
 import { computed } from 'vue';
 import { paymentsRemote } from '../../remotes/paymentsRemote'
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
-import FilterDialog, { type Option } from '../dialogs/FilterDialog.vue';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
+import PlatformDialogFilter, { type Option } from '../dialogs/PlatformDialogFilter.vue';
 
 type IHaveId = {
   id: string
@@ -31,7 +31,7 @@ const emit = defineEmits<{
 
 const authStore = useAuthStore()
 
-const { state } = useAxiosRequest<ResponseData>(paymentsRemote, async () => {
+const { state } = useAxiosAutoRequest<ResponseData>(paymentsRemote, async () => {
   const token = await authStore.requireToken()
   return {
     method: 'POST',
@@ -57,7 +57,7 @@ const options = computed(() => {
 </script>
 
 <template>
-  <FilterDialog
+  <PlatformDialogFilter
     title="Order Status"
     :is-loading="state.isLoading"
     :is-loaded="state.isLoaded"

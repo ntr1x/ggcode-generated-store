@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { eventsRemote } from '../../remotes/eventsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -26,7 +26,7 @@ const dispatchStatusSelectSort = reactive({
 
 const dispatchStatusSelectSelection = ref([])
 
-const dispatchStatusSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
+const dispatchStatusSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   const params: Record<string, any> = {}
@@ -56,12 +56,14 @@ const dispatchStatusSelectQuery = useAxiosRequest<any>(eventsRemote, async () =>
   }
 })
 
+const handleRefreshDispatchStatusSelect = () => {
+  dispatchStatusSelectQuery.refresh()
+  dispatchStatusSelectSelection.value = []
+}
+
 watch(
   [dispatchStatusSelectFilter, dispatchStatusSelectSort],
-  () => {
-    dispatchStatusSelectQuery.refresh()
-    dispatchStatusSelectSelection.value = []
-  }
+  handleRefreshDispatchStatusSelect
 )
 
 </script>

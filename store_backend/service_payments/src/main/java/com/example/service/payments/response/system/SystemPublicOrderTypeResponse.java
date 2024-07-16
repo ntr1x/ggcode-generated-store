@@ -1,13 +1,19 @@
 package com.example.service.payments.response.system;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import com.example.service.payments.model.system.SystemPublicOrderTypeModel;
+
 import org.ntr1x.common.api.views.Views;
+
+import java.util.Collection;
 
 public interface SystemPublicOrderTypeResponse {
     @Data
@@ -44,10 +50,20 @@ public interface SystemPublicOrderTypeResponse {
     @Builder(toBuilder = true)
     @NoArgsConstructor
     @AllArgsConstructor
-    @Schema(name = "SystemPublicOrderTypeResponseUpdate")
+    @Schema(name = "SystemPublicOrderTypeResponseRemove")
     class Remove {
         @JsonView(Views.Default.class)
         private SystemPublicOrderTypeModel removed;
+    }
+
+    @Data
+    @Builder(toBuilder = true)
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Schema(name = "SystemPublicOrderTypeResponseRemoveAll")
+    class RemoveAll {
+        @JsonView(Views.Default.class)
+        private Collection<SystemPublicOrderTypeModel> removed;
     }
 
     @Data

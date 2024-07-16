@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -109,6 +110,27 @@ public class SystemPublicOrderService {
     }
     
     @Transactional
+    public SystemPublicOrderResponse.RemoveAll removeAll(
+        SystemPublicOrderRequest.Context context,
+        Collection<SystemPublicOrderRequest.Id> keys
+    ) {
+        Collection<PublicOrderEntity> entities = publicOrderRepository
+                .findAllById(keys.stream().map(SystemPublicOrderRequest.Id::getId).toList());
+
+        Collection<SystemPublicOrderModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, SystemPublicOrderModel.class))
+                .toList();
+
+        publicOrderRepository.deleteAll(entities);
+
+        return SystemPublicOrderResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     public SystemPublicOrderResponse.Update update(
         SystemPublicOrderRequest.Context context,
         SystemPublicOrderRequest.Update request
@@ -122,9 +144,7 @@ public class SystemPublicOrderService {
 
         PublicOrderEntity entity = publicOrderRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicOrderEntity.PublicOrderEntityBuilder builder = entity.toBuilder();
         

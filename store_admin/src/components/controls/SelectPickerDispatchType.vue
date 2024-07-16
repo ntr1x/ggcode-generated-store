@@ -2,8 +2,8 @@
 import { computed } from 'vue';
 import { eventsRemote } from '../../remotes/eventsRemote'
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
-import FilterDialog, { type Option } from '../dialogs/FilterDialog.vue';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
+import PlatformDialogFilter, { type Option } from '../dialogs/PlatformDialogFilter.vue';
 
 type IHaveId = {
   id: string
@@ -31,7 +31,7 @@ const emit = defineEmits<{
 
 const authStore = useAuthStore()
 
-const { state } = useAxiosRequest<ResponseData>(eventsRemote, async () => {
+const { state } = useAxiosAutoRequest<ResponseData>(eventsRemote, async () => {
   const token = await authStore.requireToken()
   return {
     method: 'POST',
@@ -57,7 +57,7 @@ const options = computed(() => {
 </script>
 
 <template>
-  <FilterDialog
+  <PlatformDialogFilter
     title="Dispatch Type"
     :is-loading="state.isLoading"
     :is-loaded="state.isLoaded"

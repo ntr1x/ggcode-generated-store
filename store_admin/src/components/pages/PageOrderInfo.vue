@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { paymentsRemote } from '../../remotes/paymentsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -25,7 +25,7 @@ const orderGetSort = reactive({
 
 const orderGetSelection = ref([])
 
-const orderGetQuery = useAxiosRequest<any>(paymentsRemote, async () => {
+const orderGetQuery = useAxiosAutoRequest<any>(paymentsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   const params: Record<string, any> = {}
@@ -46,12 +46,14 @@ const orderGetQuery = useAxiosRequest<any>(paymentsRemote, async () => {
   }
 })
 
+const handleRefreshOrderGet = () => {
+  orderGetQuery.refresh()
+  orderGetSelection.value = []
+}
+
 watch(
   [orderGetFilter, orderGetSort],
-  () => {
-    orderGetQuery.refresh()
-    orderGetSelection.value = []
-  }
+  handleRefreshOrderGet
 )
 const paymentSelectFilter = reactive({
   orderId: route.params.orderId,
@@ -67,7 +69,7 @@ const paymentSelectSort = reactive({
 
 const paymentSelectSelection = ref([])
 
-const paymentSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
+const paymentSelectQuery = useAxiosAutoRequest<any>(paymentsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'orderId', paymentSelectFilter.orderId)
@@ -94,12 +96,14 @@ const paymentSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
   }
 })
 
+const handleRefreshPaymentSelect = () => {
+  paymentSelectQuery.refresh()
+  paymentSelectSelection.value = []
+}
+
 watch(
   [paymentSelectFilter, paymentSelectSort],
-  () => {
-    paymentSelectQuery.refresh()
-    paymentSelectSelection.value = []
-  }
+  handleRefreshPaymentSelect
 )
 
 </script>
@@ -124,6 +128,7 @@ watch(
       v-model:filter-by-payment-status = paymentSelectFilter.paymentStatus
       v-model:filter-by-order-type = paymentSelectFilter.orderType
       v-model:filter-by-order-status = paymentSelectFilter.orderStatus
+      @refresh="handleRefreshPaymentSelect"
     />
     <GridPayments
       :state="paymentSelectQuery.state"

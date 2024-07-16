@@ -45,6 +45,11 @@
         </dependency>
         <dependency>
             <groupId>com.example</groupId>
+            <artifactId>service_structure</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.example</groupId>
             <artifactId>shared_api</artifactId>
             <version>${project.version}</version>
         </dependency>

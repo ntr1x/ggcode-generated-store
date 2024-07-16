@@ -13,6 +13,7 @@ ADD service_profile/pom.xml ./service_profile/pom.xml
 ADD service_events/pom.xml ./service_events/pom.xml
 ADD service_payments/pom.xml ./service_payments/pom.xml
 ADD service_security/pom.xml ./service_security/pom.xml
+ADD service_structure/pom.xml ./service_structure/pom.xml
 ADD gateway_events/pom.xml ./gateway_events/pom.xml
 ADD gateway_payments/pom.xml ./gateway_payments/pom.xml
 ADD gateway_profile/pom.xml ./gateway_profile/pom.xml
@@ -33,6 +34,7 @@ ADD service_profile/src ./service_profile/src
 ADD service_events/src ./service_events/src
 ADD service_payments/src ./service_payments/src
 ADD service_security/src ./service_security/src
+ADD service_structure/src ./service_structure/src
 ADD gateway_events/src ./gateway_events/src
 ADD gateway_payments/src ./gateway_payments/src
 ADD gateway_profile/src ./gateway_profile/src

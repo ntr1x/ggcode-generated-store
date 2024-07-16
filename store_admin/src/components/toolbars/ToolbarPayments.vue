@@ -4,7 +4,7 @@ import Menubar from 'primevue/menubar'
 import Button from 'primevue/button'
 import Chip from 'primevue/chip'
 import Menu from 'primevue/menu';
-import { type Option } from '../dialogs/FilterDialog.vue';
+import { type Option } from '../dialogs/PlatformDialogFilter.vue';
 
 import { useModalStore } from '../../store/modalStore';
 import SelectPickerPaymentType from '../controls/SelectPickerPaymentType.vue'
@@ -13,6 +13,10 @@ import SelectPickerOrderType from '../controls/SelectPickerOrderType.vue'
 import SelectPickerOrderStatus from '../controls/SelectPickerOrderStatus.vue'
 
 const modalStore = useModalStore()
+
+const emit = defineEmits<{
+  (e: 'refresh'): void
+}>()
 
 const filterByPaymentType = defineModel('filterByPaymentType')
 const filterByPaymentStatus = defineModel('filterByPaymentStatus')
@@ -131,6 +135,11 @@ const filtersMenuItems = ref([
             <Chip v-if="filterByOrderStatus !== undefined" removable @remove="filterByOrderStatus = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
               <span><b>Order Status: </b><span v-text="filters.orderStatus?.title || filterByOrderStatus"></span></span>
             </Chip>
+          </div>
+        </div>
+        <div class="flex items-center group-sort">
+          <div class="flex flex-none">
+            <Button text label="Refresh" icon="pi pi-refresh" @click="emit('refresh')" />
           </div>
         </div>
       </div>

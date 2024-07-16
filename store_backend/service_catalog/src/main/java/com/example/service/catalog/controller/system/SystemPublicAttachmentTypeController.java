@@ -16,11 +16,15 @@ import com.example.service.catalog.request.system.SystemPublicAttachmentTypeRequ
 import com.example.service.catalog.response.system.SystemPublicAttachmentTypeResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Dictionaries")
@@ -50,6 +54,17 @@ public class SystemPublicAttachmentTypeController {
             @RequestBody @Valid SystemPublicAttachmentTypeRequest.Id key
     ) {
         return systemPublicAttachmentTypeService.remove(context, key);
+    }
+    
+    @PostMapping("/removeAll")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
+    @SecurityRequirement(name = "Bearer")
+    @JsonView(Views.Remove.class)
+    public SystemPublicAttachmentTypeResponse.RemoveAll removeAll(
+            @Parameter(hidden = true) SystemPublicAttachmentTypeRequest.Context context,
+            @RequestBody @Valid Collection<SystemPublicAttachmentTypeRequest.Id> keys
+    ) {
+        return systemPublicAttachmentTypeService.removeAll(context, keys);
     }
     
     @PutMapping("/update")

@@ -4,13 +4,17 @@ import Menubar from 'primevue/menubar'
 import Button from 'primevue/button'
 import Chip from 'primevue/chip'
 import Menu from 'primevue/menu';
-import { type Option } from '../dialogs/FilterDialog.vue';
+import { type Option } from '../dialogs/PlatformDialogFilter.vue';
 
 import { useModalStore } from '../../store/modalStore';
 import SelectPickerTemplateType from '../controls/SelectPickerTemplateType.vue'
 import SelectPickerTemplateShape from '../controls/SelectPickerTemplateShape.vue'
 
 const modalStore = useModalStore()
+
+const emit = defineEmits<{
+  (e: 'refresh'): void
+}>()
 
 const filterByTypeId = defineModel('filterByTypeId')
 const filterByShapeId = defineModel('filterByShapeId')
@@ -188,6 +192,11 @@ const sortersMenuItems = ref([
             <Chip v-if="sortByShapeId !== undefined" removable @remove="sortByShapeId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
               <span><b>Shape Id: </b><span v-text="sortings.shapeId || sortByShapeId"></span></span>
             </Chip>
+          </div>
+        </div>
+        <div class="flex items-center group-sort">
+          <div class="flex flex-none">
+            <Button text label="Refresh" icon="pi pi-refresh" @click="emit('refresh')" />
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { productsRemote } from '../../remotes/productsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -27,7 +27,7 @@ const productSelectSort = reactive({
 
 const productSelectSelection = ref([])
 
-const productSelectQuery = useAxiosRequest<any>(productsRemote, async () => {
+const productSelectQuery = useAxiosAutoRequest<any>(productsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'categoryId', productSelectFilter.categoryId)
@@ -55,12 +55,14 @@ const productSelectQuery = useAxiosRequest<any>(productsRemote, async () => {
   }
 })
 
+const handleRefreshProductSelect = () => {
+  productSelectQuery.refresh()
+  productSelectSelection.value = []
+}
+
 watch(
   [productSelectFilter, productSelectSort],
-  () => {
-    productSelectQuery.refresh()
-    productSelectSelection.value = []
-  }
+  handleRefreshProductSelect
 )
 
 </script>
@@ -77,6 +79,7 @@ watch(
       v-model:filter-by-category-id = productSelectFilter.categoryId
       v-model:sort-by-id = productSelectSort.id
       v-model:sort-by-name = productSelectSort.name
+      @refresh="handleRefreshProductSelect"
     />
     <GridProducts
       :state="productSelectQuery.state"

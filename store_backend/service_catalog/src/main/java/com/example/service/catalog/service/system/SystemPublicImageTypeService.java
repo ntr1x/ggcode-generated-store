@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -91,6 +92,27 @@ public class SystemPublicImageTypeService {
     }
     
     @Transactional
+    public SystemPublicImageTypeResponse.RemoveAll removeAll(
+        SystemPublicImageTypeRequest.Context context,
+        Collection<SystemPublicImageTypeRequest.Id> keys
+    ) {
+        Collection<PublicImageTypeEntity> entities = publicImageTypeRepository
+                .findAllById(keys.stream().map(SystemPublicImageTypeRequest.Id::getId).toList());
+
+        Collection<SystemPublicImageTypeModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, SystemPublicImageTypeModel.class))
+                .toList();
+
+        publicImageTypeRepository.deleteAll(entities);
+
+        return SystemPublicImageTypeResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     public SystemPublicImageTypeResponse.Update update(
         SystemPublicImageTypeRequest.Context context,
         SystemPublicImageTypeRequest.Update request
@@ -104,9 +126,7 @@ public class SystemPublicImageTypeService {
 
         PublicImageTypeEntity entity = publicImageTypeRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicImageTypeEntity.PublicImageTypeEntityBuilder builder = entity.toBuilder();
         

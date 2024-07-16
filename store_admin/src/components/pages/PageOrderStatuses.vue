@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { paymentsRemote } from '../../remotes/paymentsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -23,7 +23,7 @@ const orderStatusSelectSort = reactive({
 
 const orderStatusSelectSelection = ref([])
 
-const orderStatusSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
+const orderStatusSelectQuery = useAxiosAutoRequest<any>(paymentsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   const params: Record<string, any> = {"size":50,"sort":"id,asc"}
@@ -44,12 +44,14 @@ const orderStatusSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => 
   }
 })
 
+const handleRefreshOrderStatusSelect = () => {
+  orderStatusSelectQuery.refresh()
+  orderStatusSelectSelection.value = []
+}
+
 watch(
   [orderStatusSelectFilter, orderStatusSelectSort],
-  () => {
-    orderStatusSelectQuery.refresh()
-    orderStatusSelectSelection.value = []
-  }
+  handleRefreshOrderStatusSelect
 )
 
 </script>

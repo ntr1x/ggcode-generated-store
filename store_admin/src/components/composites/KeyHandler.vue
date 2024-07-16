@@ -2,10 +2,10 @@
 import { useMagicKeys, whenever } from '@vueuse/core';
 import { useModalStore } from '../../store/modalStore';
 import { shallowRef } from 'vue';
-import PrincipalDialog from '../dialogs/PrincipalDialog.vue';
+import PlatformDialogPrincipal from '../dialogs/PlatformDialogPrincipal.vue';
 import { inject } from 'vue';
 import type { PrincipalResponse } from '../../store/profileStore';
-import PageDialog from '../dialogs/PageDialog.vue';
+import PlatformDialogPage from '../dialogs/PlatformDialogPage.vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../../store/authStore';
 import { useUiStore } from '../../store/uiStore';
@@ -26,7 +26,7 @@ const principal = inject<PrincipalResponse>('principal')!
 
 whenever(altP, () => {
   modalStore.openModal(() => ({
-    component: shallowRef(PrincipalDialog),
+    component: shallowRef(PlatformDialogPrincipal),
     props: {
       principal
     }
@@ -35,7 +35,7 @@ whenever(altP, () => {
 
 whenever(altS, () => {
   modalStore.openModal(() => ({
-    component: shallowRef(PageDialog),
+    component: shallowRef(PlatformDialogPage),
     props: {
       principal
     }

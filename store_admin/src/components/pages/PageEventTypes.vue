@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { eventsRemote } from '../../remotes/eventsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -25,7 +25,7 @@ const eventTypeSelectSort = reactive({
 
 const eventTypeSelectSelection = ref([])
 
-const eventTypeSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
+const eventTypeSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   const params: Record<string, any> = {}
@@ -52,12 +52,14 @@ const eventTypeSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   }
 })
 
+const handleRefreshEventTypeSelect = () => {
+  eventTypeSelectQuery.refresh()
+  eventTypeSelectSelection.value = []
+}
+
 watch(
   [eventTypeSelectFilter, eventTypeSelectSort],
-  () => {
-    eventTypeSelectQuery.refresh()
-    eventTypeSelectSelection.value = []
-  }
+  handleRefreshEventTypeSelect
 )
 
 </script>

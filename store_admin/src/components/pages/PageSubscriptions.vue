@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { eventsRemote } from '../../remotes/eventsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -29,7 +29,7 @@ const subscriptionSelectSort = reactive({
 
 const subscriptionSelectSelection = ref([])
 
-const subscriptionSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
+const subscriptionSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'customerId', subscriptionSelectFilter.customerId)
@@ -61,12 +61,14 @@ const subscriptionSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   }
 })
 
+const handleRefreshSubscriptionSelect = () => {
+  subscriptionSelectQuery.refresh()
+  subscriptionSelectSelection.value = []
+}
+
 watch(
   [subscriptionSelectFilter, subscriptionSelectSort],
-  () => {
-    subscriptionSelectQuery.refresh()
-    subscriptionSelectSelection.value = []
-  }
+  handleRefreshSubscriptionSelect
 )
 
 </script>
@@ -85,6 +87,7 @@ watch(
       v-model:sort-by-id = subscriptionSelectSort.id
       v-model:sort-by-created-at = subscriptionSelectSort.createdAt
       v-model:sort-by-type-id = subscriptionSelectSort.typeId
+      @refresh="handleRefreshSubscriptionSelect"
     />
     <GridSubscriptions
       :state="subscriptionSelectQuery.state"

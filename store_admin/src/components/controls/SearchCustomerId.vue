@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue';
 import { debounce } from 'lodash';
 import { customersRemote } from '../../remotes/customersRemote'
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosManualRequest } from '../../hooks/useAxiosManualRequest';
 import AutoComplete, { type AutoCompleteCompleteEvent } from 'primevue/autocomplete';
 
 type IHaveId = {
@@ -34,7 +34,7 @@ const selected = ref<{
 
 const authStore = useAuthStore()
 
-const response = useAxiosRequest<ResponseData>(customersRemote, async () => {
+const response = useAxiosManualRequest<ResponseData>(customersRemote, async () => {
   const token = await authStore.requireToken()
 
   const requestData = {
@@ -75,7 +75,7 @@ const response = useAxiosRequest<ResponseData>(customersRemote, async () => {
       Authorization: `Bearer ${token}`
     }
   }
-}, false)
+})
 
 const options = computed(() => {
   const items = response.state.data?.content || []

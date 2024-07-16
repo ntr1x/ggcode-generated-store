@@ -16,11 +16,15 @@ import com.example.service.payments.request.system.SystemPublicOrderRequest;
 import com.example.service.payments.response.system.SystemPublicOrderResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Orders")
@@ -50,6 +54,17 @@ public class SystemPublicOrderController {
             @RequestBody @Valid SystemPublicOrderRequest.Id key
     ) {
         return systemPublicOrderService.remove(context, key);
+    }
+    
+    @PostMapping("/removeAll")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
+    @SecurityRequirement(name = "Bearer")
+    @JsonView(Views.Remove.class)
+    public SystemPublicOrderResponse.RemoveAll removeAll(
+            @Parameter(hidden = true) SystemPublicOrderRequest.Context context,
+            @RequestBody @Valid Collection<SystemPublicOrderRequest.Id> keys
+    ) {
+        return systemPublicOrderService.removeAll(context, keys);
     }
     
     @PutMapping("/update")

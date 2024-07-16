@@ -16,11 +16,15 @@ import com.example.service.events.request.system.SystemPublicTemplateRequest;
 import com.example.service.events.response.system.SystemPublicTemplateResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Templates")
@@ -50,6 +54,17 @@ public class SystemPublicTemplateController {
             @RequestBody @Valid SystemPublicTemplateRequest.Id key
     ) {
         return systemPublicTemplateService.remove(context, key);
+    }
+    
+    @PostMapping("/removeAll")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
+    @SecurityRequirement(name = "Bearer")
+    @JsonView(Views.Remove.class)
+    public SystemPublicTemplateResponse.RemoveAll removeAll(
+            @Parameter(hidden = true) SystemPublicTemplateRequest.Context context,
+            @RequestBody @Valid Collection<SystemPublicTemplateRequest.Id> keys
+    ) {
+        return systemPublicTemplateService.removeAll(context, keys);
     }
     
     @PutMapping("/update")

@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { customersRemote } from '../../remotes/customersRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -23,7 +23,7 @@ const agentGetSort = reactive({
 
 const agentGetSelection = ref([])
 
-const agentGetQuery = useAxiosRequest<any>(customersRemote, async () => {
+const agentGetQuery = useAxiosAutoRequest<any>(customersRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   const params: Record<string, any> = {}
@@ -44,12 +44,14 @@ const agentGetQuery = useAxiosRequest<any>(customersRemote, async () => {
   }
 })
 
+const handleRefreshAgentGet = () => {
+  agentGetQuery.refresh()
+  agentGetSelection.value = []
+}
+
 watch(
   [agentGetFilter, agentGetSort],
-  () => {
-    agentGetQuery.refresh()
-    agentGetSelection.value = []
-  }
+  handleRefreshAgentGet
 )
 
 </script>

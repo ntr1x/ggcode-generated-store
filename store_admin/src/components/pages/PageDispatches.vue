@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { eventsRemote } from '../../remotes/eventsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -32,7 +32,7 @@ const dispatchSelectSort = reactive({
 
 const dispatchSelectSelection = ref([])
 
-const dispatchSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
+const dispatchSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'customerId', dispatchSelectFilter.customerId)
@@ -71,12 +71,14 @@ const dispatchSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   }
 })
 
+const handleRefreshDispatchSelect = () => {
+  dispatchSelectQuery.refresh()
+  dispatchSelectSelection.value = []
+}
+
 watch(
   [dispatchSelectFilter, dispatchSelectSort],
-  () => {
-    dispatchSelectQuery.refresh()
-    dispatchSelectSelection.value = []
-  }
+  handleRefreshDispatchSelect
 )
 
 </script>
@@ -98,6 +100,7 @@ watch(
       v-model:sort-by-updated-at = dispatchSelectSort.updatedAt
       v-model:sort-by-type-id = dispatchSelectSort.typeId
       v-model:sort-by-status-id = dispatchSelectSort.statusId
+      @refresh="handleRefreshDispatchSelect"
     />
     <GridDispatches
       :state="dispatchSelectQuery.state"

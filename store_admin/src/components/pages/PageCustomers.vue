@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { customersRemote } from '../../remotes/customersRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -23,7 +23,7 @@ const customerSelectSort = reactive({
 
 const customerSelectSelection = ref([])
 
-const customerSelectQuery = useAxiosRequest<any>(customersRemote, async () => {
+const customerSelectQuery = useAxiosAutoRequest<any>(customersRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   const params: Record<string, any> = {"size":50,"sort":"fullName"}
@@ -44,12 +44,14 @@ const customerSelectQuery = useAxiosRequest<any>(customersRemote, async () => {
   }
 })
 
+const handleRefreshCustomerSelect = () => {
+  customerSelectQuery.refresh()
+  customerSelectSelection.value = []
+}
+
 watch(
   [customerSelectFilter, customerSelectSort],
-  () => {
-    customerSelectQuery.refresh()
-    customerSelectSelection.value = []
-  }
+  handleRefreshCustomerSelect
 )
 
 </script>

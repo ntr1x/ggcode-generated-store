@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { eventsRemote } from '../../remotes/eventsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -28,7 +28,7 @@ const subscriptionTypeSelectSort = reactive({
 
 const subscriptionTypeSelectSelection = ref([])
 
-const subscriptionTypeSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
+const subscriptionTypeSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'customerId', subscriptionTypeSelectFilter.customerId)
@@ -60,12 +60,14 @@ const subscriptionTypeSelectQuery = useAxiosRequest<any>(eventsRemote, async () 
   }
 })
 
+const handleRefreshSubscriptionTypeSelect = () => {
+  subscriptionTypeSelectQuery.refresh()
+  subscriptionTypeSelectSelection.value = []
+}
+
 watch(
   [subscriptionTypeSelectFilter, subscriptionTypeSelectSort],
-  () => {
-    subscriptionTypeSelectQuery.refresh()
-    subscriptionTypeSelectSelection.value = []
-  }
+  handleRefreshSubscriptionTypeSelect
 )
 
 </script>

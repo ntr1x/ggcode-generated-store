@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -85,6 +86,27 @@ public class SystemPublicSourceTypeService {
     }
     
     @Transactional
+    public SystemPublicSourceTypeResponse.RemoveAll removeAll(
+        SystemPublicSourceTypeRequest.Context context,
+        Collection<SystemPublicSourceTypeRequest.Id> keys
+    ) {
+        Collection<PublicSourceTypeEntity> entities = publicSourceTypeRepository
+                .findAllById(keys.stream().map(SystemPublicSourceTypeRequest.Id::getId).toList());
+
+        Collection<SystemPublicSourceTypeModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, SystemPublicSourceTypeModel.class))
+                .toList();
+
+        publicSourceTypeRepository.deleteAll(entities);
+
+        return SystemPublicSourceTypeResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     public SystemPublicSourceTypeResponse.Update update(
         SystemPublicSourceTypeRequest.Context context,
         SystemPublicSourceTypeRequest.Update request
@@ -98,9 +120,7 @@ public class SystemPublicSourceTypeService {
 
         PublicSourceTypeEntity entity = publicSourceTypeRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicSourceTypeEntity.PublicSourceTypeEntityBuilder builder = entity.toBuilder();
         

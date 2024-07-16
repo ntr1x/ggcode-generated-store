@@ -16,11 +16,15 @@ import com.example.service.catalog.request.system.SystemPublicImageTypeRequest;
 import com.example.service.catalog.response.system.SystemPublicImageTypeResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Dictionaries")
@@ -50,6 +54,17 @@ public class SystemPublicImageTypeController {
             @RequestBody @Valid SystemPublicImageTypeRequest.Id key
     ) {
         return systemPublicImageTypeService.remove(context, key);
+    }
+    
+    @PostMapping("/removeAll")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
+    @SecurityRequirement(name = "Bearer")
+    @JsonView(Views.Remove.class)
+    public SystemPublicImageTypeResponse.RemoveAll removeAll(
+            @Parameter(hidden = true) SystemPublicImageTypeRequest.Context context,
+            @RequestBody @Valid Collection<SystemPublicImageTypeRequest.Id> keys
+    ) {
+        return systemPublicImageTypeService.removeAll(context, keys);
     }
     
     @PutMapping("/update")

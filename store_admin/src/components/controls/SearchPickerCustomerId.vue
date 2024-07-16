@@ -3,8 +3,8 @@ import { computed, ref, watch } from 'vue';
 import { debounce } from 'lodash';
 import { customersRemote } from '../../remotes/customersRemote'
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
-import SearchDialog, { type Option } from '../dialogs/SearchDialog.vue';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
+import PlatformDialogSearch, { type Option } from '../dialogs/PlatformDialogSearch.vue';
 
 type IHaveId = {
   id: string
@@ -34,7 +34,7 @@ const emit = defineEmits<{
 
 const authStore = useAuthStore()
 
-const response = useAxiosRequest<ResponseData>(customersRemote, async () => {
+const response = useAxiosAutoRequest<ResponseData>(customersRemote, async () => {
   const token = await authStore.requireToken()
 
   const requestData = {
@@ -101,7 +101,7 @@ watch(
 </script>
 
 <template>
-  <SearchDialog
+  <PlatformDialogSearch
     title="Customer Id"
     :is-loading="response.state.isLoading"
     :is-loaded="response.state.isLoaded"

@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -85,6 +86,27 @@ public class SystemPublicRegionService {
     }
     
     @Transactional
+    public SystemPublicRegionResponse.RemoveAll removeAll(
+        SystemPublicRegionRequest.Context context,
+        Collection<SystemPublicRegionRequest.Id> keys
+    ) {
+        Collection<PublicRegionEntity> entities = publicRegionRepository
+                .findAllById(keys.stream().map(SystemPublicRegionRequest.Id::getId).toList());
+
+        Collection<SystemPublicRegionModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, SystemPublicRegionModel.class))
+                .toList();
+
+        publicRegionRepository.deleteAll(entities);
+
+        return SystemPublicRegionResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     public SystemPublicRegionResponse.Update update(
         SystemPublicRegionRequest.Context context,
         SystemPublicRegionRequest.Update request
@@ -98,9 +120,7 @@ public class SystemPublicRegionService {
 
         PublicRegionEntity entity = publicRegionRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicRegionEntity.PublicRegionEntityBuilder builder = entity.toBuilder();
         

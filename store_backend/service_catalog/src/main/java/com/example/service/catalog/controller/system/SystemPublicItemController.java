@@ -16,11 +16,15 @@ import com.example.service.catalog.request.system.SystemPublicItemRequest;
 import com.example.service.catalog.response.system.SystemPublicItemResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Product Items")
@@ -50,6 +54,17 @@ public class SystemPublicItemController {
             @RequestBody @Valid SystemPublicItemRequest.Id key
     ) {
         return systemPublicItemService.remove(context, key);
+    }
+    
+    @PostMapping("/removeAll")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
+    @SecurityRequirement(name = "Bearer")
+    @JsonView(Views.Remove.class)
+    public SystemPublicItemResponse.RemoveAll removeAll(
+            @Parameter(hidden = true) SystemPublicItemRequest.Context context,
+            @RequestBody @Valid Collection<SystemPublicItemRequest.Id> keys
+    ) {
+        return systemPublicItemService.removeAll(context, keys);
     }
     
     @PutMapping("/update")

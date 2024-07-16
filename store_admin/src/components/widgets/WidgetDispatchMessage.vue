@@ -3,7 +3,7 @@ import { shallowRef, inject } from 'vue'
 import Button from 'primevue/button'
 import Panel from 'primevue/panel'
 import { useModalStore } from '../../store/modalStore'
-import DispatchMessageDialog from '../dialogs/custom/DispatchMessageDialog.vue'
+import DialogDispatchMessage from '../dialogs/DialogDispatchMessage.vue'
 import { eventsRemote } from '../../remotes/eventsRemote'
 import { type PrincipalResponse } from '../../store/profileStore'
 import { useAuthStore } from '../../store/authStore'
@@ -16,7 +16,7 @@ const principal = inject<Ref<PrincipalResponse | null>>('principal')!
 
 function handleOpenModal() {
   modalStore.openModal(() => ({
-    component: shallowRef(DispatchMessageDialog),
+    component: shallowRef(DialogDispatchMessage),
   }))
 }
 

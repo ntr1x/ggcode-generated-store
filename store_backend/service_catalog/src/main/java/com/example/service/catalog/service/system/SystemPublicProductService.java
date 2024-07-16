@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -93,6 +94,28 @@ public class SystemPublicProductService {
     }
     
     @Transactional
+    @Event(topic = "public_product", type = "removed", source = "service:service_catalog", payloadEl = "#result.removed", unwind = true)
+    public SystemPublicProductResponse.RemoveAll removeAll(
+        SystemPublicProductRequest.Context context,
+        Collection<SystemPublicProductRequest.Id> keys
+    ) {
+        Collection<PublicProductEntity> entities = publicProductRepository
+                .findAllById(keys.stream().map(SystemPublicProductRequest.Id::getId).toList());
+
+        Collection<SystemPublicProductModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, SystemPublicProductModel.class))
+                .toList();
+
+        publicProductRepository.deleteAll(entities);
+
+        return SystemPublicProductResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     @Event(topic = "public_product", type = "updated", source = "service:service_catalog", payloadEl = "#result.updated")
     public SystemPublicProductResponse.Update update(
         SystemPublicProductRequest.Context context,
@@ -107,9 +130,7 @@ public class SystemPublicProductService {
 
         PublicProductEntity entity = publicProductRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicProductEntity.PublicProductEntityBuilder builder = entity.toBuilder();
         

@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import Dropdown from 'primevue/dropdown'
 import { paymentsRemote } from '../../remotes/paymentsRemote'
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 
 type IHaveId = {
   id: string
@@ -27,7 +27,7 @@ const promotionType = defineModel('promotionType')
 
 const authStore = useAuthStore()
 
-const { state } = useAxiosRequest<ResponseData>(paymentsRemote, async () => {
+const { state } = useAxiosAutoRequest<ResponseData>(paymentsRemote, async () => {
   const token = await authStore.requireToken()
   return {
     method: 'POST',

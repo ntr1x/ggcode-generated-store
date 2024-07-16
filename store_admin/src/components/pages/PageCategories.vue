@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { productsRemote } from '../../remotes/productsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -23,7 +23,7 @@ const categorySelectSort = reactive({
 
 const categorySelectSelection = ref([])
 
-const categorySelectQuery = useAxiosRequest<any>(productsRemote, async () => {
+const categorySelectQuery = useAxiosAutoRequest<any>(productsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   const params: Record<string, any> = {}
@@ -44,12 +44,14 @@ const categorySelectQuery = useAxiosRequest<any>(productsRemote, async () => {
   }
 })
 
+const handleRefreshCategorySelect = () => {
+  categorySelectQuery.refresh()
+  categorySelectSelection.value = []
+}
+
 watch(
   [categorySelectFilter, categorySelectSort],
-  () => {
-    categorySelectQuery.refresh()
-    categorySelectSelection.value = []
-  }
+  handleRefreshCategorySelect
 )
 
 </script>

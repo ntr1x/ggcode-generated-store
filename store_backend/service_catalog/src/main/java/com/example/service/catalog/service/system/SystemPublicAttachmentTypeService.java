@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -85,6 +86,27 @@ public class SystemPublicAttachmentTypeService {
     }
     
     @Transactional
+    public SystemPublicAttachmentTypeResponse.RemoveAll removeAll(
+        SystemPublicAttachmentTypeRequest.Context context,
+        Collection<SystemPublicAttachmentTypeRequest.Id> keys
+    ) {
+        Collection<PublicAttachmentTypeEntity> entities = publicAttachmentTypeRepository
+                .findAllById(keys.stream().map(SystemPublicAttachmentTypeRequest.Id::getId).toList());
+
+        Collection<SystemPublicAttachmentTypeModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, SystemPublicAttachmentTypeModel.class))
+                .toList();
+
+        publicAttachmentTypeRepository.deleteAll(entities);
+
+        return SystemPublicAttachmentTypeResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     public SystemPublicAttachmentTypeResponse.Update update(
         SystemPublicAttachmentTypeRequest.Context context,
         SystemPublicAttachmentTypeRequest.Update request
@@ -98,9 +120,7 @@ public class SystemPublicAttachmentTypeService {
 
         PublicAttachmentTypeEntity entity = publicAttachmentTypeRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicAttachmentTypeEntity.PublicAttachmentTypeEntityBuilder builder = entity.toBuilder();
         

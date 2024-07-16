@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -101,6 +102,28 @@ public class SystemPublicDispatchService {
     }
     
     @Transactional
+    @Event(topic = "public_dispatch", type = "removed", source = "service:service_events", payloadEl = "#result.removed", unwind = true)
+    public SystemPublicDispatchResponse.RemoveAll removeAll(
+        SystemPublicDispatchRequest.Context context,
+        Collection<SystemPublicDispatchRequest.Id> keys
+    ) {
+        Collection<PublicDispatchEntity> entities = publicDispatchRepository
+                .findAllById(keys.stream().map(SystemPublicDispatchRequest.Id::getId).toList());
+
+        Collection<SystemPublicDispatchModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, SystemPublicDispatchModel.class))
+                .toList();
+
+        publicDispatchRepository.deleteAll(entities);
+
+        return SystemPublicDispatchResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     @Event(topic = "public_dispatch", type = "updated", source = "service:service_events", payloadEl = "#result.updated")
     public SystemPublicDispatchResponse.Update update(
         SystemPublicDispatchRequest.Context context,
@@ -115,9 +138,7 @@ public class SystemPublicDispatchService {
 
         PublicDispatchEntity entity = publicDispatchRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicDispatchEntity.PublicDispatchEntityBuilder builder = entity.toBuilder();
         

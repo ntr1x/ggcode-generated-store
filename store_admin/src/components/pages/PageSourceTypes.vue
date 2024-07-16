@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { paymentsRemote } from '../../remotes/paymentsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -23,7 +23,7 @@ const sourceTypeSelectSort = reactive({
 
 const sourceTypeSelectSelection = ref([])
 
-const sourceTypeSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
+const sourceTypeSelectQuery = useAxiosAutoRequest<any>(paymentsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   const params: Record<string, any> = {}
@@ -44,12 +44,14 @@ const sourceTypeSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
   }
 })
 
+const handleRefreshSourceTypeSelect = () => {
+  sourceTypeSelectQuery.refresh()
+  sourceTypeSelectSelection.value = []
+}
+
 watch(
   [sourceTypeSelectFilter, sourceTypeSelectSort],
-  () => {
-    sourceTypeSelectQuery.refresh()
-    sourceTypeSelectSelection.value = []
-  }
+  handleRefreshSourceTypeSelect
 )
 
 </script>

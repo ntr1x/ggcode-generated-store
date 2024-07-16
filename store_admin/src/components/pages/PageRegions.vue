@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { productsRemote } from '../../remotes/productsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -23,7 +23,7 @@ const regionSelectSort = reactive({
 
 const regionSelectSelection = ref([])
 
-const regionSelectQuery = useAxiosRequest<any>(productsRemote, async () => {
+const regionSelectQuery = useAxiosAutoRequest<any>(productsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   const params: Record<string, any> = {}
@@ -44,12 +44,14 @@ const regionSelectQuery = useAxiosRequest<any>(productsRemote, async () => {
   }
 })
 
+const handleRefreshRegionSelect = () => {
+  regionSelectQuery.refresh()
+  regionSelectSelection.value = []
+}
+
 watch(
   [regionSelectFilter, regionSelectSort],
-  () => {
-    regionSelectQuery.refresh()
-    regionSelectSelection.value = []
-  }
+  handleRefreshRegionSelect
 )
 
 </script>

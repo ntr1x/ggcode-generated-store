@@ -7,8 +7,8 @@ import { inject } from "vue";
 import { PrincipalResponse } from "../../store/profileStore";
 import { useModalStore } from "../../store/modalStore";
 import { shallowRef } from "vue";
-import PrincipalDialog from "../dialogs/PrincipalDialog.vue";
-import PageDialog from "../dialogs/PageDialog.vue";
+import PlatformDialogPrincipal from "../dialogs/PlatformDialogPrincipal.vue";
+import PlatformDialogPage from "../dialogs/PlatformDialogPage.vue";
 
 const uiStore = useUiStore()
 const authStore = useAuthStore()
@@ -18,7 +18,7 @@ const principal = inject<PrincipalResponse>('principal')!
 
 function openPageDialog() {
   modalStore.openModal(() => ({
-    component: shallowRef(PageDialog),
+    component: shallowRef(PlatformDialogPage),
     props: {
       principal
     }
@@ -27,7 +27,7 @@ function openPageDialog() {
 
 function openPrincipalDialog() {
   modalStore.openModal(() => ({
-    component: shallowRef(PrincipalDialog),
+    component: shallowRef(PlatformDialogPrincipal),
     props: {
       principal
     }

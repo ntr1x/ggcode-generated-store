@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { eventsRemote } from '../../remotes/eventsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -30,7 +30,7 @@ const templateSelectSort = reactive({
 
 const templateSelectSelection = ref([])
 
-const templateSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
+const templateSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'typeId', templateSelectFilter.typeId)
@@ -65,12 +65,14 @@ const templateSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   }
 })
 
+const handleRefreshTemplateSelect = () => {
+  templateSelectQuery.refresh()
+  templateSelectSelection.value = []
+}
+
 watch(
   [templateSelectFilter, templateSelectSort],
-  () => {
-    templateSelectQuery.refresh()
-    templateSelectSelection.value = []
-  }
+  handleRefreshTemplateSelect
 )
 
 </script>
@@ -90,6 +92,7 @@ watch(
       v-model:sort-by-name = templateSelectSort.name
       v-model:sort-by-type-id = templateSelectSort.typeId
       v-model:sort-by-shape-id = templateSelectSort.shapeId
+      @refresh="handleRefreshTemplateSelect"
     />
     <GridTemplates
       :state="templateSelectQuery.state"

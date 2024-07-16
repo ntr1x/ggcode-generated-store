@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { customersRemote } from '../../remotes/customersRemote';
 import { paymentsRemote } from '../../remotes/paymentsRemote';
@@ -32,7 +32,7 @@ const customerGetSort = reactive({
 
 const customerGetSelection = ref([])
 
-const customerGetQuery = useAxiosRequest<any>(customersRemote, async () => {
+const customerGetQuery = useAxiosAutoRequest<any>(customersRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   const params: Record<string, any> = {}
@@ -53,12 +53,14 @@ const customerGetQuery = useAxiosRequest<any>(customersRemote, async () => {
   }
 })
 
+const handleRefreshCustomerGet = () => {
+  customerGetQuery.refresh()
+  customerGetSelection.value = []
+}
+
 watch(
   [customerGetFilter, customerGetSort],
-  () => {
-    customerGetQuery.refresh()
-    customerGetSelection.value = []
-  }
+  handleRefreshCustomerGet
 )
 const orderSelectFilter = reactive({
   customerId: route.params.customerId,
@@ -79,7 +81,7 @@ const orderSelectSort = reactive({
 
 const orderSelectSelection = ref([])
 
-const orderSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
+const orderSelectQuery = useAxiosAutoRequest<any>(paymentsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'customerId', orderSelectFilter.customerId)
@@ -123,12 +125,14 @@ const orderSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
   }
 })
 
+const handleRefreshOrderSelect = () => {
+  orderSelectQuery.refresh()
+  orderSelectSelection.value = []
+}
+
 watch(
   [orderSelectFilter, orderSelectSort],
-  () => {
-    orderSelectQuery.refresh()
-    orderSelectSelection.value = []
-  }
+  handleRefreshOrderSelect
 )
 const agentSelectFilter = reactive({
   customerId: route.params.customerId,
@@ -139,7 +143,7 @@ const agentSelectSort = reactive({
 
 const agentSelectSelection = ref([])
 
-const agentSelectQuery = useAxiosRequest<any>(customersRemote, async () => {
+const agentSelectQuery = useAxiosAutoRequest<any>(customersRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'customerId', agentSelectFilter.customerId)
@@ -161,12 +165,14 @@ const agentSelectQuery = useAxiosRequest<any>(customersRemote, async () => {
   }
 })
 
+const handleRefreshAgentSelect = () => {
+  agentSelectQuery.refresh()
+  agentSelectSelection.value = []
+}
+
 watch(
   [agentSelectFilter, agentSelectSort],
-  () => {
-    agentSelectQuery.refresh()
-    agentSelectSelection.value = []
-  }
+  handleRefreshAgentSelect
 )
 const subscriptionSelectFilter = reactive({
   customerId: route.params.customerId,
@@ -181,7 +187,7 @@ const subscriptionSelectSort = reactive({
 
 const subscriptionSelectSelection = ref([])
 
-const subscriptionSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
+const subscriptionSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'customerId', subscriptionSelectFilter.customerId)
@@ -213,12 +219,14 @@ const subscriptionSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   }
 })
 
+const handleRefreshSubscriptionSelect = () => {
+  subscriptionSelectQuery.refresh()
+  subscriptionSelectSelection.value = []
+}
+
 watch(
   [subscriptionSelectFilter, subscriptionSelectSort],
-  () => {
-    subscriptionSelectQuery.refresh()
-    subscriptionSelectSelection.value = []
-  }
+  handleRefreshSubscriptionSelect
 )
 const dispatchSelectFilter = reactive({
   customerId: route.params.customerId,
@@ -236,7 +244,7 @@ const dispatchSelectSort = reactive({
 
 const dispatchSelectSelection = ref([])
 
-const dispatchSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
+const dispatchSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'customerId', dispatchSelectFilter.customerId)
@@ -275,12 +283,14 @@ const dispatchSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   }
 })
 
+const handleRefreshDispatchSelect = () => {
+  dispatchSelectQuery.refresh()
+  dispatchSelectSelection.value = []
+}
+
 watch(
   [dispatchSelectFilter, dispatchSelectSort],
-  () => {
-    dispatchSelectQuery.refresh()
-    dispatchSelectSelection.value = []
-  }
+  handleRefreshDispatchSelect
 )
 
 </script>
@@ -312,6 +322,7 @@ watch(
       v-model:sort-by-order-status-id = orderSelectSort.orderStatusId
       v-model:sort-by-created-at = orderSelectSort.createdAt
       v-model:sort-by-updated-at = orderSelectSort.updatedAt
+      @refresh="handleRefreshOrderSelect"
     />
     <GridOrders
       :state="orderSelectQuery.state"
@@ -341,6 +352,7 @@ watch(
       v-model:sort-by-id = subscriptionSelectSort.id
       v-model:sort-by-created-at = subscriptionSelectSort.createdAt
       v-model:sort-by-type-id = subscriptionSelectSort.typeId
+      @refresh="handleRefreshSubscriptionSelect"
     />
     <GridSubscriptions
       :state="subscriptionSelectQuery.state"
@@ -363,6 +375,7 @@ watch(
       v-model:sort-by-updated-at = dispatchSelectSort.updatedAt
       v-model:sort-by-type-id = dispatchSelectSort.typeId
       v-model:sort-by-status-id = dispatchSelectSort.statusId
+      @refresh="handleRefreshDispatchSelect"
     />
     <GridDispatches
       :state="dispatchSelectQuery.state"

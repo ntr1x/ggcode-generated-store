@@ -16,11 +16,15 @@ import com.example.service.payments.request.system.SystemPublicPaymentTypeReques
 import com.example.service.payments.response.system.SystemPublicPaymentTypeResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Dictionaries")
@@ -50,6 +54,17 @@ public class SystemPublicPaymentTypeController {
             @RequestBody @Valid SystemPublicPaymentTypeRequest.Id key
     ) {
         return systemPublicPaymentTypeService.remove(context, key);
+    }
+    
+    @PostMapping("/removeAll")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
+    @SecurityRequirement(name = "Bearer")
+    @JsonView(Views.Remove.class)
+    public SystemPublicPaymentTypeResponse.RemoveAll removeAll(
+            @Parameter(hidden = true) SystemPublicPaymentTypeRequest.Context context,
+            @RequestBody @Valid Collection<SystemPublicPaymentTypeRequest.Id> keys
+    ) {
+        return systemPublicPaymentTypeService.removeAll(context, keys);
     }
     
     @PutMapping("/update")

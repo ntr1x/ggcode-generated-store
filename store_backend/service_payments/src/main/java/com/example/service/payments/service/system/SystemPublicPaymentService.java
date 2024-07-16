@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -95,6 +96,27 @@ public class SystemPublicPaymentService {
     }
     
     @Transactional
+    public SystemPublicPaymentResponse.RemoveAll removeAll(
+        SystemPublicPaymentRequest.Context context,
+        Collection<SystemPublicPaymentRequest.Id> keys
+    ) {
+        Collection<PublicPaymentEntity> entities = publicPaymentRepository
+                .findAllById(keys.stream().map(SystemPublicPaymentRequest.Id::getId).toList());
+
+        Collection<SystemPublicPaymentModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, SystemPublicPaymentModel.class))
+                .toList();
+
+        publicPaymentRepository.deleteAll(entities);
+
+        return SystemPublicPaymentResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     public SystemPublicPaymentResponse.Update update(
         SystemPublicPaymentRequest.Context context,
         SystemPublicPaymentRequest.Update request
@@ -108,9 +130,7 @@ public class SystemPublicPaymentService {
 
         PublicPaymentEntity entity = publicPaymentRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicPaymentEntity.PublicPaymentEntityBuilder builder = entity.toBuilder();
         

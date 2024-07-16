@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { eventsRemote } from '../../remotes/eventsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -32,7 +32,7 @@ const eventSelectSort = reactive({
 
 const eventSelectSelection = ref([])
 
-const eventSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
+const eventSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'ceSource', eventSelectFilter.eventSource)
@@ -71,12 +71,14 @@ const eventSelectQuery = useAxiosRequest<any>(eventsRemote, async () => {
   }
 })
 
+const handleRefreshEventSelect = () => {
+  eventSelectQuery.refresh()
+  eventSelectSelection.value = []
+}
+
 watch(
   [eventSelectFilter, eventSelectSort],
-  () => {
-    eventSelectQuery.refresh()
-    eventSelectSelection.value = []
-  }
+  handleRefreshEventSelect
 )
 
 </script>
@@ -98,6 +100,7 @@ watch(
       v-model:sort-by-ce-type = eventSelectSort.ceType
       v-model:sort-by-topic = eventSelectSort.topic
       v-model:sort-by-created-at = eventSelectSort.createdAt
+      @refresh="handleRefreshEventSelect"
     />
     <GridEvents
       :state="eventSelectQuery.state"

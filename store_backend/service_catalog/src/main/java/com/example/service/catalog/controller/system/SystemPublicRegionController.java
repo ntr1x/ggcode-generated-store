@@ -16,11 +16,15 @@ import com.example.service.catalog.request.system.SystemPublicRegionRequest;
 import com.example.service.catalog.response.system.SystemPublicRegionResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Regions")
@@ -50,6 +54,17 @@ public class SystemPublicRegionController {
             @RequestBody @Valid SystemPublicRegionRequest.Id key
     ) {
         return systemPublicRegionService.remove(context, key);
+    }
+    
+    @PostMapping("/removeAll")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
+    @SecurityRequirement(name = "Bearer")
+    @JsonView(Views.Remove.class)
+    public SystemPublicRegionResponse.RemoveAll removeAll(
+            @Parameter(hidden = true) SystemPublicRegionRequest.Context context,
+            @RequestBody @Valid Collection<SystemPublicRegionRequest.Id> keys
+    ) {
+        return systemPublicRegionService.removeAll(context, keys);
     }
     
     @PutMapping("/update")

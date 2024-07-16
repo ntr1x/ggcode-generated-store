@@ -16,11 +16,15 @@ import com.example.service.events.request.system.SystemPublicTemplateShapeReques
 import com.example.service.events.response.system.SystemPublicTemplateShapeResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Template Shapes")
@@ -50,6 +54,17 @@ public class SystemPublicTemplateShapeController {
             @RequestBody @Valid SystemPublicTemplateShapeRequest.Id key
     ) {
         return systemPublicTemplateShapeService.remove(context, key);
+    }
+    
+    @PostMapping("/removeAll")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
+    @SecurityRequirement(name = "Bearer")
+    @JsonView(Views.Remove.class)
+    public SystemPublicTemplateShapeResponse.RemoveAll removeAll(
+            @Parameter(hidden = true) SystemPublicTemplateShapeRequest.Context context,
+            @RequestBody @Valid Collection<SystemPublicTemplateShapeRequest.Id> keys
+    ) {
+        return systemPublicTemplateShapeService.removeAll(context, keys);
     }
     
     @PutMapping("/update")

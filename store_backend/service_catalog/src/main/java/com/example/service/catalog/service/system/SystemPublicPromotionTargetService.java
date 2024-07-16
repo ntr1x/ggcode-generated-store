@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -93,6 +94,27 @@ public class SystemPublicPromotionTargetService {
     }
     
     @Transactional
+    public SystemPublicPromotionTargetResponse.RemoveAll removeAll(
+        SystemPublicPromotionTargetRequest.Context context,
+        Collection<SystemPublicPromotionTargetRequest.Id> keys
+    ) {
+        Collection<PublicPromotionTargetEntity> entities = publicPromotionTargetRepository
+                .findAllById(keys.stream().map(SystemPublicPromotionTargetRequest.Id::getId).toList());
+
+        Collection<SystemPublicPromotionTargetModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, SystemPublicPromotionTargetModel.class))
+                .toList();
+
+        publicPromotionTargetRepository.deleteAll(entities);
+
+        return SystemPublicPromotionTargetResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     public SystemPublicPromotionTargetResponse.Update update(
         SystemPublicPromotionTargetRequest.Context context,
         SystemPublicPromotionTargetRequest.Update request
@@ -106,9 +128,7 @@ public class SystemPublicPromotionTargetService {
 
         PublicPromotionTargetEntity entity = publicPromotionTargetRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicPromotionTargetEntity.PublicPromotionTargetEntityBuilder builder = entity.toBuilder();
         

@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -85,6 +86,27 @@ public class SystemPublicTemplateShapeService {
     }
     
     @Transactional
+    public SystemPublicTemplateShapeResponse.RemoveAll removeAll(
+        SystemPublicTemplateShapeRequest.Context context,
+        Collection<SystemPublicTemplateShapeRequest.Id> keys
+    ) {
+        Collection<PublicTemplateShapeEntity> entities = publicTemplateShapeRepository
+                .findAllById(keys.stream().map(SystemPublicTemplateShapeRequest.Id::getId).toList());
+
+        Collection<SystemPublicTemplateShapeModel> removed = entities
+                .stream()
+                .map(entity -> conversionService.convert(entity, SystemPublicTemplateShapeModel.class))
+                .toList();
+
+        publicTemplateShapeRepository.deleteAll(entities);
+
+        return SystemPublicTemplateShapeResponse.RemoveAll
+            .builder()
+            .removed(removed)
+            .build();
+    }
+    
+    @Transactional
     public SystemPublicTemplateShapeResponse.Update update(
         SystemPublicTemplateShapeRequest.Context context,
         SystemPublicTemplateShapeRequest.Update request
@@ -98,9 +120,7 @@ public class SystemPublicTemplateShapeService {
 
         PublicTemplateShapeEntity entity = publicTemplateShapeRepository
                 .findOne(specification)
-                .orElseThrow(() -> {
-                        throw Validate.create(400, "Entity does not exist").buildError();
-                });
+                .orElseThrow(() -> Validate.create(400, "Entity does not exist").buildError());
 
         PublicTemplateShapeEntity.PublicTemplateShapeEntityBuilder builder = entity.toBuilder();
         

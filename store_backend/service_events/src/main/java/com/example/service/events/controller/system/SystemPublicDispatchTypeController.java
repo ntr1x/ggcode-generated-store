@@ -16,11 +16,15 @@ import com.example.service.events.request.system.SystemPublicDispatchTypeRequest
 import com.example.service.events.response.system.SystemPublicDispatchTypeResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Dispatch Types")
@@ -50,6 +54,17 @@ public class SystemPublicDispatchTypeController {
             @RequestBody @Valid SystemPublicDispatchTypeRequest.Id key
     ) {
         return systemPublicDispatchTypeService.remove(context, key);
+    }
+    
+    @PostMapping("/removeAll")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
+    @SecurityRequirement(name = "Bearer")
+    @JsonView(Views.Remove.class)
+    public SystemPublicDispatchTypeResponse.RemoveAll removeAll(
+            @Parameter(hidden = true) SystemPublicDispatchTypeRequest.Context context,
+            @RequestBody @Valid Collection<SystemPublicDispatchTypeRequest.Id> keys
+    ) {
+        return systemPublicDispatchTypeService.removeAll(context, keys);
     }
     
     @PutMapping("/update")

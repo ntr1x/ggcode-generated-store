@@ -16,11 +16,15 @@ import com.example.service.catalog.request.system.SystemPublicPromotionRequest;
 import com.example.service.catalog.response.system.SystemPublicPromotionResponse;
 
 import org.ntr1x.common.api.views.Views;
+
 import org.springdoc.core.annotations.ParameterObject;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.Collection;
 
 @RestController
 @Tag(name = "Promotions")
@@ -50,6 +54,17 @@ public class SystemPublicPromotionController {
             @RequestBody @Valid SystemPublicPromotionRequest.Id key
     ) {
         return systemPublicPromotionService.remove(context, key);
+    }
+    
+    @PostMapping("/removeAll")
+    @PreAuthorize("hasAnyAuthority('realm:developer', 'realm:admin', 'realm:support')")
+    @SecurityRequirement(name = "Bearer")
+    @JsonView(Views.Remove.class)
+    public SystemPublicPromotionResponse.RemoveAll removeAll(
+            @Parameter(hidden = true) SystemPublicPromotionRequest.Context context,
+            @RequestBody @Valid Collection<SystemPublicPromotionRequest.Id> keys
+    ) {
+        return systemPublicPromotionService.removeAll(context, keys);
     }
     
     @PutMapping("/update")

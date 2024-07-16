@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { productsRemote } from '../../remotes/productsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -25,7 +25,7 @@ const itemSelectSort = reactive({
 
 const itemSelectSelection = ref([])
 
-const itemSelectQuery = useAxiosRequest<any>(productsRemote, async () => {
+const itemSelectQuery = useAxiosAutoRequest<any>(productsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   setProperty(data, 'shopId', itemSelectFilter.shopId)
@@ -47,12 +47,14 @@ const itemSelectQuery = useAxiosRequest<any>(productsRemote, async () => {
   }
 })
 
+const handleRefreshItemSelect = () => {
+  itemSelectQuery.refresh()
+  itemSelectSelection.value = []
+}
+
 watch(
   [itemSelectFilter, itemSelectSort],
-  () => {
-    itemSelectQuery.refresh()
-    itemSelectSelection.value = []
-  }
+  handleRefreshItemSelect
 )
 
 </script>
@@ -67,6 +69,7 @@ watch(
       class="rounded-none border-0 border-b"
       v-model:selection="itemSelectSelection"
       v-model:filter-by-shop-id = itemSelectFilter.shopId
+      @refresh="handleRefreshItemSelect"
     />
     <GridItems
       :state="itemSelectQuery.state"

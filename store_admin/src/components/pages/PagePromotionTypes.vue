@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { set as setProperty } from 'lodash';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosRequest } from '../../hooks/useAxiosRequest';
+import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import { paymentsRemote } from '../../remotes/paymentsRemote';
 import SectionHeading from '../partials/SectionHeading.vue';
@@ -23,7 +23,7 @@ const promotionTypeSelectSort = reactive({
 
 const promotionTypeSelectSelection = ref([])
 
-const promotionTypeSelectQuery = useAxiosRequest<any>(paymentsRemote, async () => {
+const promotionTypeSelectQuery = useAxiosAutoRequest<any>(paymentsRemote, async () => {
   const token = await authStore.requireToken()
   const data = {}
   const params: Record<string, any> = {}
@@ -44,12 +44,14 @@ const promotionTypeSelectQuery = useAxiosRequest<any>(paymentsRemote, async () =
   }
 })
 
+const handleRefreshPromotionTypeSelect = () => {
+  promotionTypeSelectQuery.refresh()
+  promotionTypeSelectSelection.value = []
+}
+
 watch(
   [promotionTypeSelectFilter, promotionTypeSelectSort],
-  () => {
-    promotionTypeSelectQuery.refresh()
-    promotionTypeSelectSelection.value = []
-  }
+  handleRefreshPromotionTypeSelect
 )
 
 </script>
