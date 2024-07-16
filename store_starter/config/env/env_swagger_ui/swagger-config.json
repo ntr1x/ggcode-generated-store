@@ -6,8 +6,8 @@
       "url": "http://api.local.example.com/api/assembly_web/v3/api-docs"
     },
     {
-      "name": "Service Basket",
-      "url": "http://api.local.example.com/api/service_basket/v3/api-docs"
+      "name": "Service Structure",
+      "url": "http://api.local.example.com/api/service_structure/v3/api-docs"
     },
     {
       "name": "Service Catalogue",

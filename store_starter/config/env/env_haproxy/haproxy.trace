@@ -100,7 +100,7 @@
       hostname: host.docker.internal
       check: true
       optional: true
-    path: /api/service_basket
+    path: /api/service_structure
     cors:
       origin: '*'
   - servers:
