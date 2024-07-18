@@ -37,7 +37,7 @@ const icon = computed(() => {
 const decoration = computed(() => {
   switch (true) {
     case props.decoration != undefined: return props.decoration
-    case props.value != undefined: return "rounded border border-gray-500"
+    case props.value != undefined: return "rounded text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-500/20"
     default: return null
   }
 })

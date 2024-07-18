@@ -10,8 +10,8 @@ const props = defineProps<{
 }>()
 
 const decorations: Record<string, any> = {
-  "mobile": "rounded bg-purple-800 text-white",
-  "web": "rounded bg-blue-800 text-white"
+  "mobile": "rounded text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-500/20",
+  "web": "rounded text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-500/20"
 }
 
 const label = computed(() => {

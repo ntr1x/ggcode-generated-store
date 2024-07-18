@@ -55,7 +55,6 @@ const options = computed(() => {
     v-model="shopId"
     :options="options"
     showClear
-    filter
     optionValue="id"
     optionLabel="label"
     placeholder="Shop Id"

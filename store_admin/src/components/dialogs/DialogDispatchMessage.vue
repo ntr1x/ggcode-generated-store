@@ -36,12 +36,22 @@ export type DialogProps = {
   // TODO: Implement
 }
 
+export type DialogHandlers = {
+  success: (data: any) => void
+  failure: (error: any) => void
+}
+
 defineProps<DialogProps>()
+
+const emit = defineEmits<{
+  (e: 'success', data: any): void
+  (e: 'failure', error: any): void
+}>()
 
 async function doSubmit() {
   const token = await authStore.requireToken()
 
-  const data = {
+  const payload = {
     customerId: form.customerId,
     sessionId: form.sessionId,
     subscriptionId: null,
@@ -52,16 +62,18 @@ async function doSubmit() {
     payload: JSON.parse(form.payload)
   }
 
-  await eventsRemote.post('/system/public_dispatch', data, {
+  const { data } = await eventsRemote.post('/system/public_dispatch', payload, {
     headers: {
       Authorization: `Bearer ${token}`
     }
   })
+
+  return data
 }
 
 async function handleSubmit() {
   try {
-    await doSubmit()
+    const data = await doSubmit()
     context.doClose()
     toast.add({
       severity: 'success',
@@ -69,6 +81,7 @@ async function handleSubmit() {
       detail: 'Submitted',
       life: 3000
     })
+    emit('success', data)
   } catch (e) {
     toast.add({
       severity: 'error',
@@ -76,6 +89,7 @@ async function handleSubmit() {
       detail: e,
       life: 3000
     })
+    emit('failure', e)
   }
 }
 
@@ -85,7 +99,7 @@ async function handleClose() {
 
 </script>
 <template>
-  <Dialog :visible="true" @update:visible="handleClose" modal header="Dispatch Message" :style="{ maxWidth: '35rem' }">
+  <Dialog :visible="true" @update:visible="handleClose" modal maximizable header="Dispatch Message" class="w-full sm:max-w-[35rem]">
     <form @submit.prevent="handleSubmit">
       <div class="mb-2 grid grid-cols-1 gap-3">
         <div>

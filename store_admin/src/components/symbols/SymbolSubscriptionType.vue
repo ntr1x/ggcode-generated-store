@@ -10,8 +10,8 @@ const props = defineProps<{
 }>()
 
 const decorations: Record<string, any> = {
-  "FCM": "rounded bg-green-800 text-white",
-  "HMS": "rounded bg-indigo-800 text-white"
+  "FCM": "rounded text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-500/20",
+  "HMS": "rounded text-indigo-700 dark:text-indigo-300 bg-indigo-100 dark:bg-indigo-500/20"
 }
 
 const label = computed(() => {

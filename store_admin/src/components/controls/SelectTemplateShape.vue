@@ -56,7 +56,6 @@ const options = computed(() => {
     v-model="templateShape"
     :options="options"
     showClear
-    filter
     optionValue="id"
     optionLabel="label"
     placeholder="Template Shape"

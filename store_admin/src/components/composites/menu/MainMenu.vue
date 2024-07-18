@@ -4,6 +4,7 @@ import SectionOrders from './SectionOrders.vue'
 import SectionProfiles from './SectionProfiles.vue'
 import SectionCatalogue from './SectionCatalogue.vue'
 import SectionNotifications from './SectionNotifications.vue'
+import SectionStructure from './SectionStructure.vue'
 import SectionDictionaries from './SectionDictionaries.vue'
 </script>
 
@@ -16,6 +17,7 @@ import SectionDictionaries from './SectionDictionaries.vue'
         <li class="empty:hidden"><SectionProfiles /></li>
         <li class="empty:hidden"><SectionCatalogue /></li>
         <li class="empty:hidden"><SectionNotifications /></li>
+        <li class="empty:hidden"><SectionStructure /></li>
         <li class="empty:hidden"><SectionDictionaries /></li>
       </ul>
     </div>

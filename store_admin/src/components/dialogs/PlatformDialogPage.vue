@@ -12,6 +12,7 @@ import { menuOrders } from '../../collections/menus/menuOrders'
 import { menuProfiles } from '../../collections/menus/menuProfiles'
 import { menuCatalogue } from '../../collections/menus/menuCatalogue'
 import { menuNotifications } from '../../collections/menus/menuNotifications'
+import { menuStructure } from '../../collections/menus/menuStructure'
 import { menuDictionaries } from '../../collections/menus/menuDictionaries'
 
 const context = inject<ModalContext>('modalContext')!
@@ -27,6 +28,7 @@ const pages: ActionItem[] = [
   ...menuProfiles(router).items,
   ...menuCatalogue(router).items,
   ...menuNotifications(router).items,
+  ...menuStructure(router).items,
   ...menuDictionaries(router).items,
 ]
 
@@ -119,7 +121,7 @@ function handleAction(item: ActionItem) {
 
 </script>
 <template>
-  <Dialog :visible="true" @update:visible="context.doClose" modal header="Execute Action" :style="{ maxWidth: '35rem' }">
+  <Dialog :visible="true" @update:visible="context.doClose" modal maximizable header="Execute Action" class="w-full sm:max-w-[35rem]">
     <div class="relative h-full flex flex-col" @keyup="handleKeyup">
       <div class="gap-3 mb-3 mt-3">
         <div class="relative w-full">

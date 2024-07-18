@@ -123,16 +123,16 @@ const filtersMenuItems = ref([
             <Menu ref="filtersMenuRef" id="overlay_menu" :model="filtersMenuItems" :popup="true" />
           </div>
           <div class="flex flex-wrap flex-1">
-            <Chip v-if="filterByPaymentType !== undefined" removable @remove="filterByPaymentType = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="filterByPaymentType !== undefined" removable @remove="filterByPaymentType = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Payment Type: </b><span v-text="filters.paymentType?.title || filterByPaymentType"></span></span>
             </Chip>
-            <Chip v-if="filterByPaymentStatus !== undefined" removable @remove="filterByPaymentStatus = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="filterByPaymentStatus !== undefined" removable @remove="filterByPaymentStatus = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Payment Status: </b><span v-text="filters.paymentStatus?.title || filterByPaymentStatus"></span></span>
             </Chip>
-            <Chip v-if="filterByOrderType !== undefined" removable @remove="filterByOrderType = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="filterByOrderType !== undefined" removable @remove="filterByOrderType = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Order Type: </b><span v-text="filters.orderType?.title || filterByOrderType"></span></span>
             </Chip>
-            <Chip v-if="filterByOrderStatus !== undefined" removable @remove="filterByOrderStatus = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="filterByOrderStatus !== undefined" removable @remove="filterByOrderStatus = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Order Status: </b><span v-text="filters.orderStatus?.title || filterByOrderStatus"></span></span>
             </Chip>
           </div>

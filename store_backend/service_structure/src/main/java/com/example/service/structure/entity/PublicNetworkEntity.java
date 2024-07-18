@@ -33,6 +33,9 @@ public class PublicNetworkEntity {
     @Column(name = "hidden")
     private java.lang.Boolean hidden;
     
+    @Column(name = "type_id")
+    private java.lang.Integer typeId;
+    
     @Column(name = "shop_id", columnDefinition = "uuid")
     private java.util.UUID shopId;
     

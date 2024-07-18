@@ -60,7 +60,7 @@ const filtersMenuItems = ref([
             <Menu ref="filtersMenuRef" id="overlay_menu" :model="filtersMenuItems" :popup="true" />
           </div>
           <div class="flex flex-wrap flex-1">
-            <Chip v-if="filterByRegionId !== undefined" removable @remove="filterByRegionId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="filterByRegionId !== undefined" removable @remove="filterByRegionId = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Region Id: </b><span v-text="filters.regionId?.title || filterByRegionId"></span></span>
             </Chip>
           </div>

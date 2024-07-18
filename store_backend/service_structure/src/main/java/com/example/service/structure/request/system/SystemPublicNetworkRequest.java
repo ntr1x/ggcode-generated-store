@@ -58,6 +58,8 @@ public interface SystemPublicNetworkRequest {
         
         private Optional<java.lang.Boolean> hidden;
         
+        private Optional<java.lang.Integer> typeId;
+        
         private Optional<java.util.UUID> shopId;
         
         private Optional<java.time.LocalDateTime> createdAt;
@@ -82,6 +84,8 @@ public interface SystemPublicNetworkRequest {
         
         private Optional<java.lang.Boolean> hidden;
         
+        private Optional<java.lang.Integer> typeId;
+        
         private Optional<java.util.UUID> shopId;
         
         private Optional<java.time.LocalDateTime> createdAt;
@@ -105,6 +109,8 @@ public interface SystemPublicNetworkRequest {
         private Optional<java.lang.String> password;
         
         private Optional<java.lang.Boolean> hidden;
+        
+        private Optional<java.lang.Integer> typeId;
         
         private Optional<java.util.UUID> shopId;
         
@@ -139,6 +145,8 @@ public interface SystemPublicNetworkRequest {
         private Optional<java.lang.String> password;
         
         private Optional<java.lang.Boolean> hidden;
+        
+        private Optional<java.lang.Integer> typeId;
         
         private Optional<java.util.UUID> shopId;
         

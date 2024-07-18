@@ -69,7 +69,7 @@ function handleSelect(option: Option) {
 
 </script>
 <template>
-  <Dialog :visible="true" @update:visible="context.doClose" modal :header="title" :style="{ maxWidth: '35rem' }">
+  <Dialog :visible="true" @update:visible="context.doClose" modal maximizable :header="title" class="w-full sm:max-w-[35rem]">
     <div class="relative h-full flex flex-col" @keyup="handleKeyup">
       <div class="gap-3 mb-3 mt-3">
         <div class="relative w-full">

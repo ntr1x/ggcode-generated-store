@@ -271,3 +271,20 @@ databaseChangeLog:
         - sqlFile:
             path: ddl/public/drop/event_source_info.sql
             relativeToChangelogFile: true
+  - changeSet:
+      id: 1.0.4
+      author: Setup structure tables
+      changes:
+        - sqlFile:
+            path: ddl/public/create/network_type.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            path: ddl/public/create/network.sql
+            relativeToChangelogFile: true
+      rollback:
+        - sqlFile:
+            path: ddl/public/drop/network.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            path: ddl/public/drop/network_type.sql
+            relativeToChangelogFile: true

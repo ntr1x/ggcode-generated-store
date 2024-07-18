@@ -56,7 +56,6 @@ const options = computed(() => {
     v-model="eventTopic"
     :options="options"
     showClear
-    filter
     optionValue="id"
     optionLabel="label"
     placeholder="Event Topic"

@@ -25,6 +25,7 @@ public interface SystemPublicNetworkEntityConverter {
                     .name(source.getName())
                     .password(source.getPassword())
                     .hidden(source.getHidden())
+                    .typeId(source.getTypeId())
                     .shopId(source.getShopId())
                     .createdAt(source.getCreatedAt())
                     .updatedAt(source.getUpdatedAt())

@@ -77,6 +77,9 @@ public class ProfilePublicBasketService {
         PublicBasketEntity entity = publicBasketRepository
                 .findById(key.getId())
                 .orElseThrow();
+        
+        Validate.create(400, "Bad Request")
+                .equals(entity.getCustomerId(), context.getCustomerId());
 
         ProfilePublicBasketModel removed = conversionService.convert(entity, ProfilePublicBasketModel.class);
 
@@ -95,6 +98,11 @@ public class ProfilePublicBasketService {
     ) {
         Collection<PublicBasketEntity> entities = publicBasketRepository
                 .findAllById(keys.stream().map(ProfilePublicBasketRequest.Id::getId).toList());
+        
+        for (PublicBasketEntity entity : entities) {
+                Validate.create(400, "Bad Request")
+                        .equals(entity.getCustomerId(), context.getCustomerId());
+        }
 
         Collection<ProfilePublicBasketModel> removed = entities
                 .stream()

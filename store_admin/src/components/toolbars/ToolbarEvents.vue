@@ -205,13 +205,13 @@ const sortersMenuItems = ref([
             <Menu ref="filtersMenuRef" id="overlay_menu" :model="filtersMenuItems" :popup="true" />
           </div>
           <div class="flex flex-wrap flex-1">
-            <Chip v-if="filterByEventSource !== undefined" removable @remove="filterByEventSource = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="filterByEventSource !== undefined" removable @remove="filterByEventSource = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Event Source: </b><span v-text="filters.eventSource?.title || filterByEventSource"></span></span>
             </Chip>
-            <Chip v-if="filterByEventTopic !== undefined" removable @remove="filterByEventTopic = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="filterByEventTopic !== undefined" removable @remove="filterByEventTopic = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Event Topic: </b><span v-text="filters.eventTopic?.title || filterByEventTopic"></span></span>
             </Chip>
-            <Chip v-if="filterByEventType !== undefined" removable @remove="filterByEventType = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="filterByEventType !== undefined" removable @remove="filterByEventType = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Event Type: </b><span v-text="filters.eventType?.title || filterByEventType"></span></span>
             </Chip>
           </div>
@@ -222,19 +222,19 @@ const sortersMenuItems = ref([
             <Menu ref="sortersMenuRef" id="overlay_menu" :model="sortersMenuItems" :popup="true" />
           </div>
           <div class="flex flex-wrap flex-1">
-            <Chip v-if="sortById !== undefined" removable @remove="sortById = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="sortById !== undefined" removable @remove="sortById = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Id: </b><span v-text="sortings.id || sortById"></span></span>
             </Chip>
-            <Chip v-if="sortByCeSource !== undefined" removable @remove="sortByCeSource = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="sortByCeSource !== undefined" removable @remove="sortByCeSource = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Ce Source: </b><span v-text="sortings.ceSource || sortByCeSource"></span></span>
             </Chip>
-            <Chip v-if="sortByCeType !== undefined" removable @remove="sortByCeType = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="sortByCeType !== undefined" removable @remove="sortByCeType = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Ce Type: </b><span v-text="sortings.ceType || sortByCeType"></span></span>
             </Chip>
-            <Chip v-if="sortByTopic !== undefined" removable @remove="sortByTopic = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="sortByTopic !== undefined" removable @remove="sortByTopic = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Topic: </b><span v-text="sortings.topic || sortByTopic"></span></span>
             </Chip>
-            <Chip v-if="sortByCreatedAt !== undefined" removable @remove="sortByCreatedAt = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="sortByCreatedAt !== undefined" removable @remove="sortByCreatedAt = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Created At: </b><span v-text="sortings.createdAt || sortByCreatedAt"></span></span>
             </Chip>
           </div>

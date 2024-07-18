@@ -73,6 +73,9 @@ public class ProfilePublicFavoriteService {
         PublicFavoriteEntity entity = publicFavoriteRepository
                 .findById(key.getId())
                 .orElseThrow();
+        
+        Validate.create(400, "Bad Request")
+                .equals(entity.getCustomerId(), context.getCustomerId());
 
         ProfilePublicFavoriteModel removed = conversionService.convert(entity, ProfilePublicFavoriteModel.class);
 
@@ -91,6 +94,11 @@ public class ProfilePublicFavoriteService {
     ) {
         Collection<PublicFavoriteEntity> entities = publicFavoriteRepository
                 .findAllById(keys.stream().map(ProfilePublicFavoriteRequest.Id::getId).toList());
+        
+        for (PublicFavoriteEntity entity : entities) {
+                Validate.create(400, "Bad Request")
+                        .equals(entity.getCustomerId(), context.getCustomerId());
+        }
 
         Collection<ProfilePublicFavoriteModel> removed = entities
                 .stream()

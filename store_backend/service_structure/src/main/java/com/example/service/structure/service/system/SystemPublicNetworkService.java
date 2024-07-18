@@ -55,6 +55,8 @@ public class SystemPublicNetworkService {
                 .ifPresent((value) -> builder.password(value.orElse(null)));
         Optional.ofNullable(request.getHidden())
                 .ifPresent((value) -> builder.hidden(value.orElse(null)));
+        Optional.ofNullable(request.getTypeId())
+                .ifPresent((value) -> builder.typeId(value.orElse(null)));
         Optional.ofNullable(request.getShopId())
                 .ifPresent((value) -> builder.shopId(value.orElse(null)));
         Optional.ofNullable(request.getCreatedAt())
@@ -138,6 +140,8 @@ public class SystemPublicNetworkService {
                 .ifPresent((value) -> builder.password(value.orElse(null)));
         Optional.ofNullable(request.getHidden())
                 .ifPresent((value) -> builder.hidden(value.orElse(null)));
+        Optional.ofNullable(request.getTypeId())
+                .ifPresent((value) -> builder.typeId(value.orElse(null)));
         Optional.ofNullable(request.getShopId())
                 .ifPresent((value) -> builder.shopId(value.orElse(null)));
         Optional.ofNullable(request.getCreatedAt())
@@ -179,6 +183,8 @@ public class SystemPublicNetworkService {
                 .ifPresent((value) -> builder.password(value.orElse(null)));
         Optional.ofNullable(request.getHidden())
                 .ifPresent((value) -> builder.hidden(value.orElse(null)));
+        Optional.ofNullable(request.getTypeId())
+                .ifPresent((value) -> builder.typeId(value.orElse(null)));
         Optional.ofNullable(request.getShopId())
                 .ifPresent((value) -> builder.shopId(value.orElse(null)));
         Optional.ofNullable(request.getCreatedAt())
@@ -213,6 +219,7 @@ public class SystemPublicNetworkService {
                     .withOptionalMatch("name", request.getName())
                     .withOptionalMatch("password", request.getPassword())
                     .withOptionalMatch("hidden", request.getHidden())
+                    .withOptionalMatch("typeId", request.getTypeId())
                     .withOptionalMatch("shopId", request.getShopId())
                     .withOptionalMatch("createdAt", request.getCreatedAt())
                     .withOptionalMatch("updatedAt", request.getUpdatedAt())

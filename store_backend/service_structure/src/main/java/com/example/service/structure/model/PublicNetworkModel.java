@@ -26,6 +26,9 @@ public class PublicNetworkModel {
     private java.lang.Boolean hidden;
     
     @JsonView(Views.Default.class)
+    private java.lang.Integer typeId;
+    
+    @JsonView(Views.Default.class)
     private java.util.UUID shopId;
     
     @JsonView(Views.Default.class)

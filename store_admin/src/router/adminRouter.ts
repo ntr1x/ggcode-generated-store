@@ -31,6 +31,8 @@ import PageDispatchTypes from '../components/pages/PageDispatchTypes.vue'
 import PageTemplates from '../components/pages/PageTemplates.vue'
 import PageTemplateShapes from '../components/pages/PageTemplateShapes.vue'
 import PageTemplateTypes from '../components/pages/PageTemplateTypes.vue'
+import PageNetworks from '../components/pages/PageNetworks.vue'
+import PageNetworkTypes from '../components/pages/PageNetworkTypes.vue'
 
 export const adminRouter = {
   path: '/admin',
@@ -287,6 +289,22 @@ export const adminRouter = {
     {
       path: 'template_types',
       component: PageTemplateTypes,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
+    },
+    {
+      path: 'networks',
+      component: PageNetworks,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
+    },
+    {
+      path: 'network_types',
+      component: PageNetworkTypes,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]

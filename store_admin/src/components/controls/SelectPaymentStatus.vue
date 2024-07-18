@@ -56,7 +56,6 @@ const options = computed(() => {
     v-model="paymentStatus"
     :options="options"
     showClear
-    filter
     optionValue="id"
     optionLabel="label"
     placeholder="Payment Status"

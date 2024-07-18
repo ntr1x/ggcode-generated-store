@@ -10,9 +10,9 @@ const props = defineProps<{
 }>()
 
 const decorations: Record<string, any> = {
-  "BONUSES": "rounded bg-teal-800 text-white",
-  "DISCOUNT": "rounded bg-green-800 text-white",
-  "FREE_SHIPPING": "rounded bg-sky-800 text-white"
+  "BONUSES": "rounded text-teal-700 dark:text-teal-300 bg-teal-100 dark:bg-teal-500/20",
+  "DISCOUNT": "rounded text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-500/20",
+  "FREE_SHIPPING": "rounded text-sky-700 dark:text-sky-300 bg-sky-100 dark:bg-sky-500/20"
 }
 
 const label = computed(() => {

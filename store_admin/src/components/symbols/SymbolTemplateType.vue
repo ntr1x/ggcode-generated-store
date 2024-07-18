@@ -10,17 +10,17 @@ const props = defineProps<{
 }>()
 
 const decorations: Record<string, any> = {
-  "message:info": "rounded bg-red-800 text-white",
-  "order:canceled": "rounded bg-blue-800 text-white",
-  "order:complete": "rounded bg-blue-800 text-white",
-  "order:created": "rounded bg-blue-800 text-white",
-  "order:failed": "rounded bg-blue-800 text-white",
-  "order:packaged": "rounded bg-blue-800 text-white",
-  "order:paid": "rounded bg-blue-800 text-white",
-  "order:ready": "rounded bg-blue-800 text-white",
-  "profile:updated": "rounded bg-green-800 text-white",
-  "security:signin": "rounded bg-orange-800 text-white",
-  "security:signup": "rounded bg-orange-800 text-white"
+  "message:info": "rounded text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-500/20",
+  "order:canceled": "rounded text-fuchsia-700 dark:text-fuchsia-300 bg-fuchsia-100 dark:bg-fuchsia-500/20",
+  "order:complete": "rounded text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-500/20",
+  "order:created": "rounded text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-500/20",
+  "order:failed": "rounded text-rose-700 dark:text-rose-300 bg-rose-100 dark:bg-rose-500/20",
+  "order:packaged": "rounded text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-500/20",
+  "order:paid": "rounded text-teal-700 dark:text-teal-300 bg-teal-100 dark:bg-teal-500/20",
+  "order:ready": "rounded text-sky-700 dark:text-sky-300 bg-sky-100 dark:bg-sky-500/20",
+  "profile:updated": "rounded text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-500/20",
+  "security:signin": "rounded text-orange-700 dark:text-orange-300 bg-orange-100 dark:bg-orange-500/20",
+  "security:signup": "rounded text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-500/20"
 }
 
 const label = computed(() => {

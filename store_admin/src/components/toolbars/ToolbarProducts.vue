@@ -109,7 +109,7 @@ const sortersMenuItems = ref([
             <Menu ref="filtersMenuRef" id="overlay_menu" :model="filtersMenuItems" :popup="true" />
           </div>
           <div class="flex flex-wrap flex-1">
-            <Chip v-if="filterByCategoryId !== undefined" removable @remove="filterByCategoryId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="filterByCategoryId !== undefined" removable @remove="filterByCategoryId = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Category Id: </b><span v-text="filters.categoryId?.title || filterByCategoryId"></span></span>
             </Chip>
           </div>
@@ -120,10 +120,10 @@ const sortersMenuItems = ref([
             <Menu ref="sortersMenuRef" id="overlay_menu" :model="sortersMenuItems" :popup="true" />
           </div>
           <div class="flex flex-wrap flex-1">
-            <Chip v-if="sortById !== undefined" removable @remove="sortById = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="sortById !== undefined" removable @remove="sortById = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Id: </b><span v-text="sortings.id || sortById"></span></span>
             </Chip>
-            <Chip v-if="sortByName !== undefined" removable @remove="sortByName = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="sortByName !== undefined" removable @remove="sortByName = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Name: </b><span v-text="sortings.name || sortByName"></span></span>
             </Chip>
           </div>

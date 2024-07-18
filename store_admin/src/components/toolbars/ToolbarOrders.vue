@@ -265,19 +265,19 @@ const sortersMenuItems = ref([
             <Menu ref="filtersMenuRef" id="overlay_menu" :model="filtersMenuItems" :popup="true" />
           </div>
           <div class="flex flex-wrap flex-1">
-            <Chip v-if="filterByCustomerId !== undefined" removable @remove="filterByCustomerId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="filterByCustomerId !== undefined" removable @remove="filterByCustomerId = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Customer Id: </b><span v-text="filters.customerId?.title || filterByCustomerId"></span></span>
             </Chip>
-            <Chip v-if="filterBySourceType !== undefined" removable @remove="filterBySourceType = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="filterBySourceType !== undefined" removable @remove="filterBySourceType = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Source Type: </b><span v-text="filters.sourceType?.title || filterBySourceType"></span></span>
             </Chip>
-            <Chip v-if="filterByOrderType !== undefined" removable @remove="filterByOrderType = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="filterByOrderType !== undefined" removable @remove="filterByOrderType = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Order Type: </b><span v-text="filters.orderType?.title || filterByOrderType"></span></span>
             </Chip>
-            <Chip v-if="filterByOrderStatus !== undefined" removable @remove="filterByOrderStatus = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="filterByOrderStatus !== undefined" removable @remove="filterByOrderStatus = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Order Status: </b><span v-text="filters.orderStatus?.title || filterByOrderStatus"></span></span>
             </Chip>
-            <Chip v-if="filterByRegionId !== undefined" removable @remove="filterByRegionId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="filterByRegionId !== undefined" removable @remove="filterByRegionId = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Region Id: </b><span v-text="filters.regionId?.title || filterByRegionId"></span></span>
             </Chip>
           </div>
@@ -288,22 +288,22 @@ const sortersMenuItems = ref([
             <Menu ref="sortersMenuRef" id="overlay_menu" :model="sortersMenuItems" :popup="true" />
           </div>
           <div class="flex flex-wrap flex-1">
-            <Chip v-if="sortById !== undefined" removable @remove="sortById = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="sortById !== undefined" removable @remove="sortById = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Id: </b><span v-text="sortings.id || sortById"></span></span>
             </Chip>
-            <Chip v-if="sortByCustomerId !== undefined" removable @remove="sortByCustomerId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="sortByCustomerId !== undefined" removable @remove="sortByCustomerId = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Customer Id: </b><span v-text="sortings.customerId || sortByCustomerId"></span></span>
             </Chip>
-            <Chip v-if="sortByOrderTypeId !== undefined" removable @remove="sortByOrderTypeId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="sortByOrderTypeId !== undefined" removable @remove="sortByOrderTypeId = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Order Type Id: </b><span v-text="sortings.orderTypeId || sortByOrderTypeId"></span></span>
             </Chip>
-            <Chip v-if="sortByOrderStatusId !== undefined" removable @remove="sortByOrderStatusId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="sortByOrderStatusId !== undefined" removable @remove="sortByOrderStatusId = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Order Status Id: </b><span v-text="sortings.orderStatusId || sortByOrderStatusId"></span></span>
             </Chip>
-            <Chip v-if="sortByCreatedAt !== undefined" removable @remove="sortByCreatedAt = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="sortByCreatedAt !== undefined" removable @remove="sortByCreatedAt = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Created At: </b><span v-text="sortings.createdAt || sortByCreatedAt"></span></span>
             </Chip>
-            <Chip v-if="sortByUpdatedAt !== undefined" removable @remove="sortByUpdatedAt = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="sortByUpdatedAt !== undefined" removable @remove="sortByUpdatedAt = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Updated At: </b><span v-text="sortings.updatedAt || sortByUpdatedAt"></span></span>
             </Chip>
           </div>

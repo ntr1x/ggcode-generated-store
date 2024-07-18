@@ -60,7 +60,7 @@ const filtersMenuItems = ref([
             <Menu ref="filtersMenuRef" id="overlay_menu" :model="filtersMenuItems" :popup="true" />
           </div>
           <div class="flex flex-wrap flex-1">
-            <Chip v-if="filterByPromotionType !== undefined" removable @remove="filterByPromotionType = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="filterByPromotionType !== undefined" removable @remove="filterByPromotionType = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Promotion Type: </b><span v-text="filters.promotionType?.title || filterByPromotionType"></span></span>
             </Chip>
           </div>

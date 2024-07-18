@@ -11,7 +11,7 @@ defineProps<{ principal: PrincipalResponse }>()
 
 </script>
 <template>
-  <Dialog :visible="true" @update:visible="context.doClose" modal header="Your Account" :style="{ maxWidth: '35rem' }">
+  <Dialog :visible="true" @update:visible="context.doClose" modal maximizable header="Your Account" class="w-full sm:max-w-[35rem]">
     <!-- <span class="text-surface-600 dark:text-surface-0/70 block mb-5">Update your information.</span> -->
     <div class="flex items-center gap-3 mb-3">
       <label class="font-semibold w-[6rem]">Username</label>

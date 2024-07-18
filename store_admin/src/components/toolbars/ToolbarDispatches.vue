@@ -200,12 +200,32 @@ const sortersMenuItems = ref([
 const actionDispatchRemoveSelected = useActionDispatchRemoveSelected()
 const actionDispatchMessage = useActionDispatchMessage()
 
-function handleRemoveSelected() {
-  actionDispatchRemoveSelected.execute(selection.value.map(item => ({ id: item.id })))
+async function handleRemoveSelected() {
+  try {
+    await actionDispatchRemoveSelected.execute(selection.value.map(item => ({ id: item.id })))
+    emit('refresh')
+  } catch (e) {
+    console.log(e)
+  }
 }
 
-function handleCreateDispatch() {
-  actionDispatchMessage.execute()
+async function handleCreateDispatch() {
+  try {
+    actionDispatchMessage.execute(undefined, {
+      success: (data: any) => {
+        console.log(data)
+        emit('refresh')
+      },
+      failure: (error: any) => {
+        console.error(error)
+        // TODO @framework: Implement
+        
+      }
+    })
+    emit('refresh')
+  } catch (e) {
+    console.log(e)
+  }
 }
 </script>
 
@@ -219,13 +239,13 @@ function handleCreateDispatch() {
             <Menu ref="filtersMenuRef" id="overlay_menu" :model="filtersMenuItems" :popup="true" />
           </div>
           <div class="flex flex-wrap flex-1">
-            <Chip v-if="filterByCustomerId !== undefined" removable @remove="filterByCustomerId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="filterByCustomerId !== undefined" removable @remove="filterByCustomerId = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Customer Id: </b><span v-text="filters.customerId?.title || filterByCustomerId"></span></span>
             </Chip>
-            <Chip v-if="filterByTypeId !== undefined" removable @remove="filterByTypeId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="filterByTypeId !== undefined" removable @remove="filterByTypeId = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Type Id: </b><span v-text="filters.typeId?.title || filterByTypeId"></span></span>
             </Chip>
-            <Chip v-if="filterByStatusId !== undefined" removable @remove="filterByStatusId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="filterByStatusId !== undefined" removable @remove="filterByStatusId = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Status Id: </b><span v-text="filters.statusId?.title || filterByStatusId"></span></span>
             </Chip>
           </div>
@@ -236,19 +256,19 @@ function handleCreateDispatch() {
             <Menu ref="sortersMenuRef" id="overlay_menu" :model="sortersMenuItems" :popup="true" />
           </div>
           <div class="flex flex-wrap flex-1">
-            <Chip v-if="sortById !== undefined" removable @remove="sortById = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="sortById !== undefined" removable @remove="sortById = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Id: </b><span v-text="sortings.id || sortById"></span></span>
             </Chip>
-            <Chip v-if="sortByCreatedAt !== undefined" removable @remove="sortByCreatedAt = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="sortByCreatedAt !== undefined" removable @remove="sortByCreatedAt = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Created At: </b><span v-text="sortings.createdAt || sortByCreatedAt"></span></span>
             </Chip>
-            <Chip v-if="sortByUpdatedAt !== undefined" removable @remove="sortByUpdatedAt = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="sortByUpdatedAt !== undefined" removable @remove="sortByUpdatedAt = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Updated At: </b><span v-text="sortings.updatedAt || sortByUpdatedAt"></span></span>
             </Chip>
-            <Chip v-if="sortByTypeId !== undefined" removable @remove="sortByTypeId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="sortByTypeId !== undefined" removable @remove="sortByTypeId = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Type Id: </b><span v-text="sortings.typeId || sortByTypeId"></span></span>
             </Chip>
-            <Chip v-if="sortByStatusId !== undefined" removable @remove="sortByStatusId = undefined" class="p-1 ms-2 my-1 whitespace-nowrap">
+            <Chip v-if="sortByStatusId !== undefined" removable @remove="sortByStatusId = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
               <span><b>Status Id: </b><span v-text="sortings.statusId || sortByStatusId"></span></span>
             </Chip>
           </div>
