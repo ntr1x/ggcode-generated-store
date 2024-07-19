@@ -1,0 +1,89 @@
+replicaCount: 1
+
+image:
+  repository: harbor.rbt.ru/library
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v5.12.0"
+
+imagePullSecrets:
+#  - name: "harbor"
+nameOverride: ""
+fullnameOverride: ""
+
+ingress:
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 128m
+    nginx.ingress.kubernetes.io/proxy-buffer-size: 64k
+  hosts:
+    default: api-sandbox-{env}.rbtdigitalmobile.ru
+  paths:
+    - path: "/swagger"
+      type: "Prefix"
+  tls:
+    certname:
+      default: rbtdigitalmobile-wild
+      
+service:
+  type: ClusterIP
+  port: 8080
+
+configmap:
+  CONFIG_URL: config/swagger-config.json
+  URL: ""
+  BASE_URL: "/swagger"
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+
+resources: {}
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# Additional volumes on the output Deployment definition.
+volumes:
+  - name: swagger-config-json
+    configMap:
+      name: swagger-config-json
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts:
+  - name: swagger-config-json
+    mountPath: /usr/share/nginx/html/config
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

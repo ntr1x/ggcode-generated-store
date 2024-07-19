@@ -1,0 +1,17 @@
+yamlApplicationConfig:
+  kafka:
+    clusters:
+      - name: dev
+        bootstrapServers: store-kafka-bootstrap.kafka:9092
+        auth:
+  type: disabled
+  management:
+    health:
+      ldap:
+        enabled: false
+ingress:
+  enabled: true
+  host: kafka-ui.rbtdigitalmobile.ru
+  tls:
+    enabled: true
+    secretName: rbtdigitalmobile-wild

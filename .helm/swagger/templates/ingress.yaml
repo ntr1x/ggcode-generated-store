@@ -1,0 +1,31 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "chtmpl.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+    - host: {{ pluck .Values.global.env .Values.ingress.hosts | default (pluck "default" .Values.ingress.hosts) | first | default "" | toString | replace "{env}" .Values.global.env }}
+      http:
+        paths:
+          {{- range .Values.ingress.paths }}
+          - path: {{ .path }}
+            pathType: {{ .type | default "ImplementationSpecific" }}
+            backend:
+              service:
+                name: {{ $.Release.Name }}
+                port:
+                  number: {{ $.Values.service.port }}
+          {{- end }}
+
+  tls:
+  - hosts: 
+    - {{ pluck .Values.global.env .Values.ingress.hosts | default (pluck "default" .Values.ingress.hosts) | first | default "" | toString | replace "{env}" .Values.global.env }}
+    secretName: {{ pluck .Values.global.env .Values.ingress.tls.certname | first | default (pluck "default" .Values.ingress.tls.certname | first ) }}
+{{- end }}

@@ -1,0 +1,134 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "chtmpl.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "chtmpl.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "chtmpl.labels" . | nindent 8 }}
+	{{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      # securityContext:
+      #   fsGroup: 1000
+      #   runAsUser: 1000
+      #   runAsGroup: 1000
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "chtmpl.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Release.Name }}
+          env: 
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}/{{ .Chart.Name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: api/assembly_web/v3/api-docs
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            failureThreshold: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /api/assembly_web/v3/api-docs
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            failureThreshold: 10
+            timeoutSeconds: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- if .Values.logs.enabled }}
+        - name: logstash
+          image: {{ .Values.logs.logstash.image }}:{{ .Values.logs.logstash.version | toString }}
+          imagePullPolicy: IfNotPresent
+          # command: ["/bin/sh", "-c", "sleep infinity"] # for debug
+          env: 
+            - name: APP_NAME
+              value: {{ .Chart.Name }}
+            - name: ENVIRONMENT
+              value: {{ .Values.global.env }}
+            - name: XPACK_MONITORING_ENABLED
+              value: "false"
+            - name: LS_JAVA_OPTS
+              value: "-Xmx256m -Xms256m"
+            - name: LOG_LEVEL
+              value: "warn"
+          ports:
+            - name: log-tcp
+              containerPort: {{ .Values.logs.logstash.port }}
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.logs.logstash.port }}
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            failureThreshold: 5
+            timeoutSeconds: 5
+          resources:
+            {{- toYaml .Values.resources_logstash | nindent 12 }}
+          volumeMounts:
+            {{- toYaml .Values.logs.logstash.volumeMounts | nindent 12 }}
+        {{ end }}
+      volumes:
+      {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.logs.enabled }}
+      {{- with .Values.logs.logstash.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      hostAliases:
+        {{- tpl  (toYaml .Values.hostAliases) . | nindent 8  }}
+

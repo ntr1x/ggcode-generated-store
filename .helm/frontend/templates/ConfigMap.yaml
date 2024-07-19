@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name:  {{ .Release.Name }}
+  labels:
+    {{- include "chtmpl.labels" . | nindent 4 }}
+data:
+  {{- $env := .Values.global.env }}
+  GLOBAL_ENVIRONMENT: "{{ $env }}"
+  {{- range $k, $v := .Values.configmap }}
+    {{- if eq (kindOf $v) "map" }}
+  {{ $k }}: "{{ pluck $env $v | default (pluck "default" $v) | first | toString | replace "{env}" $env }}"
+    {{- else }}
+  {{ $k }}: "{{ $v | toString | replace "{env}" $env }}"
+    {{- end }}
+  {{- end }}
+
+---
+
+{{- $env := .Values.global.env }}
+{{- $fqdn := pluck $env .Values.configmap.FQDN | default (pluck "default" .Values.configmap.FQDN) | first | toString | replace "{env}" $env }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name:  frontend-config
+  labels:
+    {{- include "chtmpl.labels" . | nindent 4 }}
+data:
+  config.js: |
+    window.__APP_CONFIG__ = {
+        remote: {
+          security: { baseURL: "https://{{ $fqdn }}/api/assembly_web" },
+          customers: { baseURL: "https://{{ $fqdn }}/api/assembly_web" },
+          products: { baseURL: "https://{{ $fqdn }}/api/assembly_web" },
+          payments: { baseURL: "https://{{ $fqdn }}/api/assembly_web" },
+          events: { baseURL: "https://{{ $fqdn }}/api/assembly_web" },
+          structure: { baseURL: "https://{{ $fqdn }}/api/assembly_web" },
+        },
+        socket: {
+          events: { baseURL: "wss://{{ $fqdn }}/api/assembly_web/ws" }
+        }
+      }
+    
+

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name:  {{ .Release.Name }}
+  labels:
+    {{- include "chtmpl.labels" . | nindent 4 }}
+data:
+  SPRING_APPLICATION_NAME: {{ .Chart.Name }}
+  {{- $env := .Values.global.env }}
+  GLOBAL_ENVIRONMENT: "{{ $env }}"
+  {{- range $k, $v := .Values.configmap }}
+    {{- if eq (kindOf $v) "map" }}
+  {{ $k }}: "{{ pluck $env $v | default (pluck "default" $v) | first | toString | replace "{env}" $env }}"
+    {{- else }}
+  {{ $k }}: "{{ $v | toString | replace "{env}" $env }}"
+    {{- end }}
+  {{- end }}
