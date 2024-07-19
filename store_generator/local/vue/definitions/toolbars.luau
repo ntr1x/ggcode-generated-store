@@ -103,9 +103,11 @@ toolbars.toolbar_dispatch = Toolbar
       :from(actions.action_dispatch_message_remove_selected, 'remove_selected')
       :with_severity('danger')
       :with_selection(true)
-      :with_expression('selection.value.map(item => ({ id: item.id }))'),
+      :with_expression('selection.value.map(item => ({ id: item.id }))')
+      :with_on_success('refresh'),
     Toolbar.Handle
-      :from(actions.action_dispatch_message_open_dialog,'create_dispatch'),
+      :from(actions.action_dispatch_message_open_dialog,'create_dispatch')
+      :with_on_success('refresh'),
   }
 
 toolbars.toolbar_template = Toolbar
@@ -117,6 +119,26 @@ toolbars.toolbar_template = Toolbar
     Toolbar.Sorter:from('name'),
     Toolbar.Sorter:from('type_id'),
     Toolbar.Sorter:from('shape_id'),
+  }
+
+toolbars.toolbar_network = Toolbar
+  :from_query(queries.query_network_select, 'networks')
+  :with_rules {
+    Toolbar.Filter:from_select(selects.select_network_type, 'type_id'),
+    Toolbar.Sorter:from('id'),
+    Toolbar.Sorter:from('name'),
+    Toolbar.Sorter:from('type_id'),
+    Toolbar.Sorter:from('hidden'),
+    Toolbar.Column:from('id', 'string'),
+    Toolbar.Handle
+      :from(actions.action_network_remove_selected, 'remove_selected')
+      :with_severity('danger')
+      :with_selection(true)
+      :with_expression('selection.value.map(item => ({ id: item.id }))')
+      :with_on_success('refresh'),
+    Toolbar.Handle
+      :from(actions.action_network_create_open_dialog,'create_network')
+      :with_on_success('refresh'),
   }
 
 return toolbars

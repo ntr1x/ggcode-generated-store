@@ -41,13 +41,18 @@ symbols.symbol_region = Symbol
   :with_label('props.value.name')
   :with_icon('"pi pi-map"')
 
+symbols.symbol_shop = Symbol
+  :from(projects.project, 'shop')
+  :with_label('props.value.name')
+  :with_icon('"pi pi-warehouse"')
+
 symbols.symbol_source_type = Symbol
   :from(projects.project, 'source_type')
   :with_label('props.value.description')
   :with_decoration('decorations[props.value.name]')
   :with_record('decorations', {
-    web = 'rounded bg-blue-800 text-white',
-    mobile = 'rounded bg-purple-800 text-white',
+    web = 'rounded text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-500/20',
+    mobile = 'rounded text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-500/20',
   })
 
 symbols.symbol_order_type = Symbol
@@ -55,9 +60,9 @@ symbols.symbol_order_type = Symbol
   :with_label('props.value.description')
   :with_decoration('decorations[props.value.name]')
   :with_record('decorations', {
-    CASH = 'rounded bg-green-800 text-white',
-    CARD_INPLACE = 'rounded bg-teal-800 text-white',
-    CARD_ONLINE = 'rounded bg-sky-800 text-white',
+    CASH = 'rounded text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-500/20',
+    CARD_INPLACE = 'rounded text-teal-700 dark:text-teal-300 bg-teal-100 dark:bg-teal-500/20',
+    CARD_ONLINE = 'rounded text-sky-700 dark:text-sky-300 bg-sky-100 dark:bg-sky-500/20',
   })
 
 symbols.symbol_order_status = Symbol
@@ -65,10 +70,10 @@ symbols.symbol_order_status = Symbol
   :with_label('props.value.description')
   :with_decoration('decorations[props.value.name]')
   :with_record('decorations', {
-    NEW = 'rounded bg-blue-800 text-white',
-    ACCEPTED = 'rounded bg-green-800 text-white',
-    REJECTED = 'rounded bg-red-800 text-white',
-    CANCELED = 'rounded bg-orange-800 text-white',
+    NEW = 'rounded text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-500/20',
+    ACCEPTED = 'rounded text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-500/20',
+    REJECTED = 'rounded text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-500/20',
+    CANCELED = 'rounded text-orange-700 dark:text-orange-300 bg-orange-100 dark:bg-orange-500/20',
   })
 
 symbols.symbol_payment_type = Symbol
@@ -76,9 +81,9 @@ symbols.symbol_payment_type = Symbol
   :with_label('props.value.description')
   :with_decoration('decorations[props.value.name]')
   :with_record('decorations', {
-    CASH = 'rounded bg-green-800 text-white',
-    CARD_INPLACE = 'rounded bg-teal-800 text-white',
-    CARD_ONLINE = 'rounded bg-sky-800 text-white',
+    CASH = 'rounded text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-500/20',
+    CARD_INPLACE = 'rounded text-teal-700 dark:text-teal-300 bg-teal-100 dark:bg-teal-500/20',
+    CARD_ONLINE = 'rounded text-sky-700 dark:text-sky-300 bg-sky-100 dark:bg-sky-500/20',
   })
 
 symbols.symbol_payment_status = Symbol
@@ -86,10 +91,10 @@ symbols.symbol_payment_status = Symbol
   :with_label('props.value.description')
   :with_decoration('decorations[props.value.name]')
   :with_record('decorations', {
-    NEW = 'rounded bg-blue-800 text-white',
-    ACCEPTED = 'rounded bg-green-800 text-white',
-    REJECTED = 'rounded bg-red-800 text-white',
-    CANCELED = 'rounded bg-orange-800 text-white',
+    NEW = 'rounded text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-500/20',
+    ACCEPTED = 'rounded text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-500/20',
+    REJECTED = 'rounded text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-500/20',
+    CANCELED = 'rounded text-orange-700 dark:text-orange-300 bg-orange-100 dark:bg-orange-500/20',
   })
 
 symbols.symbol_promotion_type = Symbol
@@ -97,9 +102,9 @@ symbols.symbol_promotion_type = Symbol
   :with_label('props.value.description')
   :with_decoration('decorations[props.value.name]')
   :with_record('decorations', {
-    DISCOUNT = 'rounded bg-green-800 text-white',
-    BONUSES = 'rounded bg-teal-800 text-white',
-    FREE_SHIPPING = 'rounded bg-sky-800 text-white',
+    DISCOUNT = 'rounded text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-500/20',
+    BONUSES = 'rounded text-teal-700 dark:text-teal-300 bg-teal-100 dark:bg-teal-500/20',
+    FREE_SHIPPING = 'rounded text-sky-700 dark:text-sky-300 bg-sky-100 dark:bg-sky-500/20',
   })
 
 symbols.symbol_subscription_type = Symbol
@@ -107,30 +112,30 @@ symbols.symbol_subscription_type = Symbol
   :with_label('props.value.description')
   :with_decoration('decorations[props.value.name]')
   :with_record('decorations', {
-    FCM = 'rounded bg-green-800 text-white',
-    HMS = 'rounded bg-indigo-800 text-white',
+    FCM = 'rounded text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-500/20',
+    HMS = 'rounded text-indigo-700 dark:text-indigo-300 bg-indigo-100 dark:bg-indigo-500/20',
   })
 
 symbols.symbol_event_topic_info = Symbol
   :from(projects.project, 'event_topic_info')
   :with_label('props.value == null ? null : `${props.value.name} (${props.value.description})`')
-  :with_decoration('"rounded border border-gray-500"')
+  :with_decoration('"rounded text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-500/20"')
 
 symbols.symbol_event_source_info = Symbol
   :from(projects.project, 'event_source_info')
   :with_label('`${props.value.name} (${props.value.description})`')
-  :with_decoration('"rounded border border-gray-500"')
+  :with_decoration('"rounded text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-500/20"')
 
 symbols.symbol_event_type_info = Symbol
   :from(projects.project, 'event_type_info')
   :with_label('`${props.value.name} (${props.value.description})`')
   :with_decoration('decorations[props.value.name]')
   :with_record('decorations', {
-    created = 'rounded bg-blue-800 text-white',
-    updated = 'rounded bg-green-800 text-white',
-    removed = 'rounded bg-red-800 text-white',
-    replaced = 'rounded bg-orange-800 text-white',
-    upserted = 'rounded bg-amber-800 text-white',
+    created = 'rounded text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-500/20',
+    updated = 'rounded text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-500/20',
+    removed = 'rounded text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-500/20',
+    replaced = 'rounded text-orange-700 dark:text-orange-300 bg-orange-100 dark:bg-orange-500/20',
+    upserted = 'rounded text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-500/20',
   })
 
 symbols.symbol_session_id = Symbol
@@ -143,10 +148,10 @@ symbols.symbol_dispatch_status = Symbol
   :with_label('props.value.description')
   :with_decoration('decorations[props.value.name]')
   :with_record('decorations', {
-    NEW = 'rounded bg-blue-800 text-white',
-    DISPATCHED = 'rounded bg-orange-800 text-white',
-    CONFIRMED = 'rounded bg-green-800 text-white',
-    FAILED = 'rounded bg-red-800 text-white',
+    NEW = 'rounded text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-500/20',
+    DISPATCHED = 'rounded text-orange-700 dark:text-orange-300 bg-orange-100 dark:bg-orange-500/20',
+    CONFIRMED = 'rounded text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-500/20',
+    FAILED = 'rounded text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-500/20',
   })
 
 symbols.symbol_dispatch_type = Symbol
@@ -154,10 +159,10 @@ symbols.symbol_dispatch_type = Symbol
   :with_label('props.value.description')
   :with_decoration('decorations[props.value.name]')
   :with_record('decorations', {
-    CUSTOMER = 'rounded bg-blue-800 text-white',
-    AGENT = 'rounded bg-orange-800 text-white',
-    SESSION = 'rounded bg-green-800 text-white',
-    CRITERIA = 'rounded bg-red-800 text-white',
+    CUSTOMER = 'rounded text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-500/20',
+    AGENT = 'rounded text-orange-700 dark:text-orange-300 bg-orange-100 dark:bg-orange-500/20',
+    SESSION = 'rounded text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-500/20',
+    CRITERIA = 'rounded text-rose-700 dark:text-rose-300 bg-rose-100 dark:bg-rose-500/20',
   })
 
 symbols.symbol_template_shape = Symbol
@@ -165,8 +170,8 @@ symbols.symbol_template_shape = Symbol
   :with_label('props.value.description')
   :with_decoration('decorations[props.value.name]')
   :with_record('decorations', {
-    TEXT = 'rounded bg-blue-800 text-white',
-    EMAIL = 'rounded bg-orange-800 text-white',
+    TEXT = 'rounded text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-500/20',
+    EMAIL = 'rounded text-orange-700 dark:text-orange-300 bg-orange-100 dark:bg-orange-500/20',
   })
 
 symbols.symbol_template_type = Symbol
@@ -174,17 +179,30 @@ symbols.symbol_template_type = Symbol
   :with_label('props.value.description')
   :with_decoration('decorations[props.value.name]')
   :with_record('decorations', {
-    ['message:info'] = 'rounded bg-red-800 text-white',
-    ['security:signin'] = 'rounded bg-orange-800 text-white',
-    ['security:signup'] = 'rounded bg-orange-800 text-white',
-    ['profile:updated'] = 'rounded bg-green-800 text-white',
-    ['order:created'] = 'rounded bg-blue-800 text-white',
-    ['order:packaged'] = 'rounded bg-blue-800 text-white',
-    ['order:paid'] = 'rounded bg-blue-800 text-white',
-    ['order:failed'] = 'rounded bg-blue-800 text-white',
-    ['order:canceled'] = 'rounded bg-blue-800 text-white',
-    ['order:ready'] = 'rounded bg-blue-800 text-white',
-    ['order:complete'] = 'rounded bg-blue-800 text-white',
+    ['message:info'] = 'rounded text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-500/20',
+    ['security:signin'] = 'rounded text-orange-700 dark:text-orange-300 bg-orange-100 dark:bg-orange-500/20',
+    ['security:signup'] = 'rounded text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-500/20',
+    ['profile:updated'] = 'rounded text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-500/20',
+    ['order:created'] = 'rounded text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-500/20',
+    ['order:packaged'] = 'rounded text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-500/20',
+    ['order:paid'] = 'rounded text-teal-700 dark:text-teal-300 bg-teal-100 dark:bg-teal-500/20',
+    ['order:failed'] = 'rounded text-rose-700 dark:text-rose-300 bg-rose-100 dark:bg-rose-500/20',
+    ['order:canceled'] = 'rounded text-fuchsia-700 dark:text-fuchsia-300 bg-fuchsia-100 dark:bg-fuchsia-500/20',
+    ['order:ready'] = 'rounded text-sky-700 dark:text-sky-300 bg-sky-100 dark:bg-sky-500/20',
+    ['order:complete'] = 'rounded text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-500/20',
+  })
+
+symbols.symbol_network_type = Symbol
+  :from(projects.project, 'network_type')
+  :with_label('props.value.description')
+  :with_decoration('decorations[props.value.name]')
+  :with_record('decorations', {
+    NOPASS,
+    WEP,
+    WPA,
+    ['NOPASS'] = 'rounded text-orange-700 dark:text-orange-300 bg-orange-100 dark:bg-orange-500/20',
+    ['WEP'] = 'rounded text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-500/20',
+    ['WPA'] = 'rounded text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-500/20',
   })
 
 return symbols

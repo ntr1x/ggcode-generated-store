@@ -132,7 +132,6 @@ requests.request_dispatch_select = Request
     size = 50
   })
 
-
 requests.request_dispatch_remove_all = Request
   :from_post(remotes.remote_events, '/system/public_dispatch/removeAll')
   :with_body(Meta:array {})
@@ -167,6 +166,26 @@ requests.request_template_type_select = Request
 
 requests.request_template_shape_select = Request
   :from_post(remotes.remote_events, '/system/public_template_shape/select')
+  :with_body(Meta:table {})
+
+requests.request_network_select = Request
+  :from_post(remotes.remote_structure, '/system/public_network/select')
+  :with_body(Meta:table {})
+  :with_query(Meta:table {
+    sort = 'id,desc',
+    size = 50
+  })
+
+requests.request_network_create = Request
+  :from_post(remotes.remote_structure, '/system/public_network')
+  :with_body(Meta:table {})
+
+requests.request_network_remove_all = Request
+  :from_post(remotes.remote_structure, '/system/public_network/removeAll')
+  :with_body(Meta:array {})
+
+requests.request_network_type_select = Request
+  :from_post(remotes.remote_structure, '/system/public_network_type/select')
   :with_body(Meta:table {})
 
 return requests

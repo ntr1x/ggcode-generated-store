@@ -11,6 +11,7 @@ projects.project = Project
   :with_menu('profiles')
   :with_menu('catalogue')
   :with_menu('notifications')
+  :with_menu('structure')
   :with_menu('dictionaries')
 
 return projects

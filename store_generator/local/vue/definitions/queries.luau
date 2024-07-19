@@ -195,4 +195,25 @@ queries.query_agent_get = Query:from_request(requests.request_agent_get, 'agent_
 queries.query_order_get = Query:from_request(requests.request_order_get, 'order_get')
 queries.query_product_get = Query:from_request(requests.request_product_get, 'product_get')
 
+queries.query_network_select = Query
+  :from_request(requests.request_network_select, 'network_select')
+  :with_rules {
+    Query.Filter:from('type_id', 'typeId'),
+    Query.Filter:from('shop_id', 'shopId'),
+    Query.Filter:from('hidden', 'hidden'),
+    Query.Sorter:from('id', 'id'),
+    Query.Sorter:from('name', 'name'),
+    Query.Sorter:from('type_id', 'typeId'),
+    Query.Sorter:from('shop_id', 'shopId'),
+    Query.Sorter:from('hidden', 'hidden'),
+  }
+
+queries.query_network_type_select = Query
+  :from_request(requests.request_network_type_select, 'network_type_select')
+  :with_rules {
+    Query.Sorter:from('id', 'id'),
+    Query.Sorter:from('name', 'name'),
+    Query.Sorter:from('description', 'description'),
+  }
+
 return queries

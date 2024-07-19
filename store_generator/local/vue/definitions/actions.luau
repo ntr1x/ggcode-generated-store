@@ -11,4 +11,10 @@ actions.action_dispatch_message_open_dialog = Action
 actions.action_dispatch_message_remove_selected = Action
   :from_request(requests.request_dispatch_remove_all, 'dispatch_remove_selected')
 
+actions.action_network_create_open_dialog = Action
+  :from_dialog(dialogs.dialog_network_create, 'create_network')
+
+actions.action_network_remove_selected = Action
+  :from_request(requests.request_network_remove_all, 'network_remove_selected')
+
 return actions

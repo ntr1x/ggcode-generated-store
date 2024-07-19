@@ -138,4 +138,12 @@ routes.route_template_type_list = Router.Route
   :from_page(pages.page_template_type_list)
   :with_roles({'realm:developer', 'realm:admin'})
 
+routes.route_network_list = Router.Route
+  :from_page(pages.page_network_list)
+  :with_roles({'realm:developer', 'realm:admin'})
+
+routes.route_network_type_list = Router.Route
+  :from_page(pages.page_network_type_list)
+  :with_roles({'realm:developer', 'realm:admin'})
+
 return routes

@@ -82,4 +82,8 @@ selects.select_template_shape = Select
   :from_request(requests.request_template_shape_select, 'template_shape')
   :with_field_description('description')
 
+selects.select_network_type = Select
+  :from_request(requests.request_network_type_select, 'network_type')
+  :with_field_description('description')
+
 return selects

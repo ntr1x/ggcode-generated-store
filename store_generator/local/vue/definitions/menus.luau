@@ -51,6 +51,13 @@ menus.menu_catalogue = Menu
     Menu.Item:from_route(routers.router_admin, routes.route_shop_list):with_font_icon('pi pi-warehouse'),
   }
 
+menus.menu_structure = Menu
+  :from(projects.project, 'structure')
+  :with_roles({'realm:developer', 'realm:admin'})
+    :with_rules {
+      Menu.Item:from_route(routers.router_admin, routes.route_network_list):with_font_icon('pi pi-wifi'),
+    }
+
 menus.menu_dictionaries = Menu
   :from(projects.project, 'dictionaries')
   :with_roles({'realm:developer', 'realm:admin'})
@@ -69,6 +76,7 @@ menus.menu_dictionaries = Menu
     Menu.Item:from_route(routers.router_admin, routes.route_event_types):with_font_icon('pi pi-database'),
     Menu.Item:from_route(routers.router_admin, routes.route_template_type_list):with_font_icon('pi pi-database'),
     Menu.Item:from_route(routers.router_admin, routes.route_template_shape_list):with_font_icon('pi pi-database'),
+    Menu.Item:from_route(routers.router_admin, routes.route_network_type_list):with_font_icon('pi pi-database'),
   }
 
 return menus

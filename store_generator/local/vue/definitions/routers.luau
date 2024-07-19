@@ -46,6 +46,8 @@ routers.router_admin = Router
     routes.route_template_list,
     routes.route_template_shape_list,
     routes.route_template_type_list,
+    routes.route_network_list,
+    routes.route_network_type_list,
   }
 
 return routers

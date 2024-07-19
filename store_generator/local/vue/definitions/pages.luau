@@ -336,4 +336,21 @@ pages.page_template_shape_list = Page
     queries.query_template_shape_select,
   }
 
+pages.page_network_list = Page
+  :from(projects.project, 'networks')
+  :with_rules {
+    Page.Heading:from('networks'),
+    Page.Section:from_toolbar(toolbars.toolbar_network),
+    Page.Section:from_grid(grids.grid_network),
+    queries.query_network_select,
+  }
+
+pages.page_network_type_list = Page
+  :from(projects.project, 'network_types')
+  :with_rules {
+    Page.Heading:from('network_types'),
+    Page.Section:from_grid(grids.grid_network_type),
+    queries.query_network_type_select,
+  }
+
 return pages

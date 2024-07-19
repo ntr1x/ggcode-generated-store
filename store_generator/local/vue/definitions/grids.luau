@@ -307,4 +307,25 @@ grids.grid_template_shape = Grid
     Grid.Column:from_path('description', 'description'),
   }
 
+grids.grid_network = Grid
+  :from_query(queries.query_network_select, 'networks')
+  :with_rules {
+    Grid.Column
+      :from_symbol('id', symbols.symbol_id, 'id')
+      :with_variable('label', "'REF'")
+      :with_variable('route', '`/admin/networks/${slotProps.data.id}`'),
+    Grid.Column:from_symbol('type', symbols.symbol_network_type, 'type'),
+    Grid.Column:from_symbol('shop', symbols.symbol_shop, 'shop'),
+    Grid.Column:from_path('hidden', 'hidden'),
+    Grid.Column:from_path('name', 'name'),
+  }
+
+grids.grid_network_type = Grid
+  :from_query(queries.query_network_type_select, 'network_types')
+  :with_rules {
+    Grid.Column:from_symbol('id', symbols.symbol_id, 'id'),
+    Grid.Column:from_path('name', 'name'),
+    Grid.Column:from_path('description', 'description'),
+  }
+
 return grids

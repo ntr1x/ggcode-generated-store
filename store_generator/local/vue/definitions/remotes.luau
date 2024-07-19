@@ -9,5 +9,6 @@ remotes.remote_customers = Remote:from(projects.project, 'customers', 'http://ap
 remotes.remote_products = Remote:from(projects.project, 'products', 'http://api.local.example.com/api/assembly_web')
 remotes.remote_payments = Remote:from(projects.project, 'payments', 'http://api.local.example.com/api/assembly_web')
 remotes.remote_events = Remote:from(projects.project, 'events', 'http://api.local.example.com/api/assembly_web')
+remotes.remote_structure = Remote:from(projects.project, 'structure', 'http://api.local.example.com/api/assembly_web')
 
 return remotes
