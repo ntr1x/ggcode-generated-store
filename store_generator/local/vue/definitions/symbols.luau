@@ -205,4 +205,9 @@ symbols.symbol_network_type = Symbol
     ['WPA'] = 'rounded text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-500/20',
   })
 
+symbols.symbol_guide_subject = Symbol
+  :from(projects.project, 'guide_subject')
+  :with_label('props.value.name')
+  :with_icon('"pi pi-bookmark"')
+
 return symbols

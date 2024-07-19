@@ -1,18 +1,16 @@
 <script setup lang="ts" generic="T">
-import { ref, shallowRef, reactive } from 'vue';
+import { ref, reactive, shallowRef } from 'vue';
 import Menubar from 'primevue/menubar'
 import Button from 'primevue/button'
 import Chip from 'primevue/chip'
 import Menu from 'primevue/menu';
 import { type Option } from '../dialogs/PlatformDialogFilter.vue';
-
 import { useModalStore } from '../../store/modalStore';
 import SearchPickerCustomerId from '../controls/SearchPickerCustomerId.vue'
 import SelectPickerSourceType from '../controls/SelectPickerSourceType.vue'
 import SelectPickerOrderType from '../controls/SelectPickerOrderType.vue'
 import SelectPickerOrderStatus from '../controls/SelectPickerOrderStatus.vue'
 import SelectPickerRegionId from '../controls/SelectPickerRegionId.vue'
-
 const modalStore = useModalStore()
 
 const emit = defineEmits<{

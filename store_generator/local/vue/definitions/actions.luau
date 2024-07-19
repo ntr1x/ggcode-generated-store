@@ -17,4 +17,16 @@ actions.action_network_create_open_dialog = Action
 actions.action_network_remove_selected = Action
   :from_request(requests.request_network_remove_all, 'network_remove_selected')
 
+actions.action_guide_create_open_dialog = Action
+  :from_dialog(dialogs.dialog_guide_create, 'create_guide')
+
+actions.action_guide_remove_selected = Action
+  :from_request(requests.request_guide_remove_all, 'guide_remove_selected')
+
+actions.action_guide_subject_create_open_dialog = Action
+  :from_dialog(dialogs.dialog_guide_subject_create, 'create_guide_subject')
+
+actions.action_guide_subject_remove_selected = Action
+  :from_request(requests.request_guide_subject_remove_all, 'guide_subject_remove_selected')
+
 return actions

@@ -146,4 +146,22 @@ routes.route_network_type_list = Router.Route
   :from_page(pages.page_network_type_list)
   :with_roles({'realm:developer', 'realm:admin'})
 
+routes.route_guide_list = Router.Route
+  :from_page(pages.page_guide_list)
+  :with_roles({'realm:developer', 'realm:admin'})
+
+routes.route_guide_info = Router.Route
+  :from_page(pages.page_guide_info)
+  :with_path('guides/:guideId')
+  :with_roles({'realm:developer', 'realm:admin', 'realm:support'})
+
+routes.route_guide_subject_list = Router.Route
+  :from_page(pages.page_guide_subject_list)
+  :with_roles({'realm:developer', 'realm:admin'})
+
+routes.route_guide_subject_info = Router.Route
+  :from_page(pages.page_guide_subject_info)
+  :with_path('guide_subjects/:subjectId')
+  :with_roles({'realm:developer', 'realm:admin', 'realm:support'})
+
 return routes

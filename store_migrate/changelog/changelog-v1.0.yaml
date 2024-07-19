@@ -288,3 +288,20 @@ databaseChangeLog:
         - sqlFile:
             path: ddl/public/drop/network_type.sql
             relativeToChangelogFile: true
+  - changeSet:
+      id: 1.0.5
+      author: Setup structure tables (guides)
+      changes:
+        - sqlFile:
+            path: ddl/public/create/guide_subject.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            path: ddl/public/create/guide.sql
+            relativeToChangelogFile: true
+      rollback:
+        - sqlFile:
+            path: ddl/public/drop/guide.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            path: ddl/public/drop/guide_subject.sql
+            relativeToChangelogFile: true

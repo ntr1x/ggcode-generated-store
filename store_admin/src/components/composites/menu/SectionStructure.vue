@@ -31,6 +31,18 @@ const hasAnyRole = computed(() => (roles: string[]) => {
           <span class="font-medium">Networks</span>
         </router-link>
       </li>
+      <li v-if='hasAnyRole(["realm:developer","realm:admin"])'>
+        <router-link to="/admin/guides" class="flex items-center cursor-pointer p-1 rounded-md text-surface-700 dark:text-surface-0/80 hover:bg-surface-100 dark:hover:bg-surface-700 duration-200 transition-colors">
+          <i class="pi pi-book mr-2"></i>
+          <span class="font-medium">Guides</span>
+        </router-link>
+      </li>
+      <li v-if='hasAnyRole(["realm:developer","realm:admin"])'>
+        <router-link to="/admin/guide_subjects" class="flex items-center cursor-pointer p-1 rounded-md text-surface-700 dark:text-surface-0/80 hover:bg-surface-100 dark:hover:bg-surface-700 duration-200 transition-colors">
+          <i class="pi pi-bookmark mr-2"></i>
+          <span class="font-medium">Guide Subjects</span>
+        </router-link>
+      </li>
     </ul>
   </div>
 </template>

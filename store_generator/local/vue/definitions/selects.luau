@@ -86,4 +86,8 @@ selects.select_network_type = Select
   :from_request(requests.request_network_type_select, 'network_type')
   :with_field_description('description')
 
+selects.select_guide_subject = Select
+  :from_request(requests.request_guide_subject_select, 'guide_subject')
+  :with_field_description('description')
+
 return selects

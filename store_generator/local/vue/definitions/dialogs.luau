@@ -20,4 +20,22 @@ dialogs.dialog_network_create = Dialog
     Dialog.Call:from_submit(requests.request_network_create)
   }
 
+dialogs.dialog_guide_subject_create = Dialog
+  :from(projects.project, 'guide_subject_create')
+  :with_rules {
+    Dialog.Field:from_text('name'),
+    Dialog.Field:from_number('position'),
+    Dialog.Call:from_submit(requests.request_guide_subject_create)
+  }
+
+dialogs.dialog_guide_create = Dialog
+  :from(projects.project, 'guide_create')
+  :with_rules {
+    Dialog.Field:from_text('name'),
+    Dialog.Field:from_text('link'),
+    Dialog.Field:from_number('position'),
+    Dialog.Field:from_select(selects.select_guide_subject, 'subject_id'),
+    Dialog.Call:from_submit(requests.request_guide_create)
+  }
+
 return dialogs

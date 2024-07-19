@@ -188,4 +188,49 @@ requests.request_network_type_select = Request
   :from_post(remotes.remote_structure, '/system/public_network_type/select')
   :with_body(Meta:table {})
 
+requests.request_guide_select = Request
+  :from_post(remotes.remote_structure, '/system/public_guide/select')
+  :with_body(Meta:table {})
+  :with_query(Meta:table {
+    sort = 'name,asc',
+    size = 50
+  })
+
+requests.request_guide_create = Request
+  :from_post(remotes.remote_structure, '/system/public_guide')
+  :with_body(Meta:table {})
+
+requests.request_guide_remove_all = Request
+  :from_post(remotes.remote_structure, '/system/public_guide/removeAll')
+  :with_body(Meta:array {})
+
+requests.request_guide_select = Request
+  :from_post(remotes.remote_structure, '/system/public_guide/select')
+  :with_body(Meta:table {})
+  :with_query(Meta:table {
+    sort = 'position,asc',
+    size = 50
+  })
+
+requests.request_guide_subject_create = Request
+  :from_post(remotes.remote_structure, '/system/public_guide_subject')
+  :with_body(Meta:table {})
+
+requests.request_guide_subject_remove_all = Request
+  :from_post(remotes.remote_structure, '/system/public_guide_subject/removeAll')
+  :with_body(Meta:array {})
+
+requests.request_guide_subject_select = Request
+  :from_post(remotes.remote_structure, '/system/public_guide_subject/select')
+  :with_body(Meta:table {})
+  :with_query(Meta:table {
+    sort = 'position,asc',
+    size = 50
+  })
+
+requests.request_guide_subject_get = Request
+  :from_get(remotes.remote_structure, '/system/public_guide_subject/i/${route.params.subjectId}')
+requests.request_guide_get = Request
+  :from_get(remotes.remote_structure, '/system/public_guide/i/${route.params.guideId}')
+
 return requests

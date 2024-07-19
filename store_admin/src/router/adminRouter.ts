@@ -33,6 +33,10 @@ import PageTemplateShapes from '../components/pages/PageTemplateShapes.vue'
 import PageTemplateTypes from '../components/pages/PageTemplateTypes.vue'
 import PageNetworks from '../components/pages/PageNetworks.vue'
 import PageNetworkTypes from '../components/pages/PageNetworkTypes.vue'
+import PageGuides from '../components/pages/PageGuides.vue'
+import PageGuideInfo from '../components/pages/PageGuideInfo.vue'
+import PageGuideSubjects from '../components/pages/PageGuideSubjects.vue'
+import PageGuideSubjectInfo from '../components/pages/PageGuideSubjectInfo.vue'
 
 export const adminRouter = {
   path: '/admin',
@@ -308,6 +312,38 @@ export const adminRouter = {
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
+      }
+    },
+    {
+      path: 'guides',
+      component: PageGuides,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
+    },
+    {
+      path: 'guides/:guideId',
+      component: PageGuideInfo,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin","realm:support"]
+      }
+    },
+    {
+      path: 'guide_subjects',
+      component: PageGuideSubjects,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin"]
+      }
+    },
+    {
+      path: 'guide_subjects/:subjectId',
+      component: PageGuideSubjectInfo,
+      meta: {
+        requiresAuth: true,
+        roles: ["realm:developer","realm:admin","realm:support"]
       }
     },
     {

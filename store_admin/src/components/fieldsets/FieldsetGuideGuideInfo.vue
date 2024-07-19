@@ -1,0 +1,40 @@
+<script setup lang="ts">
+import Panel from 'primevue/panel';
+import { type State } from '../../hooks/useAxiosRequest';
+
+defineProps<{
+  state: State<any>
+}>()
+</script>
+
+<template>
+  <Panel
+    header="Guide Guide Info"
+    pt:header:class="flex items-center justify-between text-surface-700 dark:text-surface-0/80 bg-surface-50 dark:bg-surface-900 border-b border-surface-200 dark:border-surface-700 rounded-tr-lg p-5"
+    pt:content:class="p-5 border-b border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 text-surface-700 dark:text-surface-0/80"
+  >
+    <table class="table-auto border-separate border-spacing-x-3" v-if="state.isLoaded && state.data != null">
+    <tr>
+      <th class="text-left">Name:</th>
+      <td>
+        <div v-if="state.data.name" v-html="state.data.name"></div>
+        <div v-else><i class="text-slate-500">Empty</i></div>
+      </td>
+    </tr>
+    <tr>
+      <th class="text-left">Link:</th>
+      <td>
+        <div v-if="state.data.link" v-html="state.data.link"></div>
+        <div v-else><i class="text-slate-500">Empty</i></div>
+      </td>
+    </tr>
+    <tr>
+      <th class="text-left">Position:</th>
+      <td>
+        <div v-if="state.data.position" v-html="state.data.position"></div>
+        <div v-else><i class="text-slate-500">Empty</i></div>
+      </td>
+    </tr>
+    </table>
+  </Panel>
+</template>
