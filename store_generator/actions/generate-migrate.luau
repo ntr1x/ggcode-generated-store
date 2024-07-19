@@ -134,16 +134,26 @@ local changelog = ChangeLog
         'ddl/public/drop/event_topic_info.sql',
         'ddl/public/drop/event_source_info.sql',
       }),
-      ChangeLog.ChangeSet
-        :from('1.0.4', 'Developer', "Setup structure tables")
-        :with_up_scripts({
-          'ddl/public/create/network_type.sql',
-          'ddl/public/create/network.sql',
-        })
-        :with_down_scripts({
-          'ddl/public/drop/network.sql',
-          'ddl/public/drop/network_type.sql',
-        }),
+    ChangeLog.ChangeSet
+      :from('1.0.4', 'Developer', "Setup structure tables")
+      :with_up_scripts({
+        'ddl/public/create/network_type.sql',
+        'ddl/public/create/network.sql',
+      })
+      :with_down_scripts({
+        'ddl/public/drop/network.sql',
+        'ddl/public/drop/network_type.sql',
+      }),
+    ChangeLog.ChangeSet
+      :from('1.0.5', 'Developer', "Setup structure tables (guides)")
+      :with_up_scripts({
+        'ddl/public/create/guide_subject.sql',
+        'ddl/public/create/guide.sql',
+      })
+      :with_down_scripts({
+        'ddl/public/drop/guide.sql',
+        'ddl/public/drop/guide_subject.sql',
+      }),
   }
 
 local liquibase = Liquibase:from(changelog, 'liquibase', datasource_app)

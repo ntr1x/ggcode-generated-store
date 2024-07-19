@@ -216,4 +216,29 @@ queries.query_network_type_select = Query
     Query.Sorter:from('description', 'description'),
   }
 
+queries.query_guide_select = Query
+  :from_request(requests.request_guide_select, 'guide_select')
+  :with_rules {
+    Query.Filter:from('subject_id', 'subjectId', 'route.params.subjectId'),
+    Query.Sorter:from('id', 'id'),
+    Query.Sorter:from('name', 'name'),
+    Query.Sorter:from('position', 'position'),
+    Query.Sorter:from('subject_id', 'subjectId'),
+    Query.Sorter:from('created_at', 'createdAt'),
+    Query.Sorter:from('updated_at', 'updatedAt'),
+  }
+
+queries.query_guide_subject_select = Query
+  :from_request(requests.request_guide_subject_select, 'guide_subject_select')
+  :with_rules {
+    Query.Sorter:from('id', 'id'),
+    Query.Sorter:from('name', 'name'),
+    Query.Sorter:from('position', 'position'),
+    Query.Sorter:from('created_at', 'createdAt'),
+    Query.Sorter:from('updated_at', 'updatedAt'),
+  }
+
+queries.query_guide_subject_get = Query:from_request(requests.request_guide_subject_get, 'guide_subject_get')
+queries.query_guide_get = Query:from_request(requests.request_guide_get, 'guide_get')
+
 return queries

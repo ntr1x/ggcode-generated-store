@@ -56,6 +56,8 @@ menus.menu_structure = Menu
   :with_roles({'realm:developer', 'realm:admin'})
     :with_rules {
       Menu.Item:from_route(routers.router_admin, routes.route_network_list):with_font_icon('pi pi-wifi'),
+      Menu.Item:from_route(routers.router_admin, routes.route_guide_list):with_font_icon('pi pi-book'),
+      Menu.Item:from_route(routers.router_admin, routes.route_guide_subject_list):with_font_icon('pi pi-bookmark'),
     }
 
 menus.menu_dictionaries = Menu

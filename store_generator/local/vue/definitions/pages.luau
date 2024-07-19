@@ -353,4 +353,47 @@ pages.page_network_type_list = Page
     queries.query_network_type_select,
   }
 
+pages.page_guide_list = Page
+  :from(projects.project, 'guides')
+  :with_rules {
+    Page.Heading:from('guides'),
+    Page.Section:from_toolbar(toolbars.toolbar_guide),
+    Page.Section:from_grid(grids.grid_guide),
+    queries.query_guide_select,
+  }
+
+pages.page_guide_info = Page
+  :from(projects.project, 'guide_info')
+  :without_flex()
+  :with_rules {
+    Page.Heading:from('guide'),
+    Page.Section:from_fieldset(fieldsets.fieldset_guide_info),
+    queries.query_guide_get,
+  }
+
+pages.page_guide_subject_list = Page
+  :from(projects.project, 'guide_subjects')
+  :with_rules {
+    Page.Heading:from('guide_subjects'),
+    Page.Section:from_toolbar(toolbars.toolbar_guide_subject),
+    Page.Section:from_grid(grids.grid_guide_subject),
+    queries.query_guide_subject_select,
+  }
+
+pages.page_guide_subject_info = Page
+  :from(projects.project, 'guide_subject_info')
+  :without_flex()
+  :with_rules {
+    Page.Heading:from('guide_subject'),
+    Page.Section:from_fieldset(fieldsets.fieldset_guide_subject_info),
+    Page.Heading:from('guides', 'h3'),
+    Page.Section:from_toolbar(toolbars.toolbar_guide),
+    Page.Section
+      :from_grid(grids.grid_guide)
+      :with_variable('scrollable', 'false')
+      :with_variable('hide-customer', 'true'),
+    queries.query_guide_subject_get,
+    queries.query_guide_select,
+  }
+
 return pages

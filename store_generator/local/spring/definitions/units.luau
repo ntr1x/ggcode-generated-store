@@ -578,6 +578,8 @@ units.unit_gateway_events_customer_ref:with_columns {
 units.unit_structure_network = Unit:from(modules.service_structure, "public.network")
 units.unit_structure_network_type = Unit:from(modules.service_structure, "public.network_type")
 units.unit_structure_shop_ref = Unit:from(modules.service_structure, "public.shop")
+units.unit_structure_guide = Unit:from(modules.service_structure, "public.guide")
+units.unit_structure_guide_subject = Unit:from(modules.service_structure, "public.guide_subject")
 
 units.unit_structure_network:with_columns {
   PK:uuid 'id',
@@ -602,6 +604,25 @@ units.unit_structure_network_type:with_columns {
   PK:int 'id',
   Prop:text 'name',
   Prop:text 'description',
+}
+
+units.unit_structure_guide:with_columns {
+  PK:uuid 'id',
+  Prop:uuid 'subject_id',
+  Prop:text 'name',
+  Prop:text 'link',
+  Prop:int 'position',
+  Prop:datetime 'created_at',
+  Prop:datetime 'updated_at',
+  Ref:one { name = 'subject', column = 'subject_id', unit = units.unit_structure_guide_subject },
+}
+
+units.unit_structure_guide_subject:with_columns {
+  PK:uuid 'id',
+  Prop:text 'name',
+  Prop:int 'position',
+  Prop:datetime 'created_at',
+  Prop:datetime 'updated_at',
 }
 
 return units

@@ -141,4 +141,42 @@ toolbars.toolbar_network = Toolbar
       :with_on_success('refresh'),
   }
 
+toolbars.toolbar_guide = Toolbar
+  :from_query(queries.query_guide_select, 'guides')
+  :with_rules {
+    Toolbar.Filter:from_select(selects.select_guide_subject, 'subject_id'),
+    Toolbar.Sorter:from('id'),
+    Toolbar.Sorter:from('name'),
+    Toolbar.Sorter:from('position'),
+    Toolbar.Sorter:from('subject_id'),
+    Toolbar.Column:from('id', 'string'),
+    Toolbar.Handle
+      :from(actions.action_guide_remove_selected, 'remove_selected')
+      :with_severity('danger')
+      :with_selection(true)
+      :with_expression('selection.value.map(item => ({ id: item.id }))')
+      :with_on_success('refresh'),
+    Toolbar.Handle
+      :from(actions.action_guide_create_open_dialog,'create_guide')
+      :with_on_success('refresh'),
+  }
+
+toolbars.toolbar_guide_subject = Toolbar
+  :from_query(queries.query_guide_subject_select, 'guide_subjects')
+  :with_rules {
+    Toolbar.Sorter:from('id'),
+    Toolbar.Sorter:from('name'),
+    Toolbar.Sorter:from('position'),
+    Toolbar.Column:from('id', 'string'),
+    Toolbar.Handle
+      :from(actions.action_guide_subject_remove_selected, 'remove_selected')
+      :with_severity('danger')
+      :with_selection(true)
+      :with_expression('selection.value.map(item => ({ id: item.id }))')
+      :with_on_success('refresh'),
+    Toolbar.Handle
+      :from(actions.action_guide_subject_create_open_dialog,'create_guide_subject')
+      :with_on_success('refresh'),
+  }
+
 return toolbars

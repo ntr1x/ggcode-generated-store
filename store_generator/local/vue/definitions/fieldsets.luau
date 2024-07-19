@@ -45,4 +45,19 @@ fieldsets.fieldset_product_info = Fieldset
     Fieldset.Field:from_path('description', 'description'),
   }
 
+fieldsets.fieldset_guide_info = Fieldset
+  :from_query(queries.query_guide_get, 'guide_guide_info')
+  :with_rules {
+    Fieldset.Field:from_path('name', 'name'),
+    Fieldset.Field:from_path('link', 'link'),
+    Fieldset.Field:from_path('position', 'position'),
+  }
+
+fieldsets.fieldset_guide_subject_info = Fieldset
+  :from_query(queries.query_guide_subject_get, 'guide_subject_info')
+  :with_rules {
+    Fieldset.Field:from_path('name', 'name'),
+    Fieldset.Field:from_path('position', 'position'),
+  }
+
 return fieldsets

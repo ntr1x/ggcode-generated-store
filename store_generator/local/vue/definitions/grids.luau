@@ -328,4 +328,28 @@ grids.grid_network_type = Grid
     Grid.Column:from_path('description', 'description'),
   }
 
+grids.grid_guide = Grid
+  :from_query(queries.query_guide_select, 'guides')
+  :with_rules {
+    Grid.Column
+      :from_symbol('id', symbols.symbol_id, 'id')
+      :with_variable('label', "'REF'")
+      :with_variable('route', '`/admin/guides/${slotProps.data.id}`'),
+    Grid.Column:from_symbol('subject', symbols.symbol_guide_subject, 'subject'),
+    Grid.Column:from_path('position', 'position'),
+    Grid.Column:from_path('name', 'name'),
+    Grid.Column:from_path('link', 'link'),
+  }
+
+grids.grid_guide_subject = Grid
+  :from_query(queries.query_guide_subject_select, 'guide_subjects')
+  :with_rules {
+    Grid.Column
+      :from_symbol('id', symbols.symbol_id, 'id')
+      :with_variable('label', "'REF'")
+      :with_variable('route', '`/admin/guide_subjects/${slotProps.data.id}`'),
+    Grid.Column:from_path('position', 'position'),
+    Grid.Column:from_path('name', 'name'),
+  }
+
 return grids
