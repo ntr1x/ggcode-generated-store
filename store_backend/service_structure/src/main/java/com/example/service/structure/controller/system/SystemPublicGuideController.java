@@ -27,7 +27,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.Collection;
 
 @RestController
-@Tag(name = "Networks")
+@Tag(name = "Guides")
 @RequestMapping("/system/public_guide")
 @RequiredArgsConstructor
 public class SystemPublicGuideController {
