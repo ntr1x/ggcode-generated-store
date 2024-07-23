@@ -53,7 +53,7 @@ stages:
 .deploy_k8s:
   stage: deploy
   script:
-    -  helm upgrade store-${APP}-${CI_ENVIRONMENT_NAME} .helm/${APP} --set global.env=${CI_ENVIRONMENT_NAME},image.tag=${IMAGE_TAG},image.repository=${HARBOR_URL}/${HARBOR_PROJECT} -n ${KUBE_NAMESPACE}
+    -  helm upgrade ${APP}-${CI_ENVIRONMENT_NAME} .helm/${APP} --install --set global.env=${CI_ENVIRONMENT_NAME},image.tag=${IMAGE_TAG},image.repository=${HARBOR_URL}/${HARBOR_PROJECT} -n ${KUBE_NAMESPACE}
 
 .deploy_swagger:
   stage: swagger
@@ -62,7 +62,7 @@ stages:
     - if: $CI_COMMIT_BRANCH =~ /^(devops\/.*)$/ && $CI_PIPELINE_SOURCE != "merge_request_event"
       when: manual
   script:
-    - helm upgrade swagger-${CI_ENVIRONMENT_NAME} .helm/swagger --set global.env=${CI_ENVIRONMENT_NAME} --install -n ${KUBE_NAMESPACE}
+    - helm upgrade swagger-${CI_ENVIRONMENT_NAME} .helm/swagger --install --set global.env=${CI_ENVIRONMENT_NAME} --install -n ${KUBE_NAMESPACE}
 
 ################################################################################################
 ################################################################################################
