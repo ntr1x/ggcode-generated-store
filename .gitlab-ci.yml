@@ -11,8 +11,8 @@ stages:
   HARBOR_PASS: ${HARBOR_PASSWORD_PROD}
   HARBOR_PROJECT: sandbox
   IMAGE_TAG: ${CI_COMMIT_REF_SLUG}
-  RUNTIME_IMAGE: harbor-prod.rbtdigitalmobile.ru/library/proto-java-17:2024-06-18
-  KUBE_NAMESPACE: app-${CI_ENVIRONMENT_NAME}
+  RUNTIME_IMAGE: xxx
+  KUBE_NAMESPACE: sandbox-${CI_ENVIRONMENT_NAME}
   KUBECONFIG: "/home/gitlab-runner/.kube/prod-mobi-gitlab.yaml"
 
 
@@ -22,8 +22,8 @@ stages:
   HARBOR_PASS: ${HARBOR_PASSWORD_DEV}
   HARBOR_PROJECT: sandbox
   IMAGE_TAG: ${CI_COMMIT_SHA}
-  RUNTIME_IMAGE: harbor.rbt.ru/library/proto-java-17:2024-06-18
-  KUBE_NAMESPACE: app-${CI_ENVIRONMENT_NAME}
+  RUNTIME_IMAGE: xxx
+  KUBE_NAMESPACE: sandbox-${CI_ENVIRONMENT_NAME}
 
 .docker_build_tpl:
   stage: build
@@ -35,13 +35,28 @@ stages:
     - docker image rm $(docker image ls | grep ${HARBOR_URL}/${HARBOR_PROJECT} |  awk '{print$3}') || true
     - docker image prune -f
 
+.migrate-db:
+  stage: migrate
+  script: 
+    - cd ${CI_PROJECT_DIR}/store_migrate/changelog
+    - liquibase --defaults-file=liquibase_${CI_ENVIRONMENT_NAME}.properties update
+
+.rollback-db:
+  stage: migrate
+  when: manual
+  # allow_failure: true 
+  script: 
+    - cd ${CI_PROJECT_DIR}/store_migrate/changelog
+    - liquibase --defaults-file=liquibase_${CI_ENVIRONMENT_NAME}.properties rollback-count 1
+
+
 .deploy_k8s:
   stage: mobi-deploy
   script:
-    - chmod +x ./k8s-deploy.sh && ./k8s-deploy.sh
+    -  helm upgrade store-${APP}-${CI_ENVIRONMENT_NAME} --set global.env=${CI_ENVIRONMENT_NAME},image.tag=${IMAGE_TAG},image.repository=${HARBOR_URL}/${HARBOR_PROJECT}
 
 .deploy_swagger:
-  stage: mobi-swagger
+  stage: swagger
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE != "merge_request_event"
     - if: $CI_COMMIT_BRANCH =~ /^(devops\/.*)$/ && $CI_PIPELINE_SOURCE != "merge_request_event"
@@ -54,7 +69,7 @@ stages:
 ################################################################################################
 ################################################################################################
 
-build-backend:
+build-assembly-backend:
   extends: .docker_build_tpl
   variables:
     <<: *vars_dev
@@ -66,19 +81,51 @@ build-backend:
     - shell
   script:
     - docker build \
-      --tag ${HARBOR_URL}/${HARBOR_PROJECT}/:1.0-SNAPSHOT \
+      --tag ${HARBOR_URL}/${HARBOR_PROJECT}/store-backend:${IMAGE_TAG}\
       --build-arg="MODULE_NAME=$${MODULE_NAME:=assembly_web}" \
       --build-arg="MODULE_VERSION=$${MODULE_VERSION:=1.0-SNAPSHOT}" \
       --file Dockerfile \
-      .
-    - docker push ${HARBOR_URL}/${HARBOR_PROJECT}
+      ./store_backend/.
+    - docker push ${HARBOR_URL}/${HARBOR_PROJECT}/store-backend:${IMAGE_TAG}
+
+build-frontend:
+  extends: .docker_build_tpl
+  variables:
+    <<: *vars_dev
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE != "merge_request_event"
+    - if: $CI_COMMIT_BRANCH =~ /^(devops\/.*)$/
+      when: manual
+  tags: 
+    - shell
+  script:
+    - docker build \
+      --tag ${HARBOR_URL}/${HARBOR_PROJECT}/store-frontend:${IMAGE_TAG}\
+      --build-arg="MODULE_NAME=$${MODULE_NAME:=admin-ui}" \
+      --build-arg="MODULE_VERSION=$${MODULE_VERSION:=1.0-SNAPSHOT}" \
+      --file Dockerfile \
+      ./store_admin/.
+    - docker push ${HARBOR_URL}/${HARBOR_PROJECT}/store-frontend:${IMAGE_TAG}
+
+
+migrate-dev:
+  extends: .migrate-db
+  environment:
+    name: dev
+
+rollback-dev:
+  extends: .rollback-db
+  environment:
+    name: dev
+  
     
 
 
-mobi-deploy-dev:
+deploy-backend-dev:
   extends: .deploy_k8s
   variables:
     <<: *vars_dev
+    APP: store-backend
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE != "merge_request_event"
     - if: $CI_COMMIT_BRANCH =~ /^(devops\/.*)$/ && $CI_PIPELINE_SOURCE != "merge_request_event"
@@ -87,75 +134,46 @@ mobi-deploy-dev:
     - shell
   environment:
     name: dev
-    url: https://api-${CI_ENVIRONMENT_NAME}.rbtdigitalmobile.ru
+    url: https://api-sandbox-${CI_ENVIRONMENT_NAME}.rbtdigitalmobile.ru
 
-mobi-deploy-test:
-  extends: .deploy_k8s  
+deploy-frontend-dev:
+  extends: .deploy_k8s
   variables:
     <<: *vars_dev
-    KUBECONFIG: "/home/gitlab-runner/.kube/test-cluster.yaml"
-  tags: 
-    - shell
+    APP: store-frontend
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE != "merge_request_event"
-      when: manual
     - if: $CI_COMMIT_BRANCH =~ /^(devops\/.*)$/ && $CI_PIPELINE_SOURCE != "merge_request_event"
       when: manual
+  tags: 
+    - shell
   environment:
-    name: test
-    url: https://api-${CI_ENVIRONMENT_NAME}.rbtdigitalmobile.ru
+    name: dev
+    url: https://admin-sandbox-${CI_ENVIRONMENT_NAME}.rbtdigitalmobile.ru
 
-mobi-swagger-dev:
-  extends: .deploy_swagger
-  needs: [mobi-deploy-dev]
+# deploy-test:
+#   extends: .deploy_k8s  
+#   variables:
+#     <<: *vars_dev
+#     KUBECONFIG: "/home/gitlab-runner/.kube/test-cluster.yaml"
+#   tags: 
+#     - shell
+#   rules:
+#     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE != "merge_request_event"
+#       when: manual
+#     - if: $CI_COMMIT_BRANCH =~ /^(devops\/.*)$/ && $CI_PIPELINE_SOURCE != "merge_request_event"
+#       when: manual
+#   environment:
+#     name: test
+#     url: https://api-sandbox-${CI_ENVIRONMENT_NAME}.rbtdigitalmobile.ru
+
+swagger-dev:
+  extends: .swagger
+  needs: [deploy-backend-dev]
   variables:
     <<: *vars_dev
   tags: 
     - shell
   environment:
     name: dev
-    url: https://api-${CI_ENVIRONMENT_NAME}.rbtdigitalmobile.ru/swagger
-
-mobi-swagger-test:
-  extends: .deploy_swagger
-  needs: [mobi-deploy-test]
-  variables:
-    <<: *vars_dev
-    KUBECONFIG: "/home/gitlab-runner/.kube/test-cluster.yaml"
-  tags: 
-    - shell
-  environment:
-      name: test
-      url: https://api-${CI_ENVIRONMENT_NAME}.rbtdigitalmobile.ru/swagger
-
-mobi-deploy-prod:
-  extends: .deploy_k8s
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^(release\/.*)$/
-      when: manual
-  tags: 
-    - mobi-prod
-  variables:
-    <<: *vars_prod
-    
-  environment:
-    name: prod
-    url: https://api-${CI_ENVIRONMENT_NAME}.rbtdigitalmobile.ru
-  script:
-    - chmod +x ./k8s-deploy.sh && ./k8s-deploy.sh
-
-mobi-swagger-prod:
-  extends: .deploy_swagger
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^(release\/.*)$/
-      when: manual
-  tags: 
-    - mobi-prod
-  variables:
-    <<: *vars_prod
-  environment:
-    name: prod
-    url: https://api-${CI_ENVIRONMENT_NAME}.rbtdigitalmobile.ru/swagger
-  script:
-    - helm upgrade swagger-${CI_ENVIRONMENT_NAME} ./swagger --set global.env=${CI_ENVIRONMENT_NAME} --install -n ${KUBE_NAMESPACE}
- 
+    url: https://api-sandbox-${CI_ENVIRONMENT_NAME}.rbtdigitalmobile.ru/swagger
