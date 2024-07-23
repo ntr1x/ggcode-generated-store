@@ -107,11 +107,15 @@ build-frontend:
 
 migrate-dev:
   extends: .migrate-db
+  tags: 
+    - shell
   environment:
     name: dev
 
 rollback-dev:
   extends: .rollback-db
+  tags: 
+    - shell
   environment:
     name: dev
   
