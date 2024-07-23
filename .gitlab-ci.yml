@@ -168,7 +168,7 @@ deploy-frontend-dev:
 #     url: https://api-sandbox-${CI_ENVIRONMENT_NAME}.rbtdigitalmobile.ru
 
 swagger-dev:
-  extends: .swagger
+  extends: .deploy_swagger
   needs: [deploy-backend-dev]
   variables:
     <<: *vars_dev
