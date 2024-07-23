@@ -29,8 +29,11 @@ stages:
   stage: build
   before_script:
     - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-    - cd $CI_PROJECT_DIR
+    - cd $CI_PROJECT_DIR/${APP}
     - docker login -u ${HARBOR_USER} -p ${HARBOR_PASS} https://${HARBOR_URL}
+  script:
+    - docker build ${BUILD_DIR} --tag ${HARBOR_URL}/${HARBOR_PROJECT}/${APP}:${IMAGE_TAG} 
+    - docker push ${HARBOR_URL}/${HARBOR_PROJECT}/${APP}:${IMAGE_TAG}
   # after_script:
   #   - docker image rm $(docker image ls | grep ${HARBOR_URL}/${HARBOR_PROJECT} |  awk '{print$3}') || true
   #   - docker image prune -f
@@ -73,39 +76,28 @@ build-assembly-backend:
   extends: .docker_build_tpl
   variables:
     <<: *vars_dev
+    APP: store-backend
+    BUILD_DIR: store_backend
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE != "merge_request_event"
     - if: $CI_COMMIT_BRANCH =~ /^(devops\/.*)$/
       when: manual
   tags: 
     - shell
-  script:
-    - docker build \
-      --tag ${HARBOR_URL}/${HARBOR_PROJECT}/store-backend:${IMAGE_TAG}\
-      --build-arg="MODULE_NAME=$${MODULE_NAME:=assembly_web}" \
-      --build-arg="MODULE_VERSION=$${MODULE_VERSION:=1.0-SNAPSHOT}" \
-      --file Dockerfile \
-      store_backend
-    - docker push ${HARBOR_URL}/${HARBOR_PROJECT}/store-backend:${IMAGE_TAG}
 
 build-frontend:
   extends: .docker_build_tpl
   variables:
     <<: *vars_dev
+    APP: store-frontend
+    BUILD_DIR: store_admin
   rules:
     - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE != "merge_request_event"
     - if: $CI_COMMIT_BRANCH =~ /^(devops\/.*)$/
       when: manual
   tags: 
     - shell
-  script:
-    - docker build \
-      --tag ${HARBOR_URL}/${HARBOR_PROJECT}/store-frontend:${IMAGE_TAG}\
-      --build-arg="MODULE_NAME=$${MODULE_NAME:=admin-ui}" \
-      --build-arg="MODULE_VERSION=$${MODULE_VERSION:=1.0-SNAPSHOT}" \
-      --file Dockerfile \
-      store_admin
-    - docker push ${HARBOR_URL}/${HARBOR_PROJECT}/store-frontend:${IMAGE_TAG}
+  
 
 
 migrate-dev:
