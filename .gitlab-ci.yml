@@ -31,9 +31,6 @@ stages:
     - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
     - cd $CI_PROJECT_DIR/${BUILD_DIR}
     - docker login -u ${HARBOR_USER} -p ${HARBOR_PASS} https://${HARBOR_URL}
-  script:
-    - docker build . --tag ${HARBOR_URL}/${HARBOR_PROJECT}/${APP}:${IMAGE_TAG} 
-    - docker push ${HARBOR_URL}/${HARBOR_PROJECT}/${APP}:${IMAGE_TAG}
   # after_script:
   #   - docker image rm $(docker image ls | grep ${HARBOR_URL}/${HARBOR_PROJECT} |  awk '{print$3}') || true
   #   - docker image prune -f
@@ -84,6 +81,10 @@ build-assembly-backend:
       when: manual
   tags: 
     - shell
+  script:
+    - docker build . --build-arg="MODULE_NAME=$${MODULE_NAME:=assembly_web}" --build-arg="MODULE_VERSION=$${MODULE_VERSION:=1.0-SNAPSHOT}" --tag ${HARBOR_URL}/${HARBOR_PROJECT}/${APP}:${IMAGE_TAG} 
+    - docker push ${HARBOR_URL}/${HARBOR_PROJECT}/${APP}:${IMAGE_TAG}
+
 
 build-frontend:
   extends: .docker_build_tpl
@@ -97,6 +98,10 @@ build-frontend:
       when: manual
   tags: 
     - shell
+  script:
+    - docker build . --tag ${HARBOR_URL}/${HARBOR_PROJECT}/${APP}:${IMAGE_TAG} 
+    - docker push ${HARBOR_URL}/${HARBOR_PROJECT}/${APP}:${IMAGE_TAG}
+
   
 
 
