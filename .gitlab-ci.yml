@@ -31,9 +31,9 @@ stages:
     - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
     - cd $CI_PROJECT_DIR
     - docker login -u ${HARBOR_USER} -p ${HARBOR_PASS} https://${HARBOR_URL}
-  after_script:
-    - docker image rm $(docker image ls | grep ${HARBOR_URL}/${HARBOR_PROJECT} |  awk '{print$3}') || true
-    - docker image prune -f
+  # after_script:
+  #   - docker image rm $(docker image ls | grep ${HARBOR_URL}/${HARBOR_PROJECT} |  awk '{print$3}') || true
+  #   - docker image prune -f
 
 .migrate-db:
   stage: migrate
