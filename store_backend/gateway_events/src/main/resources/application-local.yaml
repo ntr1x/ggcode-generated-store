@@ -10,3 +10,6 @@ spring:
     password: app
 server:
   port: 8089
+
+firebase:
+  config-file: classpath:firebase-service-account.json

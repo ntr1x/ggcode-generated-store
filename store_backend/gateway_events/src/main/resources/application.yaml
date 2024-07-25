@@ -17,3 +17,6 @@ springdoc:
     title: Store
     description: Store Description
     version: 1
+
+firebase:
+  config-file: ${FIREBASE_CONFIG_PATH:classpath:firebase-service-account.json}
