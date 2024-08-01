@@ -6,24 +6,26 @@ import com.example.gateway.events.entity.PublicSubscriptionEntity;
 import com.example.gateway.events.model.PublicDispatchModel;
 import com.example.gateway.events.repository.PublicDispatchRepository;
 import com.example.gateway.events.repository.PublicSubscriptionRepository;
+import com.example.gateway.events.service.notification.NotificationService;
+import com.example.gateway.events.util.CloudEventParser;
 import com.example.shared.api.reference.PublicDispatchStatus;
-import com.example.shared.api.reference.PublicSubscriptionType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cloudevents.CloudEvent;
-import io.cloudevents.CloudEventData;
 import io.cloudevents.core.builder.CloudEventBuilder;
-import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.data.domain.Example;
-import org.springframework.http.MediaType;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -36,14 +38,15 @@ public class PublicDispatchService {
 
     private final PublicDispatchRepository dispatchRepository;
     private final PublicSubscriptionRepository subscriptionRepository;
-    private final FirebaseService firebaseService;
+    private final NotificationService notificationService;
     private final KafkaTemplate<String, CloudEvent> kafkaTemplate;
     private final ObjectMapper objectMapper;
     private final PublicDispatchEntityConverter.ToModel dispatchConverter;
+    private final CloudEventParser cloudEventParser;
 
     public void processDispatch(ConsumerRecord<String, CloudEvent> record) throws JsonProcessingException {
         CloudEvent cloudEvent = record.value();
-        PublicDispatchModel dispatchModel = parseCloudEventData(cloudEvent);
+        PublicDispatchModel dispatchModel = cloudEventParser.parseCloudEventData(cloudEvent, PublicDispatchModel.class);
         if (dispatchModel == null) {
             log.warn("Failed to parse cloud event: {}", cloudEvent);
             return;
@@ -51,22 +54,17 @@ public class PublicDispatchService {
 
         String ceType = cloudEvent.getType();
         Integer statusId = dispatchModel.getStatusId();
+
         if (ceType.equals(EVENT_TYPE_SUGGEST) && (statusId == null || statusId == 0)) {
             processSuggestDispatch(dispatchModel, cloudEvent);
-            return;
-        }
-
-        if (statusId != null && ceType.equals(EVENT_TYPE_CREATED) && PublicDispatchStatus.NEW.getCode() == (statusId)) {
-            if (PublicSubscriptionType.FCM.getCode() == (dispatchModel.getTypeId())) {
-                processFCMDispatch(dispatchModel, cloudEvent);
-            } else {
-                log.warn("Invalid dispatch type: {}", dispatchModel.getTypeId());
-            }
+        } else if (statusId != null && ceType.equals(EVENT_TYPE_CREATED) && PublicDispatchStatus.NEW.getCode() == (statusId)) {
+            processNewDispatch(dispatchModel, cloudEvent);
         }
     }
 
-    private void processFCMDispatch(PublicDispatchModel dispatchModel, CloudEvent cloudEvent) throws JsonProcessingException {
+    private void processNewDispatch(PublicDispatchModel dispatchModel, CloudEvent cloudEvent) throws JsonProcessingException {
         PublicDispatchEntity probe = new PublicDispatchEntity();
+
         probe.setCustomerId(dispatchModel.getCustomerId());
         probe.setSubscriptionId(dispatchModel.getSubscriptionId());
         probe.setStatusId(dispatchModel.getStatusId());
@@ -83,7 +81,7 @@ public class PublicDispatchService {
                     for (String deviceToken : deviceTokens) {
                         String title = payload.has("title") ? payload.get("title").asText() : null;
                         String body = payload.has("body") ? payload.get("body").asText() : null;
-                        firebaseService.sendFCMMessage(deviceToken, title, body);
+                        notificationService.sendNotification(deviceToken, title, body, dispatch.getTypeId());
                         updateDispatchStatus(dispatch, PublicDispatchStatus.DISPATCHED, cloudEvent);
                     }
                 } catch (Exception e) {
@@ -116,21 +114,6 @@ public class PublicDispatchService {
         log.info("Saved new dispatch and published to Kafka: {}", newDispatch.getId());
     }
 
-    private PublicDispatchModel parseCloudEventData(CloudEvent event) {
-        CloudEventData data = event.getData();
-        if (data == null) {
-            log.error("CloudEvent data cannot be null");
-            return null;
-        }
-        if (!MediaType.APPLICATION_JSON_VALUE.equals(event.getDataContentType())) {
-            log.error("CloudEvent data must be JSON");
-            return null;
-        }
-        return Try.of(() -> objectMapper.readValue(data.toBytes(), PublicDispatchModel.class))
-                .onFailure(e -> log.error("Failed to parse CloudEvent data: {}", e.getMessage()))
-                .getOrNull();
-    }
-
     private void updateDispatchStatus(PublicDispatchEntity dispatchEntity, PublicDispatchStatus newStatus, CloudEvent cloudEvent) throws JsonProcessingException {
         dispatchEntity.setStatusId((newStatus.getCode()));
         PublicDispatchModel dispatchModel = dispatchConverter.convert(dispatchEntity);
@@ -157,6 +140,7 @@ public class PublicDispatchService {
         if (dispatch.getCustomerId() != null) {
             PublicSubscriptionEntity probeCustomerId = new PublicSubscriptionEntity();
             probeCustomerId.setCustomerId(dispatch.getCustomerId());
+            probeCustomerId.setTypeId(dispatch.getTypeId());
             Example<PublicSubscriptionEntity> exampleCustomerId = Example.of(probeCustomerId);
             subscriptions.addAll(subscriptionRepository.findAll(exampleCustomerId));
         }
@@ -164,6 +148,7 @@ public class PublicDispatchService {
         if (dispatch.getSessionId() != null && subscriptions.isEmpty()) {
             PublicSubscriptionEntity probeSessionId = new PublicSubscriptionEntity();
             probeSessionId.setSessionId(dispatch.getSessionId());
+            probeSessionId.setTypeId(dispatch.getTypeId());
             Example<PublicSubscriptionEntity> exampleSessionId = Example.of(probeSessionId);
             subscriptions.addAll(subscriptionRepository.findAll(exampleSessionId));
         }

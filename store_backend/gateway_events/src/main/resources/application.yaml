@@ -11,12 +11,10 @@ spring:
     import:
       - classpath:shared-datasource.yaml
       - classpath:shared-security.yaml
+      - classpath:gateway-events.yaml
 
 springdoc:
   api:
     title: Store
     description: Store Description
     version: 1
-
-firebase:
-  config-file: ${FIREBASE_CONFIG_PATH:classpath:firebase-service-account.json}

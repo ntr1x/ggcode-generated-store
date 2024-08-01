@@ -1,4 +1,4 @@
-package com.example.gateway.events.service;
+package com.example.gateway.events.service.notification;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
@@ -15,7 +15,7 @@ public class FirebaseService {
 
     private final FirebaseMessaging firebaseMessaging;
 
-    public void sendFCMMessage(String deviceToken, String title, String body) {
+    public void sendFirebasePushNotification(String deviceToken, String title, String body) {
         try {
             Message.Builder messageBuilder = Message.builder().setToken(deviceToken);
 
