@@ -17,6 +17,7 @@ public class FirebaseService {
 
     public void sendFirebasePushNotification(String deviceToken, String title, String body) {
         try {
+            log.info("Attempting to send FCM message. Token: {}", deviceToken);
             Message.Builder messageBuilder = Message.builder().setToken(deviceToken);
 
             if (title != null || body != null) {
@@ -33,7 +34,7 @@ public class FirebaseService {
             String response = firebaseMessaging.send(messageBuilder.build());
             log.info("Successfully sent FCM message: {}", response);
         } catch (Exception e) {
-            log.error("Failed to send FCM message", e);
+            log.error("Failed to send FCM message. Token: {}", deviceToken, e);
             throw new RuntimeException("Failed to send FCM message", e);
         }
     }

@@ -10,7 +10,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public enum PublicSubscriptionType {
     FCM(1),
-    HMS(2);
+    HMS(2),
+    SMS(3),
+    WS(4),
+    EMAIL(5);
 
     private final int code;
 

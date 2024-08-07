@@ -24,13 +24,17 @@ public class PublicDispatchListener {
     )
     public void listen(ConsumerRecord<String, CloudEvent> record, Acknowledgment ack) {
         try {
-            log.info("Attempt to process cloud event");
-            dispatchService.processDispatch(record);
-            log.info("Successfully processed cloud event ");
-        } catch (JsonProcessingException e) {
-            log.error("Failed to parse dispatch model", e);
+            log.info("Attempt to process public_dispatch cloud event");
+            if (dispatchService.processDispatch(record)) {
+                log.info("Successfully processed public_dispatch cloud event");
+            } else {
+
+                log.info("Successfully processed DISPATCHED or FAILED public_dispatch cloud event");
+            }
+        } catch (IllegalArgumentException | JsonProcessingException e) {
+            log.error("Failed to parse public_dispatch model", e);
         } catch (Exception e) {
-            log.error("Cannot process cloud event", e);
+            log.error("Cannot process public_dispatch cloud event", e);
         } finally {
             ack.acknowledge();
         }

@@ -33,7 +33,7 @@ public class HuaweiService {
     @Value("${huawei.push.token-url:https://oauth-login.cloud.huawei.com/oauth2/v3/token}")
     private String tokenUrl;
 
-    @Value("${huawei.push.api-url:https://push-api.cloud.huawei.com/v1/${HUAWEI_PUSH_CLIENT_ID:111569649}/messages:send}")
+    @Value("#{'${huawei.push.api-base-url:https://push-api.cloud.huawei.com/v1}' + '/' + '${huawei.push.client-id:111569649}' + '/messages:send'}")
     private String apiUrl;
     private final AtomicReference<TokenInfo> tokenInfo = new AtomicReference<>(null);
 
@@ -46,8 +46,8 @@ public class HuaweiService {
             return Mono.error(new IllegalArgumentException("Device token cannot be null or empty"));
         }
 
-        String safeTitle = (title != null && !title.isEmpty()) ? title : "Notification";
-        String safeBody = (body != null && !body.isEmpty()) ? body : "You have a new notification";
+        String safeTitle = (title != null && !title.isEmpty()) ? title : "Уведомление";
+        String safeBody = (body != null && !body.isEmpty()) ? body : "У вас новое уведомление";
 
         if (!safeTitle.equals(title)) {
             log.warn("Null or empty title provided for push notification. Using default: {}", safeTitle);
@@ -139,6 +139,7 @@ public class HuaweiService {
         return requestBody;
     }
 
+    // Huawei в случае ошибки возвращает HTTP 200, передавая код ошибки в теле ответа https://developer.huawei.com/consumer/en/doc/HMSCore-References/https-send-api-0000001050986197#section13968115715131
     private boolean isTokenExpired(Throwable throwable) {
         boolean expired = throwable instanceof WebClientResponseException &&
                 ((WebClientResponseException) throwable).getStatusCode() == HttpStatus.OK &&
