@@ -45,6 +45,3 @@ mc event add minio/product-image arn:minio:sqs::product_image:kafka --event put,
 mc event add minio/employee-table arn:minio:sqs::employee_table:kafka --event put
 mc event add minio/product-table arn:minio:sqs::product_table:kafka --event put
 mc event add minio/price-table arn:minio:sqs::price_table:kafka --event put
-
-
-
