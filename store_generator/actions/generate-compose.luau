@@ -9,6 +9,7 @@ local Kcadm = require('compose/Kcadm')
 local Mcli = require('compose/Mcli')
 local App = require('compose/App')
 local Spa = require('compose/Spa')
+local Worker = require('compose/Worker')
 
 local project = Project:from('store_starter')
 
@@ -29,6 +30,28 @@ local openid_client = {
   client_secret = '4Ggxc50xzu5j1qFk5rZ4OPHwvNFXLpNX'
 }
 
+local minio_client = {
+  uri = 'http://env-minio:9000',
+  access_key = 'y5LeRZ84J4SsenpaIxMl',
+  secret_key = 'AZitoDkffcEYFYUmV4CGv1jr2fiXWIw4uSvdFlDu'
+}
+
+ggcode.generate "compose/make" {
+  target = '@store',
+  variables = {
+    project = project:unwrap_project(),
+    run = {
+      profiles = { 'app', 'env' },
+    },
+    build = {
+      images = {
+        { context = 'build/app/app-worker-product-image', bundle = 'app', namespace = 'store', name = 'worker_product_image', version = '1.0-SNAPSHOT' },
+        { context = 'build/app/app-worker-employee-table', bundle = 'app', namespace = 'store', name = 'worker_employee_table', version = '1.0-SNAPSHOT' },
+      }
+    }
+  }
+}
+
 ggcode.generate "compose/compose" {
   target = '@store',
   variables = {
@@ -47,6 +70,8 @@ ggcode.generate "compose/compose" {
         { path = "compose/env/env-mcli.compose.yaml" },
         { path = "compose/app/app-assembly-web.compose.yaml" },
         { path = "compose/app/app-admin-ui.compose.yaml" },
+        { path = "compose/app/app-worker-product-image.compose.yaml" },
+        { path = "compose/app/app-worker-employee-table.compose.yaml" },
       }
     }
   }
@@ -115,6 +140,10 @@ ggcode.generate "compose/haproxy" {
             :from_path_string('/api/service_security')
             :with_cors('*')
             :with_server(Haproxy.Server:from_uri_string('http://host.docker.internal:8086'):with_optional(true));
+          Haproxy.Proxy
+            :from_path_string('/api/service_uploads')
+            :with_cors('*')
+            :with_server(Haproxy.Server:from_uri_string('http://host.docker.internal:8087'):with_optional(true));
         });
     })
     :unwrap()
@@ -207,6 +236,49 @@ ggcode.generate "compose/mcli" {
   target = '@store',
   variables = Mcli
     :from(project)
+    :with_rules({
+      Mcli.User:from('api', 'Qwerty123'),
+
+      Mcli.Grant:from('api', 'readwrite'),
+
+      Mcli.Key:from('api', 'y5LeRZ84J4SsenpaIxMl', 'AZitoDkffcEYFYUmV4CGv1jr2fiXWIw4uSvdFlDu'),
+
+      Mcli.Bucket:from('employee-document')
+        :with_anonymous_access('download'),
+      Mcli.Bucket:from('product-image')
+        :with_anonymous_access('download'),
+      Mcli.Bucket:from('product-image-variant')
+        :with_anonymous_access('download'),
+
+      Mcli.Bucket:from('employee-table'),
+      Mcli.Bucket:from('product-table'),
+      Mcli.Bucket:from('price-table'),
+
+      Mcli.KafkaTarget
+        :from('product_image')
+        :with_broker('env-kafka:29092')
+        :with_topic('minio_product_image')
+        :with_event('product-image', 'put')
+        :with_event('product-image', 'delete'),
+
+      Mcli.KafkaTarget
+        :from('employee_table')
+        :with_broker('env-kafka:29092')
+        :with_topic('minio_employee_table')
+        :with_event('employee-table', 'put'),
+
+      Mcli.KafkaTarget
+        :from('product_table')
+        :with_broker('env-kafka:29092')
+        :with_topic('minio_product_table')
+        :with_event('product-table', 'put'),
+
+      Mcli.KafkaTarget
+        :from('price_table')
+        :with_broker('env-kafka:29092')
+        :with_topic('minio_price_table')
+        :with_event('price-table', 'put'),
+    })
     :unwrap()
 }
 
@@ -223,11 +295,11 @@ ggcode.generate "compose/swagger-ui" {
         { name = "Service Events", url = "http://api.local.example.com/api/service_events/v3/api-docs" },
         { name = "Service Payments", url = "http://api.local.example.com/api/service_payments/v3/api-docs" },
         { name = "Service Security", url = "http://api.local.example.com/api/service_security/v3/api-docs" },
+        { name = "Service Uploads", url = "http://api.local.example.com/api/service_uploads/v3/api-docs" },
       }
     }
   }
 }
-
 
 ggcode.generate "compose/app" {
   target = '@store',
@@ -239,6 +311,7 @@ ggcode.generate "compose/app" {
     :with_depends_on('env-minio')
     :with_spring_datasource(datasource_app)
     :with_app_openid_client(openid_client)
+    :with_app_minio_client(minio_client)
     :with_env_variable('JAVA_OPTS', '-Xmx512m -Xms256m')
     :with_env_variable('SPRING_KAFKA_BOOTSTRAP_SERVERS', 'env-kafka:29092')
     :with_link('env-haproxy:auth.local.example.com')
@@ -249,5 +322,39 @@ ggcode.generate "compose/spa" {
   target = '@store',
   variables = Spa
     :from(project, 'app-admin-ui', 'store/admin_ui:1.0-SNAPSHOT')
+    :unwrap()
+}
+
+ggcode.generate "compose/worker" {
+  target = '@store',
+  variables = Worker
+    :from(project, 'app-worker-product-image', 'store/worker_product_image:1.0-SNAPSHOT')
+    :with_depends_on('env-kafka')
+    :with_depends_on('env-minio')
+    :with_volume('app-worker-product-image', '/app/data')
+    :with_packages({ 'imagemagick', 'imagemagick-jpeg', 'imagemagick-svg' })
+    :with_minio_client(minio_client)
+    :with_env_variables({
+      KAFKA_BOOTSTRAP_SERVERS = 'env-kafka:29092',
+      KAFKA_CONSUMER_GROUP = 'worker_product_image.minio_product_image',
+      KAFKA_TOPICS = 'minio_product_image',
+    })
+    :unwrap()
+}
+
+ggcode.generate "compose/worker" {
+  target = '@store',
+  variables = Worker
+    :from(project, 'app-worker-employee-table', 'store/worker_employee_table:1.0-SNAPSHOT')
+    :with_depends_on('env-kafka')
+    :with_depends_on('env-minio')
+    :with_volume('app-worker-employee-table', '/app/data')
+    :with_packages({ 'csvq', 'curl' })
+    :with_minio_client(minio_client)
+    :with_env_variables({
+      KAFKA_BOOTSTRAP_SERVERS = 'env-kafka:29092',
+      KAFKA_CONSUMER_GROUP = 'worker_employee_table.minio_employee_table',
+      KAFKA_TOPICS = 'minio_employee_table',
+    })
     :unwrap()
 }
