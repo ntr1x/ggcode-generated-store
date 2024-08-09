@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0",
     "build": "vue-tsc && vite build",
     "preview": "vite preview"
   },
@@ -23,7 +23,7 @@
     "lodash": "^4.17.21",
     "pinia": "^2.1.7",
     "primeicons": "^7.0.0",
-    "primevue": "^3.52.0",
+    "primevue": "^3.53.0",
     "uuid": "^9.0.1",
     "vue": "^3.4.21",
     "vue-router": "^4.3.2"

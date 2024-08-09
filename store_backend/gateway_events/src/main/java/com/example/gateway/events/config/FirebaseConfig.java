@@ -13,7 +13,7 @@ import java.io.IOException;
 
 @Configuration
 public class FirebaseConfig {
-    @Value("${firebase.config-file:classpath:firebase-service-account.json}")
+    @Value("${firebase.config-file}")
     private Resource firebaseConfigFile;
 
     @Bean
