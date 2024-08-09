@@ -20,6 +20,7 @@ public class AssemblyWebApplicationLocal {
                 com.example.service.events.ServiceEventsApplication.class,
                 com.example.service.security.ServiceSecurityApplication.class,
                 com.example.service.structure.ServiceStructureApplication.class,
+                com.example.service.uploads.ServiceUploadsApplication.class,
                 com.example.gateway.events.GatewayEventsApplication.class,
                 com.example.gateway.payments.GatewayPaymentsApplication.class,
                 com.example.gateway.profile.GatewayProfileApplication.class,

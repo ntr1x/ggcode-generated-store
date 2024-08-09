@@ -11,6 +11,7 @@ import org.ntr1x.common.web.config.WebMvcSecurityConfig;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.ntr1x.common.security.config.OpenidConfig;
 
 @Configuration
 @Import({
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Import;
         OpenApiSecurityConfig.class,
         CloudEventsKafkaConfig.class,
         CloudEventsBeanConfig.class,
+        OpenidConfig.class,
 })
 @ComponentScan(basePackageClasses = ServiceSecurityConfig.class)
 public class ServiceSecuritySuite {

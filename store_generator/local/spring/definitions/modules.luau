@@ -7,7 +7,7 @@ local modules = {}
 
 modules.assembly_web = Module
   :from(poms.pom, 'assembly', 'assembly_web')
-  :with_profile('local', profiles.profile_local_with_client:copy():with_port(8080))
+  :with_profile('local', profiles.profile_local_with_openid_client:copy():with_port(8080))
 
 modules.shared_api = Module
   :from(poms.pom, 'lib', 'shared_api')
@@ -68,7 +68,7 @@ modules.service_payments = Module
 
 modules.service_security = Module
   :from(poms.pom, 'security', 'service_security')
-  :with_profile('local', profiles.profile_local_with_client:copy():with_port(8086))
+  :with_profile('local', profiles.profile_local_with_openid_client:copy():with_port(8086))
   :with_plugins {
     'common_web',
     'common_events',
