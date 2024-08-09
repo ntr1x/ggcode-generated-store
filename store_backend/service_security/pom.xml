@@ -30,13 +30,13 @@
         </dependency>
         <dependency>
             <groupId>com.example</groupId>
-            <artifactId>shared_api</artifactId>
+            <artifactId>common_security</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.3.3</version>
+            <groupId>com.example</groupId>
+            <artifactId>shared_api</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

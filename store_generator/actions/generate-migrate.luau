@@ -6,7 +6,7 @@ local ChangeLog = require('migrate/ChangeLog')
 local project = Project:from('store_migrate')
 
 local datasource_app = {
-  uri = 'jdbc:postgresql://env_postgres:5432/app',
+  uri = 'jdbc:postgresql://env-postgres:5432/app',
   username = 'app',
   password = 'app'
 }

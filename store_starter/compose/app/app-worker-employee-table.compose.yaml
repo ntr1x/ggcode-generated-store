@@ -1,0 +1,27 @@
+volumes:
+  app-worker-employee-table: {}
+services:
+  app-worker-employee-table:
+    depends_on:
+    - env-kafka
+    - env-minio
+    image: store/worker_employee_table:1.0-SNAPSHOT
+    volumes:
+    - app-worker-employee-table:/app/data
+    restart: unless-stopped
+    networks:
+      default: {}
+    environment:
+      KAFKA_TOPICS: minio_employee_table
+      MINIO_ACCESS_KEY: y5LeRZ84J4SsenpaIxMl
+      MINIO_TARGET_SERVER: http://env-minio:9000
+      MINIO_SECRET_KEY: AZitoDkffcEYFYUmV4CGv1jr2fiXWIw4uSvdFlDu
+      KAFKA_BOOTSTRAP_SERVERS: env-kafka:29092
+      KAFKA_CONSUMER_GROUP: worker_employee_table.minio_employee_table
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    profiles:
+    - app
+

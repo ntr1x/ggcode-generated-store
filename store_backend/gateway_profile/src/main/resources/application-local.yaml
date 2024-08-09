@@ -9,4 +9,4 @@ spring:
     url: jdbc:postgresql://localhost:5432/app
     password: app
 server:
-  port: 8088
+  port: 8089

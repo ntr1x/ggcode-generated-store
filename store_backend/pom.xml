@@ -16,22 +16,25 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>assembly_web</module>
         <module>common_api</module>
+        <module>common_events</module>
         <module>common_jpa</module>
+        <module>common_minio</module>
+        <module>common_security</module>
         <module>common_web</module>
         <module>common_ws</module>
-        <module>common_events</module>
-        <module>shared_api</module>
         <module>service_catalog</module>
-        <module>service_profile</module>
         <module>service_events</module>
         <module>service_payments</module>
+        <module>service_profile</module>
         <module>service_security</module>
         <module>service_structure</module>
+        <module>service_uploads</module>
         <module>gateway_events</module>
         <module>gateway_payments</module>
         <module>gateway_profile</module>
-        <module>assembly_web</module>
+        <module>shared_api</module>
     </modules>
 
     <properties>
@@ -45,6 +48,7 @@
         <flatten-maven-plugin.version>1.5.0</flatten-maven-plugin.version>
         <hypersistence.version>3.7.4</hypersistence.version>
         <logstash.logback.version>7.3</logstash.logback.version>
+        <minio.version>8.5.11</minio.version>
         <vavr.version>0.10.4</vavr.version>
     </properties>
 
@@ -84,6 +88,11 @@
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>42.3.3</version>
+            </dependency>
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>${minio.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.vavr</groupId>

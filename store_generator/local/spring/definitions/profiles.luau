@@ -2,7 +2,7 @@ local Profile = require('spring/Profile')
 
 local profiles = {}
 
-profiles.profile_local_with_client = Profile
+profiles.profile_local_with_openid_client = Profile
   :from('local')
   :with_port(8080)
   :with_app_openid_client({

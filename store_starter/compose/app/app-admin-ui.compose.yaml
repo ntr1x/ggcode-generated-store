@@ -1,0 +1,16 @@
+services:
+  app-admin-ui:
+    volumes:
+    - ../../config/app/app-admin-ui/templates:/etc/nginx/templates
+    image: store/admin_ui:1.0-SNAPSHOT
+    restart: unless-stopped
+    networks:
+      default: {}
+    environment: {}
+    deploy:
+      resources:
+        limits:
+          memory: 600M
+    profiles:
+    - app
+

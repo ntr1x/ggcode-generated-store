@@ -1,0 +1,14 @@
+app:
+  minio:
+    client:
+      endpoint: http://minio.local.example.com
+      secret-key: AZitoDkffcEYFYUmV4CGv1jr2fiXWIw4uSvdFlDu
+      access-key: y5LeRZ84J4SsenpaIxMl
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+server:
+  port: 8087

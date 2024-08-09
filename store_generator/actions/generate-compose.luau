@@ -4,20 +4,22 @@ local Haproxy = require('compose/Haproxy')
 local Postgres = require('compose/Postgres')
 local Pgadmin = require('compose/Pgadmin')
 local Keycloak = require('compose/Keycloak')
+local Minio = require('compose/Minio')
 local Kcadm = require('compose/Kcadm')
+local Mcli = require('compose/Mcli')
 local App = require('compose/App')
 local Spa = require('compose/Spa')
 
 local project = Project:from('store_starter')
 
 local datasource_keycloak = {
-  uri = 'jdbc:postgresql://env_postgres:5432/keycloak',
+  uri = 'jdbc:postgresql://env-postgres:5432/keycloak',
   username = 'keycloak',
   password = 'keycloak'
 }
 
 local datasource_app = {
-  uri = 'jdbc:postgresql://env_postgres:5432/app',
+  uri = 'jdbc:postgresql://env-postgres:5432/app',
   username = 'app',
   password = 'app'
 }
@@ -33,16 +35,18 @@ ggcode.generate "compose/compose" {
     project = project:unwrap_project(),
     config = {
       include = {
-        { path = "compose/env/env_haproxy.compose.yaml" },
-        { path = "compose/env/env_kafka.compose.yaml" },
-        { path = "compose/env/env_kafka_ui.compose.yaml" },
-        { path = "compose/env/env_pgadmin.compose.yaml" },
-        { path = "compose/env/env_postgres.compose.yaml" },
-        { path = "compose/env/env_swagger_ui.compose.yaml" },
-        { path = "compose/env/env_keycloak.compose.yaml" },
-        { path = "compose/env/env_kcadm.compose.yaml" },
-        { path = "compose/app/app_assembly_web.compose.yaml" },
-        { path = "compose/app/app_admin_ui.compose.yaml" },
+        { path = "compose/env/env-haproxy.compose.yaml" },
+        { path = "compose/env/env-kafka.compose.yaml" },
+        { path = "compose/env/env-kafka-ui.compose.yaml" },
+        { path = "compose/env/env-pgadmin.compose.yaml" },
+        { path = "compose/env/env-postgres.compose.yaml" },
+        { path = "compose/env/env-swagger-ui.compose.yaml" },
+        { path = "compose/env/env-keycloak.compose.yaml" },
+        { path = "compose/env/env-kcadm.compose.yaml" },
+        { path = "compose/env/env-minio.compose.yaml" },
+        { path = "compose/env/env-mcli.compose.yaml" },
+        { path = "compose/app/app-assembly-web.compose.yaml" },
+        { path = "compose/app/app-admin-ui.compose.yaml" },
       }
     }
   }
@@ -54,20 +58,24 @@ ggcode.generate "compose/haproxy" {
     :from(project)
     :with_rules({
       Haproxy.Route
-        :from_arrow('http://kafka-ui.local.example.com', 'http://env_kafka_ui:8080');
+        :from_arrow('http://kafka-ui.local.example.com', 'http://env-kafka-ui:8080');
       Haproxy.Route
-        :from_arrow('http://pgadmin.local.example.com', 'http://env_pgadmin:80');
+        :from_arrow('http://pgadmin.local.example.com', 'http://env-pgadmin:80');
       Haproxy.Route
-        :from_arrow('http://swagger-ui.local.example.com', 'http://env_swagger_ui:8080');
+        :from_arrow('http://swagger-ui.local.example.com', 'http://env-swagger-ui:8080');
       Haproxy.Route
-        :from_arrow('http://auth.local.example.com', 'http://env_keycloak:8080')
+        :from_arrow('http://auth.local.example.com', 'http://env-keycloak:8080')
         :with_redirect_prefix('/auth');
+      Haproxy.Route
+        :from_arrow('http://minio.local.example.com', 'http://env-minio:9000');
+      Haproxy.Route
+        :from_arrow('http://minio-ui.local.example.com', 'http://env-minio:9001');
       Haproxy.Route
         :from_uri_string('http://admin-ui.local.example.com')
         :with_proxies({
           Haproxy.Proxy
             :from_path_string('/')
-            :with_server(Haproxy.Server:from_uri_string('http://app_admin_ui:80'):with_optional(true))
+            :with_server(Haproxy.Server:from_uri_string('http://app-admin-ui:80'):with_optional(true))
             :with_server(Haproxy.Server:from_uri_string('http://host.docker.internal:5173'):with_optional(true):with_backup(true));
         });
       Haproxy.Route
@@ -77,7 +85,7 @@ ggcode.generate "compose/haproxy" {
           Haproxy.Proxy
             :from_path_string('/api/assembly_web')
             :with_cors('*')
-            :with_server(Haproxy.Server:from_uri_string('http://app_assembly_web:8080'):with_optional(true))
+            :with_server(Haproxy.Server:from_uri_string('http://app-assembly-web:8080'):with_optional(true))
             :with_server(Haproxy.Server:from_uri_string('http://host.docker.internal:8080'):with_optional(true):with_backup(true));
           Haproxy.Proxy
             :from_path_string('/api/assembly_web')
@@ -119,7 +127,7 @@ ggcode.generate "compose/kafka" {
   }
 }
 
-ggcode.generate "compose/kafka_ui" {
+ggcode.generate "compose/kafka-ui" {
   target = '@store',
   variables = {
     project = project:unwrap_project()
@@ -151,7 +159,8 @@ ggcode.generate "compose/postgres" {
 ggcode.generate "compose/keycloak" {
   target = '@store',
   variables = Keycloak
-    :from(project, datasource_keycloak):unwrap()
+    :from(project, datasource_keycloak)
+    :unwrap()
 }
 
 ggcode.generate "compose/kcadm" {
@@ -186,7 +195,22 @@ ggcode.generate "compose/kcadm" {
     :unwrap()
 }
 
-ggcode.generate "compose/swagger_ui" {
+ggcode.generate "compose/minio" {
+  target = '@store',
+  variables = Minio
+    :from(project)
+    :with_link('env-haproxy:minio.local.example.com')
+    :unwrap()
+}
+
+ggcode.generate "compose/mcli" {
+  target = '@store',
+  variables = Mcli
+    :from(project)
+    :unwrap()
+}
+
+ggcode.generate "compose/swagger-ui" {
   target = '@store',
   variables = {
     project = project:unwrap_project(),
@@ -204,25 +228,26 @@ ggcode.generate "compose/swagger_ui" {
   }
 }
 
+
 ggcode.generate "compose/app" {
   target = '@store',
   variables = App
-    :from(project, 'app_assembly_web', 'store/assembly_web:1.0-SNAPSHOT')
-    :with_depends_on('env_kafka')
-    :with_depends_on('env_postgres')
-    :with_depends_on('env_keycloak')
+    :from(project, 'app-assembly-web', 'store/assembly_web:1.0-SNAPSHOT')
+    :with_depends_on('env-kafka')
+    :with_depends_on('env-postgres')
+    :with_depends_on('env-keycloak')
+    :with_depends_on('env-minio')
     :with_spring_datasource(datasource_app)
     :with_app_openid_client(openid_client)
     :with_env_variable('JAVA_OPTS', '-Xmx512m -Xms256m')
-    :with_env_variable('SPRING_KAFKA_BOOTSTRAP_SERVERS', 'env_kafka:29092')
-    :with_link('env_haproxy:auth.local.example.com')
-    -- :with_env_variable('SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUERURI', 'http://env_keycloak:8080/auth/realms/application')
+    :with_env_variable('SPRING_KAFKA_BOOTSTRAP_SERVERS', 'env-kafka:29092')
+    :with_link('env-haproxy:auth.local.example.com')
     :unwrap()
 }
 
 ggcode.generate "compose/spa" {
   target = '@store',
   variables = Spa
-    :from(project, 'app_admin_ui', 'store/admin_ui:1.0-SNAPSHOT')
+    :from(project, 'app-admin-ui', 'store/admin_ui:1.0-SNAPSHOT')
     :unwrap()
 }

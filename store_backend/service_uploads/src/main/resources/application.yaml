@@ -1,0 +1,20 @@
+server:
+  port: 8080
+  forward-headers-strategy: framework
+  servlet:
+    context-path: /api/service_uploads
+
+spring:
+  application:
+    name: service_uploads
+  config:
+    import:
+      - classpath:shared-security.yaml
+      - classpath:shared-minio-client.yaml
+      - classpath:service_uploads.yaml
+
+springdoc:
+  api:
+    title: Store
+    description: Store Description
+    version: 1

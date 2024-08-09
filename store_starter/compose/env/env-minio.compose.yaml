@@ -1,0 +1,26 @@
+volumes:
+  env-minio: {}
+services:
+  env-minio:
+    restart: unless-stopped
+    ports:
+    - 9000:9000
+    - 9001:9001
+    profiles:
+    - env
+    - app
+    volumes:
+    - env-minio:/bitnami/minio/data
+    image: bitnami/minio
+    environment:
+      MINIO_ROOT_PASSWORD: GfhjkmRfhjkm1
+      MINIO_ROOT_USER: admin
+    links:
+    - env-haproxy:minio.local.example.com
+    networks:
+      default: {}
+    deploy:
+      resources:
+        limits:
+          memory: 250M
+
