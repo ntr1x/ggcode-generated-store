@@ -64,7 +64,7 @@ while true; do
         active=true
 
         echo $line | xargs -n2 sh \
-            -c 'EVENT_NAME=$0 OBJECT_KEY=$1 SOURCE_DIR='"$SOURCE_DIR"' TARGET_DIR='"$TARGET_DIR"' /bin/bash ./bin/process.sh'
+            -c 'EVENT_NAME=$0 OBJECT_KEY="$1" SOURCE_DIR='"$SOURCE_DIR"' TARGET_DIR='"$TARGET_DIR"' /bin/bash ./bin/process.sh'
 
         ((cursor++))
 
