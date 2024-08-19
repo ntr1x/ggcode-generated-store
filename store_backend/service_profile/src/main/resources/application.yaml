@@ -10,7 +10,7 @@ spring:
   config:
     import:
       - classpath:shared-datasource.yaml
-      - classpath:shared-security.yaml
+      - classpath:service_profile.yaml
 
 springdoc:
   api:

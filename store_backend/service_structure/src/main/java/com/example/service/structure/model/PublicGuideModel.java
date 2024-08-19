@@ -26,6 +26,12 @@ public class PublicGuideModel {
     private java.lang.String link;
     
     @JsonView(Views.Default.class)
+    private java.lang.String description;
+    
+    @JsonView(Views.Default.class)
+    private java.lang.String attachment;
+    
+    @JsonView(Views.Default.class)
     private java.lang.Integer position;
     
     @JsonView(Views.Default.class)

@@ -3,6 +3,8 @@ create table "public"."guide" (
   "subject_id" uuid,
   "name" text,
   "link" text,
+  "description" text,
+  "attachment" text,
   "position" int4,
   "created_at" timestamp(6),
   "updated_at" timestamp(6),

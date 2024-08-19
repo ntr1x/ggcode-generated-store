@@ -58,6 +58,10 @@ public interface SystemPublicGuideRequest {
         
         private Optional<java.lang.String> link;
         
+        private Optional<java.lang.String> description;
+        
+        private Optional<java.lang.String> attachment;
+        
         private Optional<java.lang.Integer> position;
         
         private Optional<java.time.LocalDateTime> createdAt;
@@ -82,6 +86,10 @@ public interface SystemPublicGuideRequest {
         
         private Optional<java.lang.String> link;
         
+        private Optional<java.lang.String> description;
+        
+        private Optional<java.lang.String> attachment;
+        
         private Optional<java.lang.Integer> position;
         
         private Optional<java.time.LocalDateTime> createdAt;
@@ -105,6 +113,10 @@ public interface SystemPublicGuideRequest {
         private Optional<java.lang.String> name;
         
         private Optional<java.lang.String> link;
+        
+        private Optional<java.lang.String> description;
+        
+        private Optional<java.lang.String> attachment;
         
         private Optional<java.lang.Integer> position;
         
@@ -139,6 +151,10 @@ public interface SystemPublicGuideRequest {
         private Optional<java.lang.String> name;
         
         private Optional<java.lang.String> link;
+        
+        private Optional<java.lang.String> description;
+        
+        private Optional<java.lang.String> attachment;
         
         private Optional<java.lang.Integer> position;
         

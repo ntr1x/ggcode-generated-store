@@ -8,6 +8,26 @@ app:
       endpoint: http://minio.local.example.com
       secret-key: AZitoDkffcEYFYUmV4CGv1jr2fiXWIw4uSvdFlDu
       access-key: y5LeRZ84J4SsenpaIxMl
+    buckets:
+      - name: employee-document
+      - name: product-image
+        uploadPolicy:
+          contentType: image/
+          contentLength: 10M
+      - name: test-image
+        uploadPolicy:
+          contentType: image/
+          contentLength: 10M
+
+#  firebase:
+#    push:
+#      config-file: classpath:firebase-service-account.json
+#  huawei:
+#    push:
+#      client-id: 111569649
+#      client-secret: fd7c6891686f73fd66a7661b2bc971c04fa7f058b431eb0e35526da1549c2c76
+#      token-url: https://oauth-login.cloud.huawei.com/oauth2/v3/token
+#      api-url: https://push-api.cloud.huawei.com/v1/${app.huawei.client-id}/messages:send
 spring:
   jpa:
     show-sql: true

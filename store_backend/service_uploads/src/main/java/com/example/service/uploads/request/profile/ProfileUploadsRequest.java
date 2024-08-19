@@ -22,6 +22,10 @@ public interface ProfileUploadsRequest {
         private String bucket;
         @NotEmpty
         private String key;
+        @NotEmpty
+        private String source;
+        @NotEmpty
+        private String originalName;
     }
 
     @Data

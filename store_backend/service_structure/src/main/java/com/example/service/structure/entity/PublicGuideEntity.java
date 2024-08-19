@@ -33,6 +33,12 @@ public class PublicGuideEntity {
     @Column(name = "link", columnDefinition = "text")
     private java.lang.String link;
     
+    @Column(name = "description", columnDefinition = "text")
+    private java.lang.String description;
+    
+    @Column(name = "attachment", columnDefinition = "text")
+    private java.lang.String attachment;
+    
     @Column(name = "position")
     private java.lang.Integer position;
     

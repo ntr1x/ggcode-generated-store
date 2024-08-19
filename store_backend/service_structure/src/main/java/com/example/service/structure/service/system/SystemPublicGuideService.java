@@ -55,6 +55,10 @@ public class SystemPublicGuideService {
                 .ifPresent((value) -> builder.name(value.orElse(null)));
         Optional.ofNullable(request.getLink())
                 .ifPresent((value) -> builder.link(value.orElse(null)));
+        Optional.ofNullable(request.getDescription())
+                .ifPresent((value) -> builder.description(value.orElse(null)));
+        Optional.ofNullable(request.getAttachment())
+                .ifPresent((value) -> builder.attachment(value.orElse(null)));
         Optional.ofNullable(request.getPosition())
                 .ifPresent((value) -> builder.position(value.orElse(null)));
         Optional.ofNullable(request.getCreatedAt())
@@ -138,6 +142,10 @@ public class SystemPublicGuideService {
                 .ifPresent((value) -> builder.name(value.orElse(null)));
         Optional.ofNullable(request.getLink())
                 .ifPresent((value) -> builder.link(value.orElse(null)));
+        Optional.ofNullable(request.getDescription())
+                .ifPresent((value) -> builder.description(value.orElse(null)));
+        Optional.ofNullable(request.getAttachment())
+                .ifPresent((value) -> builder.attachment(value.orElse(null)));
         Optional.ofNullable(request.getPosition())
                 .ifPresent((value) -> builder.position(value.orElse(null)));
         Optional.ofNullable(request.getCreatedAt())
@@ -179,6 +187,10 @@ public class SystemPublicGuideService {
                 .ifPresent((value) -> builder.name(value.orElse(null)));
         Optional.ofNullable(request.getLink())
                 .ifPresent((value) -> builder.link(value.orElse(null)));
+        Optional.ofNullable(request.getDescription())
+                .ifPresent((value) -> builder.description(value.orElse(null)));
+        Optional.ofNullable(request.getAttachment())
+                .ifPresent((value) -> builder.attachment(value.orElse(null)));
         Optional.ofNullable(request.getPosition())
                 .ifPresent((value) -> builder.position(value.orElse(null)));
         Optional.ofNullable(request.getCreatedAt())
@@ -213,6 +225,8 @@ public class SystemPublicGuideService {
                     .withOptionalMatch("subjectId", request.getSubjectId())
                     .withOptionalMatch("name", request.getName())
                     .withOptionalMatch("link", request.getLink())
+                    .withOptionalMatch("description", request.getDescription())
+                    .withOptionalMatch("attachment", request.getAttachment())
                     .withOptionalMatch("position", request.getPosition())
                     .withOptionalMatch("createdAt", request.getCreatedAt())
                     .withOptionalMatch("updatedAt", request.getUpdatedAt())

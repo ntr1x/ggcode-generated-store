@@ -5,10 +5,10 @@ process_put () {
 
   local object=$(echo $key | sed -e 's/.*\///g')
 
-  mkdir -p $(dirname $SOURCE_DIR/$key)
+  mkdir -p "$(dirname "$SOURCE_DIR/$key")"
 
-  rm -f $SOURCE_DIR/${key};
-  mcli get minio/${key} $SOURCE_DIR/${key} >/dev/null;
+  rm -f "$SOURCE_DIR/${key}";
+  mcli get "minio/${key}" "$SOURCE_DIR/${key}" >/dev/null;
 
   local data=$(
     csvq --format jsonl 'SELECT * FROM `'"$SOURCE_DIR/${key}"'`' \

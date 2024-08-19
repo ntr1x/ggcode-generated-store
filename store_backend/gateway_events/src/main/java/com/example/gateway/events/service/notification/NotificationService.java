@@ -1,5 +1,7 @@
 package com.example.gateway.events.service.notification;
 
+import com.example.gateway.events.service.notification.push.FirebasePushService;
+import com.example.gateway.events.service.notification.push.HuaweiPushService;
 import com.example.shared.api.reference.PublicSubscriptionType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +13,8 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
-    private final FirebaseService firebaseService;
-    private final HuaweiService huaweiService;
+    private final FirebasePushService firebaseService;
+    private final HuaweiPushService huaweiService;
     private final SmsService smsService;
 
     public Mono<Void> sendNotification(String deviceToken, String title, String body, PublicSubscriptionType type) {
@@ -23,8 +25,8 @@ public class NotificationService {
 
     private Mono<Void> getNotificationMono(String deviceToken, String title, String body, PublicSubscriptionType type) {
         return switch (type) {
-            case FCM -> Mono.fromRunnable(() -> firebaseService.sendFirebasePushNotification(deviceToken, title, body));
-            case HMS -> huaweiService.sendHuaweiPushNotification(deviceToken, title, body);
+            case FCM -> firebaseService.sendPushNotification(deviceToken, title, body);
+            case HMS -> huaweiService.sendPushNotification(deviceToken, title, body);
             case SMS -> smsService.sendSms(deviceToken, body);
             case WS, EMAIL -> throw new UnsupportedOperationException("Notification type not implemented: " + type);
         };

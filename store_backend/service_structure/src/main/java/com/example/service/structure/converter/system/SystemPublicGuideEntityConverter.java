@@ -25,6 +25,8 @@ public interface SystemPublicGuideEntityConverter {
                     .subjectId(source.getSubjectId())
                     .name(source.getName())
                     .link(source.getLink())
+                    .description(source.getDescription())
+                    .attachment(source.getAttachment())
                     .position(source.getPosition())
                     .createdAt(source.getCreatedAt())
                     .updatedAt(source.getUpdatedAt())

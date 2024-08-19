@@ -1,11 +1,15 @@
-package com.example.gateway.events.service.notification;
+package com.example.gateway.events.service.notification.push;
 
+import com.example.gateway.events.property.HuaweiProperty;
+import com.google.firebase.internal.NonNull;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -19,64 +23,36 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
-@Service
 @RequiredArgsConstructor
-public class HuaweiService {
-    private final WebClient.Builder webClientBuilder;
-
-    @Value("${huawei.push.client-id:111569649}")
-    private String clientId;
-
-    @Value("${huawei.push.client-secret:fd7c6891686f73fd66a7661b2bc971c04fa7f058b431eb0e35526da1549c2c76}")
-    private String clientSecret;
-
-    @Value("${huawei.push.token-url:https://oauth-login.cloud.huawei.com/oauth2/v3/token}")
-    private String tokenUrl;
-
-    @Value("#{'${huawei.push.api-base-url:https://push-api.cloud.huawei.com/v1}' + '/' + '${huawei.push.client-id:111569649}' + '/messages:send'}")
-    private String apiUrl;
+public class HuaweiMessaging {
     private final AtomicReference<TokenInfo> tokenInfo = new AtomicReference<>(null);
+    private final WebClient.Builder webClientBuilder = WebClient.builder();
 
-    // Все исключения в методах должны передаваться выше по цепочке в PublicDispatchService
-    public Mono<Void> sendHuaweiPushNotification(String deviceToken, String title, String body) {
-        log.info("Attempting to send Huawei push notification. Device token: {}", deviceToken);
+    private final HuaweiProperty config;
 
-        if (deviceToken == null || deviceToken.isEmpty()) {
-            log.error("Device token is null or empty");
-            return Mono.error(new IllegalArgumentException("Device token cannot be null or empty"));
-        }
-
-        String safeTitle = (title != null && !title.isEmpty()) ? title : "Уведомление";
-        String safeBody = (body != null && !body.isEmpty()) ? body : "У вас новое уведомление";
-
-        if (!safeTitle.equals(title)) {
-            log.warn("Null or empty title provided for push notification. Using default: {}", safeTitle);
-        }
-        if (!safeBody.equals(body)) {
-            log.warn("Null or empty body provided for push notification. Using default: {}", safeBody);
-        }
-
-        return getValidAccessToken()
-                .flatMap(token -> sendNotification(token, deviceToken, safeTitle, safeBody))
+    public Mono<Void> send(@NonNull Message message) {
+        return getValidAccessToken(config)
+                .flatMap(token -> sendNotification(config, token, message.deviceToken, message.safeTitle, message.safeBody))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))
                         .filter(this::isTokenExpired)
                         .doBeforeRetry(s -> {
                             log.warn("Token expired. Clearing cached token and retrying...");
                             tokenInfo.set(null);
                         }))
-                .doOnSuccess(v -> log.info("Successfully sent Huawei push notification to device: {}", deviceToken))
-                .doOnError(e -> log.error("Failed to send Huawei push notification to device: {}. Error: {}", deviceToken, e.getMessage()));
+                .doOnSuccess(v -> log.info("Successfully sent Huawei push notification to device: {}",
+                        message.deviceToken))
+                .doOnError(e -> log.error("Failed to send Huawei push notification to device: {}. Error: {}", message.deviceToken, e.getMessage()));
     }
 
     // Мы ограничены API Huawei. Только 1000 токенов в 5 минут, поэтому есть необходимость сохранять токен и переиспользовать
-    private Mono<String> getValidAccessToken() {
+    private Mono<String> getValidAccessToken(HuaweiProperty config) {
         TokenInfo currentTokenInfo = tokenInfo.get();
         if (currentTokenInfo != null && currentTokenInfo.isValid()) {
             log.debug("Using cached access token");
             return Mono.just(currentTokenInfo.token);
         }
         log.info("Fetching new access token");
-        return getAccessToken()
+        return getAccessToken(config)
                 .doOnNext(token -> {
                     Instant expiryTime = Instant.now().plusSeconds(3500); // Намеренно проставляю время чуть меньше, чем 3600
                     tokenInfo.set(new TokenInfo(token, expiryTime));
@@ -84,14 +60,21 @@ public class HuaweiService {
                 });
     }
 
-    private Mono<String> getAccessToken() {
+    private Mono<String> getAccessToken(HuaweiProperty config) {
         log.debug("Requesting new access token from Huawei API");
+
+        MultiValueMap<String, String> bodyValues = new LinkedMultiValueMap<>();
+
+        bodyValues.add("client_id", config.getClientId());
+        bodyValues.add("client_secret", config.getClientSecret());
+        bodyValues.add("grant_type", "client_credentials");
+        bodyValues.add("token_type_hint", "access_token");
+
         return webClientBuilder.build()
                 .post()
-                .uri(tokenUrl)
+                .uri(config.getTokenUrl())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .bodyValue(String.format("grant_type=client_credentials&client_id=%s&client_secret=%s",
-                        clientId, clientSecret))
+                .body(BodyInserters.fromFormData(bodyValues))
                 .retrieve()
                 .bodyToMono(Map.class)
                 .map(response -> (String) response.get("access_token"))
@@ -99,13 +82,13 @@ public class HuaweiService {
                 .doOnError(e -> log.error("Failed to obtain access token. Error: {}", e.getMessage()));
     }
 
-    private Mono<Void> sendNotification(String accessToken, String deviceToken, String title, String body) {
+    private Mono<Void> sendNotification(HuaweiProperty config, String accessToken, String deviceToken, String title, String body) {
         log.debug("Sending notification to device: {}. Title: {}. Body: {}", deviceToken, title, body);
         Map<String, Object> requestBody = createNotificationPayload(deviceToken, title, body);
 
         return webClientBuilder.build()
                 .post()
-                .uri(apiUrl)
+                .uri(config.getApiUrl())
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + accessToken)
                 .bodyValue(requestBody)
@@ -163,6 +146,13 @@ public class HuaweiService {
         boolean isValid() {
             return Instant.now().isBefore(expiryTime);
         }
+    }
+
+    @Builder(toBuilder = true)
+    public static class Message {
+        private String deviceToken;
+        private String safeTitle;
+        private String safeBody;
     }
 }
 

@@ -1,9 +1,0 @@
-firebase:
-  config-file: classpath:firebase-service-account.json
-
-huawei:
-  push:
-    client-id: ${HUAWEI_PUSH_CLIENT_ID}
-    client-secret: ${HUAWEI_PUSH_CLIENT_SECRET}
-    token-url: https://oauth-login.cloud.huawei.com/oauth2/v3/token
-    api-url: https://push-api.cloud.huawei.com/v1/${HUAWEI_PUSH_CLIENT_ID}/messages:send
