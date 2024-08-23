@@ -611,6 +611,8 @@ units.unit_structure_guide:with_columns {
   Prop:uuid 'subject_id',
   Prop:text 'name',
   Prop:text 'link',
+  Prop:text 'description',
+  Prop:text 'attachment',
   Prop:int 'position',
   Prop:datetime 'created_at',
   Prop:datetime 'updated_at',

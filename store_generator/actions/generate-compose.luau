@@ -243,41 +243,30 @@ ggcode.generate "compose/mcli" {
 
       Mcli.Key:from('api', 'y5LeRZ84J4SsenpaIxMl', 'AZitoDkffcEYFYUmV4CGv1jr2fiXWIw4uSvdFlDu'),
 
-      Mcli.Bucket:from('employee-document')
+      Mcli.Bucket:from('app-product-image')
         :with_anonymous_access('download'),
-      Mcli.Bucket:from('product-image')
-        :with_anonymous_access('download'),
-      Mcli.Bucket:from('product-image-variant')
+      Mcli.Bucket:from('app-product-image-variant')
         :with_anonymous_access('download'),
 
-      Mcli.Bucket:from('employee-table'),
-      Mcli.Bucket:from('product-table'),
-      Mcli.Bucket:from('price-table'),
+      Mcli.Bucket:from('app-public-image')
+        :with_anonymous_access('download'),
+      Mcli.Bucket:from('app-public-document')
+        :with_anonymous_access('download'),
+
+      Mcli.Bucket:from('onec-employee-table'),
 
       Mcli.KafkaTarget
-        :from('product_image')
+        :from('app_product_image')
         :with_broker('env-kafka:29092')
-        :with_topic('minio_product_image')
-        :with_event('product-image', 'put')
-        :with_event('product-image', 'delete'),
+        :with_topic('app_product_image')
+        :with_event('app-product-image', 'put')
+        :with_event('app-product-image', 'delete'),
 
       Mcli.KafkaTarget
-        :from('employee_table')
+        :from('onec_employee_table')
         :with_broker('env-kafka:29092')
-        :with_topic('minio_employee_table')
-        :with_event('employee-table', 'put'),
-
-      Mcli.KafkaTarget
-        :from('product_table')
-        :with_broker('env-kafka:29092')
-        :with_topic('minio_product_table')
-        :with_event('product-table', 'put'),
-
-      Mcli.KafkaTarget
-        :from('price_table')
-        :with_broker('env-kafka:29092')
-        :with_topic('minio_price_table')
-        :with_event('price-table', 'put'),
+        :with_topic('onec_employee_table')
+        :with_event('onec-employee-table', 'put'),
     })
     :unwrap()
 }
@@ -314,6 +303,13 @@ ggcode.generate "compose/app" {
     :with_app_minio_client(minio_client)
     :with_env_variable('JAVA_OPTS', '-Xmx512m -Xms256m')
     :with_env_variable('SPRING_KAFKA_BOOTSTRAP_SERVERS', 'env-kafka:29092')
+    :with_env_variable('APP_MINIO_BUCKETS_0_NAME', 'app-public-document')
+    :with_env_variable('APP_MINIO_BUCKETS_1_NAME', 'app-public-image')
+    :with_env_variable('APP_MINIO_BUCKETS_1_UPLOAD_POLICY_CONTENT_TYPE', 'image/')
+    :with_env_variable('APP_MINIO_BUCKETS_1_UPLOAD_POLICY_CONTENT_LENGTH', '10M')
+    :with_env_variable('APP_MINIO_BUCKETS_2_NAME', 'app-product-image')
+    :with_env_variable('APP_MINIO_BUCKETS_2_UPLOAD_POLICY_CONTENT_TYPE', 'image/')
+    :with_env_variable('APP_MINIO_BUCKETS_2_UPLOAD_POLICY_CONTENT_LENGTH', '10M')
     :with_link('env-haproxy:auth.local.example.com')
     :unwrap()
 }
@@ -336,8 +332,8 @@ ggcode.generate "compose/worker" {
     :with_minio_client(minio_client)
     :with_env_variables({
       KAFKA_BOOTSTRAP_SERVERS = 'env-kafka:29092',
-      KAFKA_CONSUMER_GROUP = 'worker_product_image.minio_product_image',
-      KAFKA_TOPICS = 'minio_product_image',
+      KAFKA_CONSUMER_GROUP = 'worker_product_image.app_product_image',
+      KAFKA_TOPICS = 'app_product_image',
     })
     :unwrap()
 }
@@ -353,8 +349,8 @@ ggcode.generate "compose/worker" {
     :with_minio_client(minio_client)
     :with_env_variables({
       KAFKA_BOOTSTRAP_SERVERS = 'env-kafka:29092',
-      KAFKA_CONSUMER_GROUP = 'worker_employee_table.minio_employee_table',
-      KAFKA_TOPICS = 'minio_employee_table',
+      KAFKA_CONSUMER_GROUP = 'worker_employee_table.onec_employee_table',
+      KAFKA_TOPICS = 'onec_employee_table',
     })
     :unwrap()
 }

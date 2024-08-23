@@ -338,7 +338,7 @@ grids.grid_guide = Grid
     Grid.Column:from_symbol('subject', symbols.symbol_guide_subject, 'subject'),
     Grid.Column:from_path('position', 'position'),
     Grid.Column:from_path('name', 'name'),
-    Grid.Column:from_path('link', 'link'),
+    Grid.Column:from_symbol('attachment', symbols.symbol_s3_http, 'attachment'),
   }
 
 grids.grid_guide_subject = Grid

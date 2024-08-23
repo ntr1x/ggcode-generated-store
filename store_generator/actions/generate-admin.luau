@@ -11,6 +11,7 @@ local grids = require('vue/definitions/grids')
 local fieldsets = require('vue/definitions/fieldsets')
 local selects = require('vue/definitions/selects')
 local searches = require('vue/definitions/searches')
+local uploads = require('vue/definitions/uploads')
 local toolbars = require('vue/definitions/toolbars')
 local pages = require('vue/definitions/pages')
 local routers = require('vue/definitions/routers')
@@ -52,6 +53,11 @@ end
 -- Generate Search Controls
 for _, search in searches do
   ggcode.generate "vue/search" { target = '@store', variables = search:unwrap() }
+end
+
+-- Generate Upload Controls
+for _, upload in uploads do
+  ggcode.generate "vue/upload_s3" { target = '@store', variables = upload:unwrap() }
 end
 
 -- Generate Symbols

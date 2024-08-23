@@ -1,8 +1,9 @@
 local Dialog = require('vue/Dialog')
 
 local projects = require('vue/definitions/projects')
-local selects = require('vue/definitions/selects')
 local requests = require('vue/definitions/requests')
+local selects = require('vue/definitions/selects')
+local uploads = require('vue/definitions/uploads')
 
 local dialogs = {}
 
@@ -35,6 +36,7 @@ dialogs.dialog_guide_create = Dialog
     Dialog.Field:from_text('link'),
     Dialog.Field:from_number('position'),
     Dialog.Field:from_select(selects.select_guide_subject, 'subject_id'),
+    Dialog.Field:from_upload_s3(uploads.upload_guide_attachment, 'attachment'),
     Dialog.Call:from_submit(requests.request_guide_create)
   }
 

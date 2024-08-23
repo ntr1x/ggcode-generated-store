@@ -5,6 +5,10 @@ local remotes = require('vue/definitions/remotes')
 
 local requests = {}
 
+requests.request_presign_upload = Request
+  :from_post(remotes.remote_uploads, '/profile/uploads/preSign')
+  :with_body(Meta:table {})
+
 requests.request_customer_select = Request
   :from_post(remotes.remote_customers, '/system/public_customer/select')
   :with_body(Meta:table {})

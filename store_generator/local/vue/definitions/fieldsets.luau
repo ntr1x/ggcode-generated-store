@@ -50,7 +50,9 @@ fieldsets.fieldset_guide_info = Fieldset
   :with_rules {
     Fieldset.Field:from_path('name', 'name'),
     Fieldset.Field:from_path('link', 'link'),
+    Fieldset.Field:from_symbol('subject', symbols.symbol_guide_subject, 'subject'),
     Fieldset.Field:from_path('position', 'position'),
+    Fieldset.Field:from_symbol('attachment', symbols.symbol_s3_http, 'attachment'),
   }
 
 fieldsets.fieldset_guide_subject_info = Fieldset

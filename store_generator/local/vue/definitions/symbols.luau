@@ -210,4 +210,9 @@ symbols.symbol_guide_subject = Symbol
   :with_label('props.value.name')
   :with_icon('"pi pi-bookmark"')
 
+symbols.symbol_s3_http = Symbol
+  :from(projects.project, 's3_http')
+  :with_label('(props.value == null || props.value == null) ? null : `s3://app-public-document/${props.value}`')
+  :with_icon('"pi pi-download"')
+
 return symbols
