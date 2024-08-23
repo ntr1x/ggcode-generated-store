@@ -9,7 +9,7 @@ import type { ModalContext } from '../../store/modalStore';
 import { useAuthStore } from '../../store/authStore';
 import { structureRemote } from '../../remotes/structureRemote'
 import SelectGuideSubject from '../controls/SelectGuideSubject.vue';
-import PlatformUploadS3 from '../controls/platform/PlatformUploadS3.vue';
+import UploadS3GuideAttachment from '../controls/UploadS3GuideAttachment.vue';
 
 const authStore = useAuthStore()
 
@@ -20,9 +20,9 @@ const context = inject<ModalContext>('modalContext')!
 const form = reactive<{
   name?: string
   link?: string
-  attachment?: string
   position?: number
   subjectId?: string
+  attachment?: string
 }>({
 })
 
@@ -103,16 +103,16 @@ async function handleClose() {
           <InputText v-model="form.link" class="w-full" />
         </div>
         <div>
-          <label class="block text-sm mb-1">Attachment:</label>
-          <PlatformUploadS3 bucket="test-image" v-model="form.attachment" class="w-full"/>
-        </div>
-        <div>
           <label class="block text-sm mb-1">Position:</label>
           <InputNumber v-model="form.position" class="w-full" />
         </div>
         <div>
           <label class="block text-sm mb-1">Subject Id:</label>
           <SelectGuideSubject v-model="form.subjectId" class="w-full" />
+        </div>
+        <div>
+          <label class="block text-sm mb-1">Attachment:</label>
+          <UploadS3GuideAttachment v-model="form.attachment" class="w-full" />
         </div>
       </div>
       <div class="flex justify-end gap-2">

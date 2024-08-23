@@ -12,12 +12,12 @@ services:
     networks:
       default: {}
     environment:
-      KAFKA_TOPICS: minio_product_image
+      KAFKA_TOPICS: app_product_image
       MINIO_ACCESS_KEY: y5LeRZ84J4SsenpaIxMl
       MINIO_TARGET_SERVER: http://env-minio:9000
       MINIO_SECRET_KEY: AZitoDkffcEYFYUmV4CGv1jr2fiXWIw4uSvdFlDu
       KAFKA_BOOTSTRAP_SERVERS: env-kafka:29092
-      KAFKA_CONSUMER_GROUP: worker_product_image.minio_product_image
+      KAFKA_CONSUMER_GROUP: worker_product_image.app_product_image
     deploy:
       resources:
         limits:

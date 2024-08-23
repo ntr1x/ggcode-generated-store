@@ -12,36 +12,26 @@ mc admin user svcacct add \
   --secret-key "AZitoDkffcEYFYUmV4CGv1jr2fiXWIw4uSvdFlDu" \
   minio api
 
-mc mb minio/employee-document
-mc mb minio/product-image
-mc mb minio/product-image-variant
-mc mb minio/employee-table
-mc mb minio/product-table
-mc mb minio/price-table
+mc mb minio/app-product-image
+mc mb minio/app-product-image-variant
+mc mb minio/app-public-image
+mc mb minio/app-public-document
+mc mb minio/onec-employee-table
 
-mc anonymous set download minio/employee-document
-mc anonymous set download minio/product-image
-mc anonymous set download minio/product-image-variant
+mc anonymous set download minio/app-product-image
+mc anonymous set download minio/app-product-image-variant
+mc anonymous set download minio/app-public-image
+mc anonymous set download minio/app-public-document
 
-mc admin config set minio/ notify_kafka:product_image \
+mc admin config set minio/ notify_kafka:app_product_image \
    brokers="env-kafka:29092" \
-   topic="minio_product_image"
+   topic="app_product_image"
 
-mc admin config set minio/ notify_kafka:employee_table \
+mc admin config set minio/ notify_kafka:onec_employee_table \
    brokers="env-kafka:29092" \
-   topic="minio_employee_table"
-
-mc admin config set minio/ notify_kafka:product_table \
-   brokers="env-kafka:29092" \
-   topic="minio_product_table"
-
-mc admin config set minio/ notify_kafka:price_table \
-   brokers="env-kafka:29092" \
-   topic="minio_price_table"
+   topic="onec_employee_table"
 
 mc admin service restart minio
 
-mc event add minio/product-image arn:minio:sqs::product_image:kafka --event put,delete
-mc event add minio/employee-table arn:minio:sqs::employee_table:kafka --event put
-mc event add minio/product-table arn:minio:sqs::product_table:kafka --event put
-mc event add minio/price-table arn:minio:sqs::price_table:kafka --event put
+mc event add minio/app-product-image arn:minio:sqs::app_product_image:kafka --event put,delete
+mc event add minio/onec-employee-table arn:minio:sqs::onec_employee_table:kafka --event put

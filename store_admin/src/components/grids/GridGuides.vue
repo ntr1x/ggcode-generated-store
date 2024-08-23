@@ -4,6 +4,7 @@ import DataTable from 'primevue/datatable';
 import { type State } from '../../hooks/useAxiosRequest';
 import SymbolId from '../symbols/SymbolId.vue'
 import SymbolGuideSubject from '../symbols/SymbolGuideSubject.vue'
+import SymbolS3Http from '../symbols/SymbolS3Http.vue'
 
 export type ResponseData = {
   content: []
@@ -17,7 +18,7 @@ export type GridGuidesProps = {
   hideSubject?: boolean,
   hidePosition?: boolean,
   hideName?: boolean,
-  hideLink?: boolean,
+  hideAttachment?: boolean,
 }
 
 const selection = defineModel<T[]>('selection')
@@ -68,6 +69,10 @@ withDefaults(defineProps<GridGuidesProps>(), {
     </Column>
     <Column v-if="!hidePosition" field="position" header="Position" />
     <Column v-if="!hideName" field="name" header="Name" />
-    <Column v-if="!hideLink" field="link" header="Link" />
+    <Column v-if="!hideAttachment" header="Attachment">
+      <template #body="slotProps">
+        <SymbolS3Http :value="slotProps.data.attachment"/>
+      </template>
+    </Column>
   </DataTable>
 </template>

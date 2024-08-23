@@ -45,8 +45,6 @@ public class ProfileUploadsService {
                 ZonedDateTime.now().plus(bucketProperty.getUploadPolicy().getDuration()));
 
         policy.addEqualsCondition("key", request.getKey());
-        policy.addEqualsCondition("source", request.getSource());
-        policy.addEqualsCondition("original-name", request.getOriginalName());
 
         Optional.ofNullable(bucketProperty.getUploadPolicy())
                 .map(UploadPolicyProperty::getContentType)

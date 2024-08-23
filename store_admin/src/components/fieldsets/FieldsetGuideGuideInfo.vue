@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import Panel from 'primevue/panel';
 import { type State } from '../../hooks/useAxiosRequest';
+import SymbolGuideSubject from '../symbols/SymbolGuideSubject.vue'
+import SymbolS3Http from '../symbols/SymbolS3Http.vue'
 
 defineProps<{
   state: State<any>
@@ -29,10 +31,22 @@ defineProps<{
       </td>
     </tr>
     <tr>
+      <th class="text-left">Subject:</th>
+      <td>
+        <SymbolGuideSubject :value="state.data.subject" />
+      </td>
+    </tr>
+    <tr>
       <th class="text-left">Position:</th>
       <td>
         <div v-if="state.data.position" v-html="state.data.position"></div>
         <div v-else><i class="text-slate-500">Empty</i></div>
+      </td>
+    </tr>
+    <tr>
+      <th class="text-left">Attachment:</th>
+      <td>
+        <SymbolS3Http :value="state.data.attachment" />
       </td>
     </tr>
     </table>

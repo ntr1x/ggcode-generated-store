@@ -1,9 +1,15 @@
 window.__APP_CONFIG__ = {
   remote: {
-    security: "http://api.local.example.com/api/assembly_web",
     customers: "http://api.local.example.com/api/service_profile",
-    products: "http://api.local.example.com/api/assembly_web",
-    payments: "http://api.local.example.com/api/assembly_web",
     events: "http://api.local.example.com/api/assembly_web",
+    minio: "http://minio.local.example.com",
+    payments: "http://api.local.example.com/api/assembly_web",
+    products: "http://api.local.example.com/api/assembly_web",
+    security: "http://api.local.example.com/api/assembly_web",
+    structure: "http://api.local.example.com/api/assembly_web",
+    uploads: "http://api.local.example.com/api/assembly_web",
+  },
+  socket: {
+    events: 'ws://api.local.example.com/api/assembly_web/ws'
   }
 }
