@@ -1,60 +1,54 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { productsRemote } from '../../remotes/productsRemote';
+import {
+  type QuerySelectItemPageFilter,
+  type QuerySelectItemPageSorter,
+  useQuerySelectItemPage
+} from '../../queries/useQuerySelectItemPage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import ToolbarItems from '../toolbars/ToolbarItems.vue';
 import GridItems from '../grids/GridItems.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const itemSelectFilter = reactive({
+const selectItemPageFilter = reactive<QuerySelectItemPageFilter>({
   shopId: undefined,
 })
 
-const itemSelectSort = reactive({
+const selectItemPageSort = reactive<QuerySelectItemPageSorter>({
 })
 
-const itemSelectSelection = ref([])
+const selectItemPageSelection = ref([])
 
-const itemSelectQuery = useAxiosAutoRequest<any>(productsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  setProperty(data, 'shopId', itemSelectFilter.shopId)
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectItemPageQuery = useQuerySelectItemPage(
+  props,
+  selectItemPageSort,
+  selectItemPageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_item/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshItemSelect = () => {
-  itemSelectQuery.refresh()
-  itemSelectSelection.value = []
+const handleRefreshSelectItemPage = () => {
+  selectItemPageQuery.refresh()
+  selectItemPageSelection.value = []
 }
 
 watch(
-  [itemSelectFilter, itemSelectSort],
-  handleRefreshItemSelect
+  [selectItemPageFilter, selectItemPageSort],
+  handleRefreshSelectItemPage
 )
 
 </script>
@@ -67,13 +61,13 @@ watch(
     />
     <ToolbarItems
       class="rounded-none border-0 border-b"
-      v-model:selection="itemSelectSelection"
-      v-model:filter-by-shop-id = itemSelectFilter.shopId
-      @refresh="handleRefreshItemSelect"
+      v-model:selection="selectItemPageSelection"
+      v-model:filter-by-shop-id = selectItemPageFilter.shopId
+      @refresh="handleRefreshSelectItemPage"
     />
     <GridItems
-      :state="itemSelectQuery.state"
-      v-model:selection="itemSelectSelection"
+      :state="selectItemPageQuery.state"
+      v-model:selection="selectItemPageSelection"
     />
   </div>
 </template>

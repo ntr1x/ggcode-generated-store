@@ -1,9 +1,17 @@
+import { EventEmitter } from 'events';
 import { reactive } from "vue";
 import { useAuthStore } from "../store/authStore";
-import { eventsRemote } from '../remotes/eventsRemote'
+import { removeDispatchArrayRequest } from '../requests/removeDispatchArrayRequest';
+import { StructurePublicDispatchRecord } from '../structures/StructurePublicDispatchRecord';
+
+export type ActionDispatchRemoveSelectedProps = {
+  items: StructurePublicDispatchRecord[]
+}
 
 export function useActionDispatchRemoveSelected() {
   const authStore = useAuthStore()
+
+  const emitter = new EventEmitter()
 
   const state = reactive({
     isLoading: false,
@@ -11,36 +19,36 @@ export function useActionDispatchRemoveSelected() {
     isFailed: false,
   })
 
-  const execute = async (payload?: any) => {
-    const token = await authStore.requireToken()
+  const execute = async (props: ActionDispatchRemoveSelectedProps) => {
     try {
       Object.assign(state, {
         isLoading: true,
         isFailed: false
       })
-      const { data } = await eventsRemote.request({
-        method: 'POST',
-        url: '/system/public_dispatch/removeAll',
-        data: Object.assign([], payload),
-        params: {},
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+      
+      const token = await authStore.requireToken()
+      
+      const { data } = await removeDispatchArrayRequest({
+        payload: props.items,
+        token,
       })
+
+      emitter.emit('success', data)
+
       Object.assign(state, {
         isLoading: false,
         isFailed: false,
         isLoaded: true,
       })
-      return data
     } catch (e) {
       Object.assign(state, {
         isLoading: false,
         isFailed: true
       })
+      emitter.emit('failure', e)
       throw e
     }
   }
 
-  return { execute, state }
+  return { execute, state, emitter }
 }

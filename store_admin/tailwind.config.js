@@ -34,6 +34,10 @@ export default {
         }
     }
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography')({
+      className: 'with-typography'
+    })
+  ],
 }
 

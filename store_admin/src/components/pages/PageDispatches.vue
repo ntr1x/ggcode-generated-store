@@ -1,28 +1,38 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { eventsRemote } from '../../remotes/eventsRemote';
+import {
+  type QuerySelectDispatchPageFilter,
+  type QuerySelectDispatchPageSorter,
+  useQuerySelectDispatchPage
+} from '../../queries/useQuerySelectDispatchPage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import ToolbarDispatches from '../toolbars/ToolbarDispatches.vue';
 import GridDispatches from '../grids/GridDispatches.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const dispatchSelectFilter = reactive({
-  customerId: route.params.customerId,
+const selectDispatchPageFilter = reactive<QuerySelectDispatchPageFilter>({
+  customerId: undefined,
   typeId: undefined,
   statusId: undefined,
 })
 
-const dispatchSelectSort = reactive({
+const selectDispatchPageSort = reactive<QuerySelectDispatchPageSorter>({
   id: undefined,
   typeId: undefined,
   statusId: undefined,
@@ -30,55 +40,22 @@ const dispatchSelectSort = reactive({
   updatedAt: undefined,
 })
 
-const dispatchSelectSelection = ref([])
+const selectDispatchPageSelection = ref([])
 
-const dispatchSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  setProperty(data, 'customerId', dispatchSelectFilter.customerId)
-  setProperty(data, 'typeId', dispatchSelectFilter.typeId)
-  setProperty(data, 'statusId', dispatchSelectFilter.statusId)
-  const params: Record<string, any> = {"size":50,"sort":"createdAt,desc"}
-  const sort: string[] = []
-  if (dispatchSelectSort.id != null) {
-    sort.push('id,' + dispatchSelectSort.id)
-  }
-  if (dispatchSelectSort.typeId != null) {
-    sort.push('typeId,' + dispatchSelectSort.typeId)
-  }
-  if (dispatchSelectSort.statusId != null) {
-    sort.push('statusId,' + dispatchSelectSort.statusId)
-  }
-  if (dispatchSelectSort.createdAt != null) {
-    sort.push('createdAt,' + dispatchSelectSort.createdAt)
-  }
-  if (dispatchSelectSort.updatedAt != null) {
-    sort.push('updatedAt,' + dispatchSelectSort.updatedAt)
-  }
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectDispatchPageQuery = useQuerySelectDispatchPage(
+  props,
+  selectDispatchPageSort,
+  selectDispatchPageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_dispatch/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshDispatchSelect = () => {
-  dispatchSelectQuery.refresh()
-  dispatchSelectSelection.value = []
+const handleRefreshSelectDispatchPage = () => {
+  selectDispatchPageQuery.refresh()
+  selectDispatchPageSelection.value = []
 }
 
 watch(
-  [dispatchSelectFilter, dispatchSelectSort],
-  handleRefreshDispatchSelect
+  [selectDispatchPageFilter, selectDispatchPageSort],
+  handleRefreshSelectDispatchPage
 )
 
 </script>
@@ -91,20 +68,20 @@ watch(
     />
     <ToolbarDispatches
       class="rounded-none border-0 border-b"
-      v-model:selection="dispatchSelectSelection"
-      v-model:filter-by-customer-id = dispatchSelectFilter.customerId
-      v-model:filter-by-type-id = dispatchSelectFilter.typeId
-      v-model:filter-by-status-id = dispatchSelectFilter.statusId
-      v-model:sort-by-id = dispatchSelectSort.id
-      v-model:sort-by-created-at = dispatchSelectSort.createdAt
-      v-model:sort-by-updated-at = dispatchSelectSort.updatedAt
-      v-model:sort-by-type-id = dispatchSelectSort.typeId
-      v-model:sort-by-status-id = dispatchSelectSort.statusId
-      @refresh="handleRefreshDispatchSelect"
+      v-model:selection="selectDispatchPageSelection"
+      v-model:filter-by-customer-id = selectDispatchPageFilter.customerId
+      v-model:filter-by-type-id = selectDispatchPageFilter.typeId
+      v-model:filter-by-status-id = selectDispatchPageFilter.statusId
+      v-model:sort-by-id = selectDispatchPageSort.id
+      v-model:sort-by-created-at = selectDispatchPageSort.createdAt
+      v-model:sort-by-updated-at = selectDispatchPageSort.updatedAt
+      v-model:sort-by-type-id = selectDispatchPageSort.typeId
+      v-model:sort-by-status-id = selectDispatchPageSort.statusId
+      @refresh="handleRefreshSelectDispatchPage"
     />
     <GridDispatches
-      :state="dispatchSelectQuery.state"
-      v-model:selection="dispatchSelectSelection"
+      :state="selectDispatchPageQuery.state"
+      v-model:selection="selectDispatchPageSelection"
     />
   </div>
 </template>

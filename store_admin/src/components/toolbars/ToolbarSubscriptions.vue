@@ -8,6 +8,9 @@ import { type Option } from '../dialogs/PlatformDialogFilter.vue';
 import { useModalStore } from '../../store/modalStore';
 import SearchPickerCustomerId from '../controls/SearchPickerCustomerId.vue'
 import SelectPickerSubscriptionType from '../controls/SelectPickerSubscriptionType.vue'
+
+export type SelectionSubscriptionsRecord = Record<string, any>
+
 const modalStore = useModalStore()
 
 const emit = defineEmits<{

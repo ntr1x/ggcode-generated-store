@@ -8,6 +8,7 @@ export const personalRouter = {
     {
       path: 'dashboard',
       component: PageDashboard,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: []

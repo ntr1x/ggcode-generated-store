@@ -1,73 +1,57 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { eventsRemote } from '../../remotes/eventsRemote';
+import {
+  type QuerySelectSubscriptionTypePageFilter,
+  type QuerySelectSubscriptionTypePageSorter,
+  useQuerySelectSubscriptionTypePage
+} from '../../queries/useQuerySelectSubscriptionTypePage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridSubscriptionTypes from '../grids/GridSubscriptionTypes.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const subscriptionTypeSelectFilter = reactive({
-  customerId: route.params.customerId,
+const selectSubscriptionTypePageFilter = reactive<QuerySelectSubscriptionTypePageFilter>({
+  customerId: undefined,
   typeId: undefined,
 })
 
-const subscriptionTypeSelectSort = reactive({
+const selectSubscriptionTypePageSort = reactive<QuerySelectSubscriptionTypePageSorter>({
   id: undefined,
   name: undefined,
   description: undefined,
 })
 
-const subscriptionTypeSelectSelection = ref([])
+const selectSubscriptionTypePageSelection = ref([])
 
-const subscriptionTypeSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  setProperty(data, 'customerId', subscriptionTypeSelectFilter.customerId)
-  setProperty(data, 'typeId', subscriptionTypeSelectFilter.typeId)
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  if (subscriptionTypeSelectSort.id != null) {
-    sort.push('id,' + subscriptionTypeSelectSort.id)
-  }
-  if (subscriptionTypeSelectSort.name != null) {
-    sort.push('name,' + subscriptionTypeSelectSort.name)
-  }
-  if (subscriptionTypeSelectSort.description != null) {
-    sort.push('description,' + subscriptionTypeSelectSort.description)
-  }
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectSubscriptionTypePageQuery = useQuerySelectSubscriptionTypePage(
+  props,
+  selectSubscriptionTypePageSort,
+  selectSubscriptionTypePageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_subscription_type/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshSubscriptionTypeSelect = () => {
-  subscriptionTypeSelectQuery.refresh()
-  subscriptionTypeSelectSelection.value = []
+const handleRefreshSelectSubscriptionTypePage = () => {
+  selectSubscriptionTypePageQuery.refresh()
+  selectSubscriptionTypePageSelection.value = []
 }
 
 watch(
-  [subscriptionTypeSelectFilter, subscriptionTypeSelectSort],
-  handleRefreshSubscriptionTypeSelect
+  [selectSubscriptionTypePageFilter, selectSubscriptionTypePageSort],
+  handleRefreshSelectSubscriptionTypePage
 )
 
 </script>
@@ -79,8 +63,8 @@ watch(
       title="Subscription Types"
     />
     <GridSubscriptionTypes
-      :state="subscriptionTypeSelectQuery.state"
-      v-model:selection="subscriptionTypeSelectSelection"
+      :state="selectSubscriptionTypePageQuery.state"
+      v-model:selection="selectSubscriptionTypePageSelection"
     />
   </div>
 </template>

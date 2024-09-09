@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="T">
+<script setup lang="ts">
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import { type State } from '../../hooks/useAxiosRequest';
@@ -8,13 +8,16 @@ import SymbolDispatchType from '../symbols/SymbolDispatchType.vue'
 import SymbolDispatchStatus from '../symbols/SymbolDispatchStatus.vue'
 import SymbolSessionId from '../symbols/SymbolSessionId.vue'
 import SymbolDatetime from '../symbols/SymbolDatetime.vue'
+import { StructurePublicDispatchPage } from '../../structures/StructurePublicDispatchPage'
 
-export type ResponseData = {
-  content: []
+export type GridDispatchesRecord = StructurePublicDispatchPage['content'][0]
+
+export type GridDispatchesPage = {
+  content: GridDispatchesRecord[]
 }
 
 export type GridDispatchesProps = {
-  state: State<ResponseData>,
+  state: State<GridDispatchesPage>,
   scrollable?: boolean,
   scrollHeight?: string,
   hideId?: boolean,
@@ -26,7 +29,7 @@ export type GridDispatchesProps = {
   hideUpdatedAt?: boolean,
 }
 
-const selection = defineModel<T[]>('selection')
+const selection = defineModel<GridDispatchesRecord[]>('selection')
 
 withDefaults(defineProps<GridDispatchesProps>(), {
   scrollable: true,

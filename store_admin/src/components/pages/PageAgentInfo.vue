@@ -1,57 +1,52 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { customersRemote } from '../../remotes/customersRemote';
+import {
+  type QueryGetAgentRecordFilter,
+  type QueryGetAgentRecordSorter,
+  useQueryGetAgentRecord
+} from '../../queries/useQueryGetAgentRecord';
 import SectionHeading from '../partials/SectionHeading.vue';
 import FieldsetAgentInfo from '../fieldsets/FieldsetAgentInfo.vue';
 
+const props = defineProps<{
+  agentId: string
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const agentGetFilter = reactive({
+const getAgentRecordFilter = reactive<QueryGetAgentRecordFilter>({
 })
 
-const agentGetSort = reactive({
+const getAgentRecordSort = reactive<QueryGetAgentRecordSorter>({
 })
 
-const agentGetSelection = ref([])
+const getAgentRecordSelection = ref([])
 
-const agentGetQuery = useAxiosAutoRequest<any>(customersRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const getAgentRecordQuery = useQueryGetAgentRecord(
+  props,
+  getAgentRecordSort,
+  getAgentRecordFilter
+)
 
-  return {
-    method: 'GET',
-    url: `/system/public_agent/i/${route.params.agentId}`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshAgentGet = () => {
-  agentGetQuery.refresh()
-  agentGetSelection.value = []
+const handleRefreshGetAgentRecord = () => {
+  getAgentRecordQuery.refresh()
+  getAgentRecordSelection.value = []
 }
 
 watch(
-  [agentGetFilter, agentGetSort],
-  handleRefreshAgentGet
+  [getAgentRecordFilter, getAgentRecordSort],
+  handleRefreshGetAgentRecord
 )
 
 </script>
@@ -63,7 +58,7 @@ watch(
       title="Agent"
     />
     <FieldsetAgentInfo
-      :state="agentGetQuery.state"
+      :state="getAgentRecordQuery.state"
     />
   </div>
 </template>

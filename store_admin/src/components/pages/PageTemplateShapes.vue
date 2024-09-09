@@ -1,69 +1,55 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { eventsRemote } from '../../remotes/eventsRemote';
+import {
+  type QuerySelectTemplateShapePageFilter,
+  type QuerySelectTemplateShapePageSorter,
+  useQuerySelectTemplateShapePage
+} from '../../queries/useQuerySelectTemplateShapePage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridTemplateShapes from '../grids/GridTemplateShapes.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const templateShapeSelectFilter = reactive({
+const selectTemplateShapePageFilter = reactive<QuerySelectTemplateShapePageFilter>({
 })
 
-const templateShapeSelectSort = reactive({
+const selectTemplateShapePageSort = reactive<QuerySelectTemplateShapePageSorter>({
   id: undefined,
   name: undefined,
   description: undefined,
 })
 
-const templateShapeSelectSelection = ref([])
+const selectTemplateShapePageSelection = ref([])
 
-const templateShapeSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  if (templateShapeSelectSort.id != null) {
-    sort.push('id,' + templateShapeSelectSort.id)
-  }
-  if (templateShapeSelectSort.name != null) {
-    sort.push('name,' + templateShapeSelectSort.name)
-  }
-  if (templateShapeSelectSort.description != null) {
-    sort.push('description,' + templateShapeSelectSort.description)
-  }
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectTemplateShapePageQuery = useQuerySelectTemplateShapePage(
+  props,
+  selectTemplateShapePageSort,
+  selectTemplateShapePageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_template_shape/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshTemplateShapeSelect = () => {
-  templateShapeSelectQuery.refresh()
-  templateShapeSelectSelection.value = []
+const handleRefreshSelectTemplateShapePage = () => {
+  selectTemplateShapePageQuery.refresh()
+  selectTemplateShapePageSelection.value = []
 }
 
 watch(
-  [templateShapeSelectFilter, templateShapeSelectSort],
-  handleRefreshTemplateShapeSelect
+  [selectTemplateShapePageFilter, selectTemplateShapePageSort],
+  handleRefreshSelectTemplateShapePage
 )
 
 </script>
@@ -75,8 +61,8 @@ watch(
       title="Template Shapes"
     />
     <GridTemplateShapes
-      :state="templateShapeSelectQuery.state"
-      v-model:selection="templateShapeSelectSelection"
+      :state="selectTemplateShapePageQuery.state"
+      v-model:selection="selectTemplateShapePageSelection"
     />
   </div>
 </template>

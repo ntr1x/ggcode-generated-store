@@ -1,15 +1,17 @@
-<script setup lang="ts" generic="T">
+<script setup lang="ts">
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import { type State } from '../../hooks/useAxiosRequest';
 import SymbolId from '../symbols/SymbolId.vue'
 
-export type ResponseData = {
-  content: []
+export type GridOrderTypesRecord = Record<string, any>
+
+export type GridOrderTypesPage = {
+  content: GridOrderTypesRecord[]
 }
 
 export type GridOrderTypesProps = {
-  state: State<ResponseData>,
+  state: State<GridOrderTypesPage>,
   scrollable?: boolean,
   scrollHeight?: string,
   hideId?: boolean,
@@ -17,7 +19,7 @@ export type GridOrderTypesProps = {
   hideDescription?: boolean,
 }
 
-const selection = defineModel<T[]>('selection')
+const selection = defineModel<GridOrderTypesRecord[]>('selection')
 
 withDefaults(defineProps<GridOrderTypesProps>(), {
   scrollable: true,

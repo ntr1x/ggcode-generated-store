@@ -1,57 +1,52 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { paymentsRemote } from '../../remotes/paymentsRemote';
+import {
+  type QuerySelectPaymentStatusPageFilter,
+  type QuerySelectPaymentStatusPageSorter,
+  useQuerySelectPaymentStatusPage
+} from '../../queries/useQuerySelectPaymentStatusPage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridPaymentStatuses from '../grids/GridPaymentStatuses.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const paymentStatusSelectFilter = reactive({
+const selectPaymentStatusPageFilter = reactive<QuerySelectPaymentStatusPageFilter>({
 })
 
-const paymentStatusSelectSort = reactive({
+const selectPaymentStatusPageSort = reactive<QuerySelectPaymentStatusPageSorter>({
 })
 
-const paymentStatusSelectSelection = ref([])
+const selectPaymentStatusPageSelection = ref([])
 
-const paymentStatusSelectQuery = useAxiosAutoRequest<any>(paymentsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectPaymentStatusPageQuery = useQuerySelectPaymentStatusPage(
+  props,
+  selectPaymentStatusPageSort,
+  selectPaymentStatusPageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_payment_status/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshPaymentStatusSelect = () => {
-  paymentStatusSelectQuery.refresh()
-  paymentStatusSelectSelection.value = []
+const handleRefreshSelectPaymentStatusPage = () => {
+  selectPaymentStatusPageQuery.refresh()
+  selectPaymentStatusPageSelection.value = []
 }
 
 watch(
-  [paymentStatusSelectFilter, paymentStatusSelectSort],
-  handleRefreshPaymentStatusSelect
+  [selectPaymentStatusPageFilter, selectPaymentStatusPageSort],
+  handleRefreshSelectPaymentStatusPage
 )
 
 </script>
@@ -63,8 +58,8 @@ watch(
       title="Payment Statuses"
     />
     <GridPaymentStatuses
-      :state="paymentStatusSelectQuery.state"
-      v-model:selection="paymentStatusSelectSelection"
+      :state="selectPaymentStatusPageQuery.state"
+      v-model:selection="selectPaymentStatusPageSelection"
     />
   </div>
 </template>

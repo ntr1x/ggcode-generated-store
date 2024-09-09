@@ -1,15 +1,17 @@
-<script setup lang="ts" generic="T">
+<script setup lang="ts">
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import { type State } from '../../hooks/useAxiosRequest';
 import SymbolId from '../symbols/SymbolId.vue'
 
-export type ResponseData = {
-  content: []
+export type GridSourceTypesRecord = Record<string, any>
+
+export type GridSourceTypesPage = {
+  content: GridSourceTypesRecord[]
 }
 
 export type GridSourceTypesProps = {
-  state: State<ResponseData>,
+  state: State<GridSourceTypesPage>,
   scrollable?: boolean,
   scrollHeight?: string,
   hideId?: boolean,
@@ -17,7 +19,7 @@ export type GridSourceTypesProps = {
   hideDescription?: boolean,
 }
 
-const selection = defineModel<T[]>('selection')
+const selection = defineModel<GridSourceTypesRecord[]>('selection')
 
 withDefaults(defineProps<GridSourceTypesProps>(), {
   scrollable: true,

@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="T extends { id: string }">
+<script setup lang="ts" generic="T">
 import { ref, reactive, shallowRef } from 'vue';
 import Menubar from 'primevue/menubar'
 import Button from 'primevue/button'
@@ -6,11 +6,15 @@ import Chip from 'primevue/chip'
 import Menu from 'primevue/menu';
 import { type Option } from '../dialogs/PlatformDialogFilter.vue';
 import { useModalStore } from '../../store/modalStore';
+import { StructurePublicDispatchPage } from '../../structures/StructurePublicDispatchPage'
 import SearchPickerCustomerId from '../controls/SearchPickerCustomerId.vue'
 import SelectPickerDispatchType from '../controls/SelectPickerDispatchType.vue'
 import SelectPickerDispatchStatus from '../controls/SelectPickerDispatchStatus.vue'
 import { useActionDispatchRemoveSelected } from '../../actions/useActionDispatchRemoveSelected'
 import { useActionDispatchMessage } from '../../actions/useActionDispatchMessage'
+
+export type SelectionDispatchesRecord = StructurePublicDispatchPage['content'][0]
+
 const modalStore = useModalStore()
 
 const emit = defineEmits<{
@@ -25,7 +29,7 @@ const sortByCreatedAt = defineModel<'asc' | 'desc' | undefined>('sortByCreatedAt
 const sortByUpdatedAt = defineModel<'asc' | 'desc' | undefined>('sortByUpdatedAt')
 const sortByTypeId = defineModel<'asc' | 'desc' | undefined>('sortByTypeId')
 const sortByStatusId = defineModel<'asc' | 'desc' | undefined>('sortByStatusId')
-const selection = defineModel<T[]>('selection', { required: true })
+const selection = defineModel<SelectionDispatchesRecord[]>('selection', { required: true })
 
 const filters = reactive<Record<string, Option | undefined>>({
   customerId: undefined,
@@ -198,32 +202,33 @@ const sortersMenuItems = ref([
 const actionDispatchRemoveSelected = useActionDispatchRemoveSelected()
 const actionDispatchMessage = useActionDispatchMessage()
 
-async function handleRemoveSelected() {
-  try {
-    await actionDispatchRemoveSelected.execute(selection.value.map(item => ({ id: item.id })))
+
+actionDispatchRemoveSelected.emitter
+  .on('success', (data: any) => {
+    console.log(data)
     emit('refresh')
-  } catch (e) {
-    console.log(e)
-  }
+  })
+  .on('failure', (error: any) => {
+    console.error(error)
+  })
+
+actionDispatchMessage.emitter
+  .on('success', (data: any) => {
+    console.log(data)
+    emit('refresh')
+  })
+  .on('failure', (error: any) => {
+    console.error(error)
+  })
+
+async function handleRemoveSelected() {
+  actionDispatchRemoveSelected.execute({
+    items: selection.value,
+  })
 }
 
 async function handleCreateDispatch() {
-  try {
-    actionDispatchMessage.execute(undefined, {
-      success: (data: any) => {
-        console.log(data)
-        emit('refresh')
-      },
-      failure: (error: any) => {
-        console.error(error)
-        // TODO @framework: Implement
-        
-      }
-    })
-    emit('refresh')
-  } catch (e) {
-    console.log(e)
-  }
+  actionDispatchMessage.execute()
 }
 </script>
 

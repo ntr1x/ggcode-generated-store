@@ -10,6 +10,9 @@ import SelectPickerPaymentType from '../controls/SelectPickerPaymentType.vue'
 import SelectPickerPaymentStatus from '../controls/SelectPickerPaymentStatus.vue'
 import SelectPickerOrderType from '../controls/SelectPickerOrderType.vue'
 import SelectPickerOrderStatus from '../controls/SelectPickerOrderStatus.vue'
+
+export type SelectionPaymentsRecord = Record<string, any>
+
 const modalStore = useModalStore()
 
 const emit = defineEmits<{

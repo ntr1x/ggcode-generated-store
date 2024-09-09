@@ -123,7 +123,7 @@ export const useAuthStore = defineStore('auth', {
     },
     async requireToken() {
       const { accessToken } = await this.requireAuth()
-      return accessToken?.token
+      return accessToken!.token
     },
     async doRefresh() {
       const now = Date.now()

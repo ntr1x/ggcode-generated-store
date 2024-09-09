@@ -1,102 +1,85 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { productsRemote } from '../../remotes/productsRemote';
-import { paymentsRemote } from '../../remotes/paymentsRemote';
+import {
+  type QueryGetProductRecordFilter,
+  type QueryGetProductRecordSorter,
+  useQueryGetProductRecord
+} from '../../queries/useQueryGetProductRecord';
+import {
+  type QuerySelectPromotionTargetPageFilter,
+  type QuerySelectPromotionTargetPageSorter,
+  useQuerySelectPromotionTargetPage
+} from '../../queries/useQuerySelectPromotionTargetPage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import FieldsetProductInfo from '../fieldsets/FieldsetProductInfo.vue';
 import ToolbarPromotionTargets from '../toolbars/ToolbarPromotionTargets.vue';
 import GridPromotionTargets from '../grids/GridPromotionTargets.vue';
 
+const props = defineProps<{
+  productId: string
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const productGetFilter = reactive({
+const getProductRecordFilter = reactive<QueryGetProductRecordFilter>({
 })
 
-const productGetSort = reactive({
+const getProductRecordSort = reactive<QueryGetProductRecordSorter>({
 })
 
-const productGetSelection = ref([])
+const getProductRecordSelection = ref([])
 
-const productGetQuery = useAxiosAutoRequest<any>(productsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
-
-  return {
-    method: 'GET',
-    url: `/system/public_product/i/${route.params.productId}`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshProductGet = () => {
-  productGetQuery.refresh()
-  productGetSelection.value = []
-}
-
-watch(
-  [productGetFilter, productGetSort],
-  handleRefreshProductGet
+const getProductRecordQuery = useQueryGetProductRecord(
+  props,
+  getProductRecordSort,
+  getProductRecordFilter
 )
-const promotionTargetSelectFilter = reactive({
-  productId: route.params.productId,
-  promotionId: route.params.promotionId,
-})
 
-const promotionTargetSelectSort = reactive({
-})
-
-const promotionTargetSelectSelection = ref([])
-
-const promotionTargetSelectQuery = useAxiosAutoRequest<any>(paymentsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  setProperty(data, 'productId', promotionTargetSelectFilter.productId)
-  setProperty(data, 'promotionId', promotionTargetSelectFilter.promotionId)
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
-
-  return {
-    method: 'POST',
-    url: `/system/public_promotion_target/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshPromotionTargetSelect = () => {
-  promotionTargetSelectQuery.refresh()
-  promotionTargetSelectSelection.value = []
+const handleRefreshGetProductRecord = () => {
+  getProductRecordQuery.refresh()
+  getProductRecordSelection.value = []
 }
 
 watch(
-  [promotionTargetSelectFilter, promotionTargetSelectSort],
-  handleRefreshPromotionTargetSelect
+  [getProductRecordFilter, getProductRecordSort],
+  handleRefreshGetProductRecord
+)
+
+const selectPromotionTargetPageFilter = reactive<QuerySelectPromotionTargetPageFilter>({
+  productId: props.productId,
+  promotionId: undefined,
+})
+
+const selectPromotionTargetPageSort = reactive<QuerySelectPromotionTargetPageSorter>({
+})
+
+const selectPromotionTargetPageSelection = ref([])
+
+const selectPromotionTargetPageQuery = useQuerySelectPromotionTargetPage(
+  props,
+  selectPromotionTargetPageSort,
+  selectPromotionTargetPageFilter
+)
+
+const handleRefreshSelectPromotionTargetPage = () => {
+  selectPromotionTargetPageQuery.refresh()
+  selectPromotionTargetPageSelection.value = []
+}
+
+watch(
+  [selectPromotionTargetPageFilter, selectPromotionTargetPageSort],
+  handleRefreshSelectPromotionTargetPage
 )
 
 </script>
@@ -108,7 +91,7 @@ watch(
       title="Product"
     />
     <FieldsetProductInfo
-      :state="productGetQuery.state"
+      :state="getProductRecordQuery.state"
     />
     <SectionHeading
       tag="h3"
@@ -116,13 +99,13 @@ watch(
     />
     <ToolbarPromotionTargets
       class="rounded-none border-0 border-b"
-      v-model:selection="promotionTargetSelectSelection"
-      v-model:filter-by-promotion-id = promotionTargetSelectFilter.promotionId
-      @refresh="handleRefreshPromotionTargetSelect"
+      v-model:selection="selectPromotionTargetPageSelection"
+      v-model:filter-by-promotion-id = selectPromotionTargetPageFilter.promotionId
+      @refresh="handleRefreshSelectPromotionTargetPage"
     />
     <GridPromotionTargets
-      :state="promotionTargetSelectQuery.state"
-      v-model:selection="promotionTargetSelectSelection"
+      :state="selectPromotionTargetPageQuery.state"
+      v-model:selection="selectPromotionTargetPageSelection"
       :scrollable="false"
       :hide-customer="true"
     />

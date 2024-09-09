@@ -9,6 +9,9 @@ import { useModalStore } from '../../store/modalStore';
 import SelectPickerEventSource from '../controls/SelectPickerEventSource.vue'
 import SelectPickerEventTopic from '../controls/SelectPickerEventTopic.vue'
 import SelectPickerEventType from '../controls/SelectPickerEventType.vue'
+
+export type SelectionEventsRecord = Record<string, any>
+
 const modalStore = useModalStore()
 
 const emit = defineEmits<{

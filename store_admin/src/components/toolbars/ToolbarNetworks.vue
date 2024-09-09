@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="T extends { id: string }">
+<script setup lang="ts" generic="T">
 import { ref, reactive, shallowRef } from 'vue';
 import Menubar from 'primevue/menubar'
 import Button from 'primevue/button'
@@ -6,9 +6,13 @@ import Chip from 'primevue/chip'
 import Menu from 'primevue/menu';
 import { type Option } from '../dialogs/PlatformDialogFilter.vue';
 import { useModalStore } from '../../store/modalStore';
+import { StructurePublicNetworkPage } from '../../structures/StructurePublicNetworkPage'
 import SelectPickerNetworkType from '../controls/SelectPickerNetworkType.vue'
 import { useActionNetworkRemoveSelected } from '../../actions/useActionNetworkRemoveSelected'
 import { useActionCreateNetwork } from '../../actions/useActionCreateNetwork'
+
+export type SelectionNetworksRecord = StructurePublicNetworkPage['content'][0]
+
 const modalStore = useModalStore()
 
 const emit = defineEmits<{
@@ -20,7 +24,7 @@ const sortById = defineModel<'asc' | 'desc' | undefined>('sortById')
 const sortByName = defineModel<'asc' | 'desc' | undefined>('sortByName')
 const sortByTypeId = defineModel<'asc' | 'desc' | undefined>('sortByTypeId')
 const sortByHidden = defineModel<'asc' | 'desc' | undefined>('sortByHidden')
-const selection = defineModel<T[]>('selection', { required: true })
+const selection = defineModel<SelectionNetworksRecord[]>('selection', { required: true })
 
 const filters = reactive<Record<string, Option | undefined>>({
   typeId: undefined,
@@ -138,32 +142,33 @@ const sortersMenuItems = ref([
 const actionNetworkRemoveSelected = useActionNetworkRemoveSelected()
 const actionCreateNetwork = useActionCreateNetwork()
 
-async function handleRemoveSelected() {
-  try {
-    await actionNetworkRemoveSelected.execute(selection.value.map(item => ({ id: item.id })))
+
+actionNetworkRemoveSelected.emitter
+  .on('success', (data: any) => {
+    console.log(data)
     emit('refresh')
-  } catch (e) {
-    console.log(e)
-  }
+  })
+  .on('failure', (error: any) => {
+    console.error(error)
+  })
+
+actionCreateNetwork.emitter
+  .on('success', (data: any) => {
+    console.log(data)
+    emit('refresh')
+  })
+  .on('failure', (error: any) => {
+    console.error(error)
+  })
+
+async function handleRemoveSelected() {
+  actionNetworkRemoveSelected.execute({
+    items: selection.value,
+  })
 }
 
 async function handleCreateNetwork() {
-  try {
-    actionCreateNetwork.execute(undefined, {
-      success: (data: any) => {
-        console.log(data)
-        emit('refresh')
-      },
-      failure: (error: any) => {
-        console.error(error)
-        // TODO @framework: Implement
-        
-      }
-    })
-    emit('refresh')
-  } catch (e) {
-    console.log(e)
-  }
+  actionCreateNetwork.execute()
 }
 </script>
 

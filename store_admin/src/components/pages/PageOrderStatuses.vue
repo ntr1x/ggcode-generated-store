@@ -1,57 +1,52 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { paymentsRemote } from '../../remotes/paymentsRemote';
+import {
+  type QuerySelectOrderStatusPageFilter,
+  type QuerySelectOrderStatusPageSorter,
+  useQuerySelectOrderStatusPage
+} from '../../queries/useQuerySelectOrderStatusPage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridOrderStatuses from '../grids/GridOrderStatuses.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const orderStatusSelectFilter = reactive({
+const selectOrderStatusPageFilter = reactive<QuerySelectOrderStatusPageFilter>({
 })
 
-const orderStatusSelectSort = reactive({
+const selectOrderStatusPageSort = reactive<QuerySelectOrderStatusPageSorter>({
 })
 
-const orderStatusSelectSelection = ref([])
+const selectOrderStatusPageSelection = ref([])
 
-const orderStatusSelectQuery = useAxiosAutoRequest<any>(paymentsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  const params: Record<string, any> = {"size":50,"sort":"id,asc"}
-  const sort: string[] = []
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectOrderStatusPageQuery = useQuerySelectOrderStatusPage(
+  props,
+  selectOrderStatusPageSort,
+  selectOrderStatusPageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_order_status/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshOrderStatusSelect = () => {
-  orderStatusSelectQuery.refresh()
-  orderStatusSelectSelection.value = []
+const handleRefreshSelectOrderStatusPage = () => {
+  selectOrderStatusPageQuery.refresh()
+  selectOrderStatusPageSelection.value = []
 }
 
 watch(
-  [orderStatusSelectFilter, orderStatusSelectSort],
-  handleRefreshOrderStatusSelect
+  [selectOrderStatusPageFilter, selectOrderStatusPageSort],
+  handleRefreshSelectOrderStatusPage
 )
 
 </script>
@@ -63,8 +58,8 @@ watch(
       title="Order Statuses"
     />
     <GridOrderStatuses
-      :state="orderStatusSelectQuery.state"
-      v-model:selection="orderStatusSelectSelection"
+      :state="selectOrderStatusPageQuery.state"
+      v-model:selection="selectOrderStatusPageSelection"
     />
   </div>
 </template>

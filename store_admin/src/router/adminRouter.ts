@@ -45,6 +45,7 @@ export const adminRouter = {
     {
       path: 'customers',
       component: PageCustomers,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin","realm:support"]
@@ -53,6 +54,7 @@ export const adminRouter = {
     {
       path: 'customers/:customerId',
       component: PageCustomerInfo,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin","realm:support"]
@@ -61,6 +63,7 @@ export const adminRouter = {
     {
       path: 'agents',
       component: PageAgents,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -69,6 +72,7 @@ export const adminRouter = {
     {
       path: 'agents/:agentId',
       component: PageAgentInfo,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -77,6 +81,7 @@ export const adminRouter = {
     {
       path: 'orders',
       component: PageOrders,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -85,6 +90,7 @@ export const adminRouter = {
     {
       path: 'orders/:orderId',
       component: PageOrderInfo,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -93,6 +99,7 @@ export const adminRouter = {
     {
       path: 'payments',
       component: PagePayments,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -101,6 +108,7 @@ export const adminRouter = {
     {
       path: 'categories',
       component: PageCategories,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -109,6 +117,7 @@ export const adminRouter = {
     {
       path: 'products',
       component: PageProducts,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -117,6 +126,7 @@ export const adminRouter = {
     {
       path: 'products/:productId',
       component: PageProductInfo,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -125,6 +135,7 @@ export const adminRouter = {
     {
       path: 'items',
       component: PageItems,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -133,6 +144,7 @@ export const adminRouter = {
     {
       path: 'regions',
       component: PageRegions,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -141,6 +153,7 @@ export const adminRouter = {
     {
       path: 'shops',
       component: PageShops,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -149,6 +162,7 @@ export const adminRouter = {
     {
       path: 'order_types',
       component: PageOrderTypes,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -157,6 +171,7 @@ export const adminRouter = {
     {
       path: 'order_statuses',
       component: PageOrderStatuses,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -165,6 +180,7 @@ export const adminRouter = {
     {
       path: 'payment_types',
       component: PagePaymentTypes,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -173,6 +189,7 @@ export const adminRouter = {
     {
       path: 'payment_statuses',
       component: PagePaymentStatuses,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -181,6 +198,7 @@ export const adminRouter = {
     {
       path: 'source_types',
       component: PageSourceTypes,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -189,6 +207,7 @@ export const adminRouter = {
     {
       path: 'promotion_types',
       component: PagePromotionTypes,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -197,6 +216,7 @@ export const adminRouter = {
     {
       path: 'promotions',
       component: PagePromotions,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -205,6 +225,7 @@ export const adminRouter = {
     {
       path: 'events',
       component: PageEvents,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin","realm:support"]
@@ -213,6 +234,7 @@ export const adminRouter = {
     {
       path: 'event_sources',
       component: PageEventSources,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -221,6 +243,7 @@ export const adminRouter = {
     {
       path: 'event_types',
       component: PageEventTypes,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -229,6 +252,7 @@ export const adminRouter = {
     {
       path: 'event_topics',
       component: PageEventTopics,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -237,6 +261,7 @@ export const adminRouter = {
     {
       path: 'subscriptions',
       component: PageSubscriptions,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin","realm:support"]
@@ -245,6 +270,7 @@ export const adminRouter = {
     {
       path: 'subscription_types',
       component: PageSubscriptionTypes,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -253,6 +279,7 @@ export const adminRouter = {
     {
       path: 'dispatches',
       component: PageDispatches,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin","realm:support"]
@@ -261,6 +288,7 @@ export const adminRouter = {
     {
       path: 'dispatch_statuses',
       component: PageDispatchStatuses,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -269,6 +297,7 @@ export const adminRouter = {
     {
       path: 'dispatch_types',
       component: PageDispatchTypes,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -277,6 +306,7 @@ export const adminRouter = {
     {
       path: 'templates',
       component: PageTemplates,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin","realm:support"]
@@ -285,6 +315,7 @@ export const adminRouter = {
     {
       path: 'template_shapes',
       component: PageTemplateShapes,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -293,6 +324,7 @@ export const adminRouter = {
     {
       path: 'template_types',
       component: PageTemplateTypes,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -301,6 +333,7 @@ export const adminRouter = {
     {
       path: 'networks',
       component: PageNetworks,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -309,6 +342,7 @@ export const adminRouter = {
     {
       path: 'network_types',
       component: PageNetworkTypes,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -317,6 +351,7 @@ export const adminRouter = {
     {
       path: 'guides',
       component: PageGuides,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -325,6 +360,7 @@ export const adminRouter = {
     {
       path: 'guides/:guideId',
       component: PageGuideInfo,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin","realm:support"]
@@ -333,6 +369,7 @@ export const adminRouter = {
     {
       path: 'guide_subjects',
       component: PageGuideSubjects,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin"]
@@ -341,6 +378,7 @@ export const adminRouter = {
     {
       path: 'guide_subjects/:subjectId',
       component: PageGuideSubjectInfo,
+      props: true,
       meta: {
         requiresAuth: true,
         roles: ["realm:developer","realm:admin","realm:support"]

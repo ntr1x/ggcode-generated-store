@@ -1,16 +1,21 @@
-<script setup lang="ts" generic="T">
+<script setup lang="ts">
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import { type State } from '../../hooks/useAxiosRequest';
+import SpeedDial from 'primevue/speeddial';
+import { useActionUpdateProduct } from '../../actions/useActionUpdateProduct'
 import SymbolId from '../symbols/SymbolId.vue'
 import SymbolPrice from '../symbols/SymbolPrice.vue'
+import { StructurePublicProductPage } from '../../structures/StructurePublicProductPage'
 
-export type ResponseData = {
-  content: []
+export type GridProductsRecord = StructurePublicProductPage['content'][0]
+
+export type GridProductsPage = {
+  content: GridProductsRecord[]
 }
 
 export type GridProductsProps = {
-  state: State<ResponseData>,
+  state: State<GridProductsPage>,
   scrollable?: boolean,
   scrollHeight?: string,
   hideId?: boolean,
@@ -19,12 +24,36 @@ export type GridProductsProps = {
   hidePrice?: boolean,
 }
 
-const selection = defineModel<T[]>('selection')
+const selection = defineModel<GridProductsRecord[]>('selection')
 
 withDefaults(defineProps<GridProductsProps>(), {
   scrollable: true,
   scrollHeight: 'flex',
 })
+
+const actionUpdateProduct = useActionUpdateProduct()
+
+actionUpdateProduct.emitter
+  .on('success', (data: any) => {
+    console.log(data)
+  })
+  .on('failure', (error: any) => {
+    console.error(error)
+  })
+
+async function handleProductEdit(item: GridProductsRecord) {
+  actionUpdateProduct.execute({ productId: item.id })
+}
+
+const buildHandles = (item: GridProductsRecord) => ([
+  {
+    label: 'Product Edit',
+    icon: 'pi pi-pencil',
+    command: () => {
+      handleProductEdit(item)
+    }
+  },
+])
 
 </script>
 
@@ -65,6 +94,13 @@ withDefaults(defineProps<GridProductsProps>(), {
     <Column v-if="!hidePrice" header="Price">
       <template #body="slotProps">
         <SymbolPrice :value="slotProps.data.price"/>
+      </template>
+    </Column>
+    <Column header="" class="w-1">
+      <template #body="slotProps">
+        <div class="relative flex w-8 justify-end">
+          <SpeedDial :model="buildHandles(slotProps.data)" direction="left" class="relative" />
+        </div>
       </template>
     </Column>
   </DataTable>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, reactive } from 'vue';
+import { inject, reactive, ref, onMounted } from 'vue';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
@@ -7,9 +7,29 @@ import InputNumber from 'primevue/inputnumber';
 import { useToast } from 'primevue/usetoast';
 import type { ModalContext } from '../../store/modalStore';
 import { useAuthStore } from '../../store/authStore';
-import { structureRemote } from '../../remotes/structureRemote'
+import { structureRemote } from '../../remotes/structureRemote';
 import SelectGuideSubject from '../controls/SelectGuideSubject.vue';
 import UploadS3GuideAttachment from '../controls/UploadS3GuideAttachment.vue';
+
+export type DialogGuideCreateProps = {
+  // TODO: Implement
+}
+
+export type DialogGuideCreateHandlers = {
+  success?: (data: any) => void
+  failure?: (error: any) => void
+}
+
+const props = defineProps<DialogGuideCreateProps>()
+
+const emit = defineEmits<{
+  (e: 'success', data: any): void
+  (e: 'failure', error: any): void
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
 
 const authStore = useAuthStore()
 
@@ -26,21 +46,7 @@ const form = reactive<{
 }>({
 })
 
-export type DialogProps = {
-  // TODO: Implement
-}
-
-export type DialogHandlers = {
-  success?: (data: any) => void
-  failure?: (error: any) => void
-}
-
-defineProps<DialogProps>()
-
-const emit = defineEmits<{
-  (e: 'success', data: any): void
-  (e: 'failure', error: any): void
-}>()
+const maximized = ref(false)
 
 async function doSubmit() {
 
@@ -91,7 +97,19 @@ async function handleClose() {
 
 </script>
 <template>
-  <Dialog :visible="true" @update:visible="handleClose" modal maximizable header="Guide Create" class="w-full sm:max-w-[35rem]">
+  <Dialog
+    :visible="true"
+    @update:visible="handleClose"
+    modal
+    maximizable
+    header="Guide Create"
+    class="w-full"
+    :class="{
+      'sm:max-w-[35rem]': !maximized
+    }"
+    @maximize="maximized = true"
+    @unmaximize="maximized = false"
+  >
     <form @submit.prevent="handleSubmit">
       <div class="mb-2 grid grid-cols-1 gap-3">
         <div>

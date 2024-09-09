@@ -1,78 +1,59 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { eventsRemote } from '../../remotes/eventsRemote';
+import {
+  type QuerySelectTemplatePageFilter,
+  type QuerySelectTemplatePageSorter,
+  useQuerySelectTemplatePage
+} from '../../queries/useQuerySelectTemplatePage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import ToolbarTemplates from '../toolbars/ToolbarTemplates.vue';
 import GridTemplates from '../grids/GridTemplates.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const templateSelectFilter = reactive({
+const selectTemplatePageFilter = reactive<QuerySelectTemplatePageFilter>({
   typeId: undefined,
   shapeId: undefined,
 })
 
-const templateSelectSort = reactive({
+const selectTemplatePageSort = reactive<QuerySelectTemplatePageSorter>({
   id: undefined,
   name: undefined,
   typeId: undefined,
   shapeId: undefined,
 })
 
-const templateSelectSelection = ref([])
+const selectTemplatePageSelection = ref([])
 
-const templateSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  setProperty(data, 'typeId', templateSelectFilter.typeId)
-  setProperty(data, 'shapeId', templateSelectFilter.shapeId)
-  const params: Record<string, any> = {"size":50,"sort":"id,desc"}
-  const sort: string[] = []
-  if (templateSelectSort.id != null) {
-    sort.push('id,' + templateSelectSort.id)
-  }
-  if (templateSelectSort.name != null) {
-    sort.push('name,' + templateSelectSort.name)
-  }
-  if (templateSelectSort.typeId != null) {
-    sort.push('typeId,' + templateSelectSort.typeId)
-  }
-  if (templateSelectSort.shapeId != null) {
-    sort.push('shapeId,' + templateSelectSort.shapeId)
-  }
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectTemplatePageQuery = useQuerySelectTemplatePage(
+  props,
+  selectTemplatePageSort,
+  selectTemplatePageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_template/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshTemplateSelect = () => {
-  templateSelectQuery.refresh()
-  templateSelectSelection.value = []
+const handleRefreshSelectTemplatePage = () => {
+  selectTemplatePageQuery.refresh()
+  selectTemplatePageSelection.value = []
 }
 
 watch(
-  [templateSelectFilter, templateSelectSort],
-  handleRefreshTemplateSelect
+  [selectTemplatePageFilter, selectTemplatePageSort],
+  handleRefreshSelectTemplatePage
 )
 
 </script>
@@ -85,18 +66,18 @@ watch(
     />
     <ToolbarTemplates
       class="rounded-none border-0 border-b"
-      v-model:selection="templateSelectSelection"
-      v-model:filter-by-type-id = templateSelectFilter.typeId
-      v-model:filter-by-shape-id = templateSelectFilter.shapeId
-      v-model:sort-by-id = templateSelectSort.id
-      v-model:sort-by-name = templateSelectSort.name
-      v-model:sort-by-type-id = templateSelectSort.typeId
-      v-model:sort-by-shape-id = templateSelectSort.shapeId
-      @refresh="handleRefreshTemplateSelect"
+      v-model:selection="selectTemplatePageSelection"
+      v-model:filter-by-type-id = selectTemplatePageFilter.typeId
+      v-model:filter-by-shape-id = selectTemplatePageFilter.shapeId
+      v-model:sort-by-id = selectTemplatePageSort.id
+      v-model:sort-by-name = selectTemplatePageSort.name
+      v-model:sort-by-type-id = selectTemplatePageSort.typeId
+      v-model:sort-by-shape-id = selectTemplatePageSort.shapeId
+      @refresh="handleRefreshSelectTemplatePage"
     />
     <GridTemplates
-      :state="templateSelectQuery.state"
-      v-model:selection="templateSelectSelection"
+      :state="selectTemplatePageQuery.state"
+      v-model:selection="selectTemplatePageSelection"
     />
   </div>
 </template>

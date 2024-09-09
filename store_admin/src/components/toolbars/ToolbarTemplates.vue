@@ -8,6 +8,9 @@ import { type Option } from '../dialogs/PlatformDialogFilter.vue';
 import { useModalStore } from '../../store/modalStore';
 import SelectPickerTemplateType from '../controls/SelectPickerTemplateType.vue'
 import SelectPickerTemplateShape from '../controls/SelectPickerTemplateShape.vue'
+
+export type SelectionTemplatesRecord = Record<string, any>
+
 const modalStore = useModalStore()
 
 const emit = defineEmits<{

@@ -35,4 +35,8 @@ public class PublicGuideSubjectEntity {
     
     @Column(name = "updated_at")
     private java.time.LocalDateTime updatedAt;
+    
+    @OneToMany
+    @JoinColumn(name = "subject_id")
+    private List<com.example.service.structure.entity.PublicGuideEntity> guides;
 }

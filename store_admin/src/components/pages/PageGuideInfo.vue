@@ -1,57 +1,52 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { structureRemote } from '../../remotes/structureRemote';
+import {
+  type QueryGetGuideRecordFilter,
+  type QueryGetGuideRecordSorter,
+  useQueryGetGuideRecord
+} from '../../queries/useQueryGetGuideRecord';
 import SectionHeading from '../partials/SectionHeading.vue';
 import FieldsetGuideGuideInfo from '../fieldsets/FieldsetGuideGuideInfo.vue';
 
+const props = defineProps<{
+  guideId: string
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const guideGetFilter = reactive({
+const getGuideRecordFilter = reactive<QueryGetGuideRecordFilter>({
 })
 
-const guideGetSort = reactive({
+const getGuideRecordSort = reactive<QueryGetGuideRecordSorter>({
 })
 
-const guideGetSelection = ref([])
+const getGuideRecordSelection = ref([])
 
-const guideGetQuery = useAxiosAutoRequest<any>(structureRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const getGuideRecordQuery = useQueryGetGuideRecord(
+  props,
+  getGuideRecordSort,
+  getGuideRecordFilter
+)
 
-  return {
-    method: 'GET',
-    url: `/system/public_guide/i/${route.params.guideId}`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshGuideGet = () => {
-  guideGetQuery.refresh()
-  guideGetSelection.value = []
+const handleRefreshGetGuideRecord = () => {
+  getGuideRecordQuery.refresh()
+  getGuideRecordSelection.value = []
 }
 
 watch(
-  [guideGetFilter, guideGetSort],
-  handleRefreshGuideGet
+  [getGuideRecordFilter, getGuideRecordSort],
+  handleRefreshGetGuideRecord
 )
 
 </script>
@@ -63,7 +58,7 @@ watch(
       title="Guide"
     />
     <FieldsetGuideGuideInfo
-      :state="guideGetQuery.state"
+      :state="getGuideRecordQuery.state"
     />
   </div>
 </template>

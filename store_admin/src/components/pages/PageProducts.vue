@@ -1,68 +1,56 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { productsRemote } from '../../remotes/productsRemote';
+import {
+  type QuerySelectProductPageFilter,
+  type QuerySelectProductPageSorter,
+  useQuerySelectProductPage
+} from '../../queries/useQuerySelectProductPage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import ToolbarProducts from '../toolbars/ToolbarProducts.vue';
 import GridProducts from '../grids/GridProducts.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const productSelectFilter = reactive({
+const selectProductPageFilter = reactive<QuerySelectProductPageFilter>({
   categoryId: undefined,
 })
 
-const productSelectSort = reactive({
+const selectProductPageSort = reactive<QuerySelectProductPageSorter>({
   id: undefined,
   name: undefined,
 })
 
-const productSelectSelection = ref([])
+const selectProductPageSelection = ref([])
 
-const productSelectQuery = useAxiosAutoRequest<any>(productsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  setProperty(data, 'categoryId', productSelectFilter.categoryId)
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  if (productSelectSort.id != null) {
-    sort.push('id,' + productSelectSort.id)
-  }
-  if (productSelectSort.name != null) {
-    sort.push('name,' + productSelectSort.name)
-  }
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectProductPageQuery = useQuerySelectProductPage(
+  props,
+  selectProductPageSort,
+  selectProductPageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_product/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshProductSelect = () => {
-  productSelectQuery.refresh()
-  productSelectSelection.value = []
+const handleRefreshSelectProductPage = () => {
+  selectProductPageQuery.refresh()
+  selectProductPageSelection.value = []
 }
 
 watch(
-  [productSelectFilter, productSelectSort],
-  handleRefreshProductSelect
+  [selectProductPageFilter, selectProductPageSort],
+  handleRefreshSelectProductPage
 )
 
 </script>
@@ -75,15 +63,15 @@ watch(
     />
     <ToolbarProducts
       class="rounded-none border-0 border-b"
-      v-model:selection="productSelectSelection"
-      v-model:filter-by-category-id = productSelectFilter.categoryId
-      v-model:sort-by-id = productSelectSort.id
-      v-model:sort-by-name = productSelectSort.name
-      @refresh="handleRefreshProductSelect"
+      v-model:selection="selectProductPageSelection"
+      v-model:filter-by-category-id = selectProductPageFilter.categoryId
+      v-model:sort-by-id = selectProductPageSort.id
+      v-model:sort-by-name = selectProductPageSort.name
+      @refresh="handleRefreshSelectProductPage"
     />
     <GridProducts
-      :state="productSelectQuery.state"
-      v-model:selection="productSelectSelection"
+      :state="selectProductPageQuery.state"
+      v-model:selection="selectProductPageSelection"
     />
   </div>
 </template>

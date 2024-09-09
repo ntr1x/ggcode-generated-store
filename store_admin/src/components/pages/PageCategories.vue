@@ -1,57 +1,52 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { productsRemote } from '../../remotes/productsRemote';
+import {
+  type QuerySelectCategoryPageFilter,
+  type QuerySelectCategoryPageSorter,
+  useQuerySelectCategoryPage
+} from '../../queries/useQuerySelectCategoryPage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridCategories from '../grids/GridCategories.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const categorySelectFilter = reactive({
+const selectCategoryPageFilter = reactive<QuerySelectCategoryPageFilter>({
 })
 
-const categorySelectSort = reactive({
+const selectCategoryPageSort = reactive<QuerySelectCategoryPageSorter>({
 })
 
-const categorySelectSelection = ref([])
+const selectCategoryPageSelection = ref([])
 
-const categorySelectQuery = useAxiosAutoRequest<any>(productsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectCategoryPageQuery = useQuerySelectCategoryPage(
+  props,
+  selectCategoryPageSort,
+  selectCategoryPageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_category/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshCategorySelect = () => {
-  categorySelectQuery.refresh()
-  categorySelectSelection.value = []
+const handleRefreshSelectCategoryPage = () => {
+  selectCategoryPageQuery.refresh()
+  selectCategoryPageSelection.value = []
 }
 
 watch(
-  [categorySelectFilter, categorySelectSort],
-  handleRefreshCategorySelect
+  [selectCategoryPageFilter, selectCategoryPageSort],
+  handleRefreshSelectCategoryPage
 )
 
 </script>
@@ -63,8 +58,8 @@ watch(
       title="Categories"
     />
     <GridCategories
-      :state="categorySelectQuery.state"
-      v-model:selection="categorySelectSelection"
+      :state="selectCategoryPageQuery.state"
+      v-model:selection="selectCategoryPageSelection"
     />
   </div>
 </template>

@@ -1,11 +1,14 @@
-<script setup lang="ts" generic="T extends { id: string }">
+<script setup lang="ts" generic="T">
 import { ref, reactive } from 'vue';
 import Menubar from 'primevue/menubar'
 import Button from 'primevue/button'
 import Chip from 'primevue/chip'
 import Menu from 'primevue/menu';
+import { StructurePublicGuideSubjectPage } from '../../structures/StructurePublicGuideSubjectPage'
 import { useActionGuideSubjectRemoveSelected } from '../../actions/useActionGuideSubjectRemoveSelected'
 import { useActionCreateGuideSubject } from '../../actions/useActionCreateGuideSubject'
+
+export type SelectionGuideSubjectsRecord = StructurePublicGuideSubjectPage['content'][0]
 
 const emit = defineEmits<{
   (e: 'refresh'): void
@@ -14,7 +17,7 @@ const emit = defineEmits<{
 const sortById = defineModel<'asc' | 'desc' | undefined>('sortById')
 const sortByName = defineModel<'asc' | 'desc' | undefined>('sortByName')
 const sortByPosition = defineModel<'asc' | 'desc' | undefined>('sortByPosition')
-const selection = defineModel<T[]>('selection', { required: true })
+const selection = defineModel<SelectionGuideSubjectsRecord[]>('selection', { required: true })
 
 const sortings = reactive<Record<string, 'asc' | 'desc' | undefined>>({
   id: undefined,
@@ -83,32 +86,33 @@ const sortersMenuItems = ref([
 const actionGuideSubjectRemoveSelected = useActionGuideSubjectRemoveSelected()
 const actionCreateGuideSubject = useActionCreateGuideSubject()
 
-async function handleRemoveSelected() {
-  try {
-    await actionGuideSubjectRemoveSelected.execute(selection.value.map(item => ({ id: item.id })))
+
+actionGuideSubjectRemoveSelected.emitter
+  .on('success', (data: any) => {
+    console.log(data)
     emit('refresh')
-  } catch (e) {
-    console.log(e)
-  }
+  })
+  .on('failure', (error: any) => {
+    console.error(error)
+  })
+
+actionCreateGuideSubject.emitter
+  .on('success', (data: any) => {
+    console.log(data)
+    emit('refresh')
+  })
+  .on('failure', (error: any) => {
+    console.error(error)
+  })
+
+async function handleRemoveSelected() {
+  actionGuideSubjectRemoveSelected.execute({
+    items: selection.value,
+  })
 }
 
 async function handleCreateGuideSubject() {
-  try {
-    actionCreateGuideSubject.execute(undefined, {
-      success: (data: any) => {
-        console.log(data)
-        emit('refresh')
-      },
-      failure: (error: any) => {
-        console.error(error)
-        // TODO @framework: Implement
-        
-      }
-    })
-    emit('refresh')
-  } catch (e) {
-    console.log(e)
-  }
+  actionCreateGuideSubject.execute()
 }
 </script>
 

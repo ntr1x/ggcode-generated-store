@@ -1,57 +1,52 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { paymentsRemote } from '../../remotes/paymentsRemote';
+import {
+  type QuerySelectSourceTypePageFilter,
+  type QuerySelectSourceTypePageSorter,
+  useQuerySelectSourceTypePage
+} from '../../queries/useQuerySelectSourceTypePage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridSourceTypes from '../grids/GridSourceTypes.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const sourceTypeSelectFilter = reactive({
+const selectSourceTypePageFilter = reactive<QuerySelectSourceTypePageFilter>({
 })
 
-const sourceTypeSelectSort = reactive({
+const selectSourceTypePageSort = reactive<QuerySelectSourceTypePageSorter>({
 })
 
-const sourceTypeSelectSelection = ref([])
+const selectSourceTypePageSelection = ref([])
 
-const sourceTypeSelectQuery = useAxiosAutoRequest<any>(paymentsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectSourceTypePageQuery = useQuerySelectSourceTypePage(
+  props,
+  selectSourceTypePageSort,
+  selectSourceTypePageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_source_type/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshSourceTypeSelect = () => {
-  sourceTypeSelectQuery.refresh()
-  sourceTypeSelectSelection.value = []
+const handleRefreshSelectSourceTypePage = () => {
+  selectSourceTypePageQuery.refresh()
+  selectSourceTypePageSelection.value = []
 }
 
 watch(
-  [sourceTypeSelectFilter, sourceTypeSelectSort],
-  handleRefreshSourceTypeSelect
+  [selectSourceTypePageFilter, selectSourceTypePageSort],
+  handleRefreshSelectSourceTypePage
 )
 
 </script>
@@ -63,8 +58,8 @@ watch(
       title="Source Types"
     />
     <GridSourceTypes
-      :state="sourceTypeSelectQuery.state"
-      v-model:selection="sourceTypeSelectSelection"
+      :state="selectSourceTypePageQuery.state"
+      v-model:selection="selectSourceTypePageSelection"
     />
   </div>
 </template>

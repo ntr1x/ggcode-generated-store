@@ -1,69 +1,55 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { eventsRemote } from '../../remotes/eventsRemote';
+import {
+  type QuerySelectDispatchStatusPageFilter,
+  type QuerySelectDispatchStatusPageSorter,
+  useQuerySelectDispatchStatusPage
+} from '../../queries/useQuerySelectDispatchStatusPage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridDispatchStatuses from '../grids/GridDispatchStatuses.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const dispatchStatusSelectFilter = reactive({
+const selectDispatchStatusPageFilter = reactive<QuerySelectDispatchStatusPageFilter>({
 })
 
-const dispatchStatusSelectSort = reactive({
+const selectDispatchStatusPageSort = reactive<QuerySelectDispatchStatusPageSorter>({
   id: undefined,
   name: undefined,
   description: undefined,
 })
 
-const dispatchStatusSelectSelection = ref([])
+const selectDispatchStatusPageSelection = ref([])
 
-const dispatchStatusSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  if (dispatchStatusSelectSort.id != null) {
-    sort.push('id,' + dispatchStatusSelectSort.id)
-  }
-  if (dispatchStatusSelectSort.name != null) {
-    sort.push('name,' + dispatchStatusSelectSort.name)
-  }
-  if (dispatchStatusSelectSort.description != null) {
-    sort.push('description,' + dispatchStatusSelectSort.description)
-  }
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectDispatchStatusPageQuery = useQuerySelectDispatchStatusPage(
+  props,
+  selectDispatchStatusPageSort,
+  selectDispatchStatusPageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_dispatch_status/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshDispatchStatusSelect = () => {
-  dispatchStatusSelectQuery.refresh()
-  dispatchStatusSelectSelection.value = []
+const handleRefreshSelectDispatchStatusPage = () => {
+  selectDispatchStatusPageQuery.refresh()
+  selectDispatchStatusPageSelection.value = []
 }
 
 watch(
-  [dispatchStatusSelectFilter, dispatchStatusSelectSort],
-  handleRefreshDispatchStatusSelect
+  [selectDispatchStatusPageFilter, selectDispatchStatusPageSort],
+  handleRefreshSelectDispatchStatusPage
 )
 
 </script>
@@ -75,8 +61,8 @@ watch(
       title="Dispatch Statuses"
     />
     <GridDispatchStatuses
-      :state="dispatchStatusSelectQuery.state"
-      v-model:selection="dispatchStatusSelectSelection"
+      :state="selectDispatchStatusPageQuery.state"
+      v-model:selection="selectDispatchStatusPageSelection"
     />
   </div>
 </template>

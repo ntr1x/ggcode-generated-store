@@ -1,69 +1,55 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { structureRemote } from '../../remotes/structureRemote';
+import {
+  type QuerySelectNetworkTypePageFilter,
+  type QuerySelectNetworkTypePageSorter,
+  useQuerySelectNetworkTypePage
+} from '../../queries/useQuerySelectNetworkTypePage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridNetworkTypes from '../grids/GridNetworkTypes.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const networkTypeSelectFilter = reactive({
+const selectNetworkTypePageFilter = reactive<QuerySelectNetworkTypePageFilter>({
 })
 
-const networkTypeSelectSort = reactive({
+const selectNetworkTypePageSort = reactive<QuerySelectNetworkTypePageSorter>({
   id: undefined,
   name: undefined,
   description: undefined,
 })
 
-const networkTypeSelectSelection = ref([])
+const selectNetworkTypePageSelection = ref([])
 
-const networkTypeSelectQuery = useAxiosAutoRequest<any>(structureRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  if (networkTypeSelectSort.id != null) {
-    sort.push('id,' + networkTypeSelectSort.id)
-  }
-  if (networkTypeSelectSort.name != null) {
-    sort.push('name,' + networkTypeSelectSort.name)
-  }
-  if (networkTypeSelectSort.description != null) {
-    sort.push('description,' + networkTypeSelectSort.description)
-  }
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectNetworkTypePageQuery = useQuerySelectNetworkTypePage(
+  props,
+  selectNetworkTypePageSort,
+  selectNetworkTypePageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_network_type/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshNetworkTypeSelect = () => {
-  networkTypeSelectQuery.refresh()
-  networkTypeSelectSelection.value = []
+const handleRefreshSelectNetworkTypePage = () => {
+  selectNetworkTypePageQuery.refresh()
+  selectNetworkTypePageSelection.value = []
 }
 
 watch(
-  [networkTypeSelectFilter, networkTypeSelectSort],
-  handleRefreshNetworkTypeSelect
+  [selectNetworkTypePageFilter, selectNetworkTypePageSort],
+  handleRefreshSelectNetworkTypePage
 )
 
 </script>
@@ -75,8 +61,8 @@ watch(
       title="Network Types"
     />
     <GridNetworkTypes
-      :state="networkTypeSelectQuery.state"
-      v-model:selection="networkTypeSelectSelection"
+      :state="selectNetworkTypePageQuery.state"
+      v-model:selection="selectNetworkTypePageSelection"
     />
   </div>
 </template>

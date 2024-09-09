@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="T">
+<script setup lang="ts">
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import { type State } from '../../hooks/useAxiosRequest';
@@ -8,12 +8,14 @@ import SymbolEventTopicInfo from '../symbols/SymbolEventTopicInfo.vue'
 import SymbolEventTypeInfo from '../symbols/SymbolEventTypeInfo.vue'
 import SymbolDatetime from '../symbols/SymbolDatetime.vue'
 
-export type ResponseData = {
-  content: []
+export type GridEventsRecord = Record<string, any>
+
+export type GridEventsPage = {
+  content: GridEventsRecord[]
 }
 
 export type GridEventsProps = {
-  state: State<ResponseData>,
+  state: State<GridEventsPage>,
   scrollable?: boolean,
   scrollHeight?: string,
   hideId?: boolean,
@@ -25,7 +27,7 @@ export type GridEventsProps = {
   hideCreatedAt?: boolean,
 }
 
-const selection = defineModel<T[]>('selection')
+const selection = defineModel<GridEventsRecord[]>('selection')
 
 withDefaults(defineProps<GridEventsProps>(), {
   scrollable: true,

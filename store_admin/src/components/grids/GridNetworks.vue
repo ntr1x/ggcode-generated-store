@@ -1,17 +1,20 @@
-<script setup lang="ts" generic="T">
+<script setup lang="ts">
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import { type State } from '../../hooks/useAxiosRequest';
 import SymbolId from '../symbols/SymbolId.vue'
 import SymbolNetworkType from '../symbols/SymbolNetworkType.vue'
 import SymbolShop from '../symbols/SymbolShop.vue'
+import { StructurePublicNetworkPage } from '../../structures/StructurePublicNetworkPage'
 
-export type ResponseData = {
-  content: []
+export type GridNetworksRecord = StructurePublicNetworkPage['content'][0]
+
+export type GridNetworksPage = {
+  content: GridNetworksRecord[]
 }
 
 export type GridNetworksProps = {
-  state: State<ResponseData>,
+  state: State<GridNetworksPage>,
   scrollable?: boolean,
   scrollHeight?: string,
   hideId?: boolean,
@@ -21,7 +24,7 @@ export type GridNetworksProps = {
   hideName?: boolean,
 }
 
-const selection = defineModel<T[]>('selection')
+const selection = defineModel<GridNetworksRecord[]>('selection')
 
 withDefaults(defineProps<GridNetworksProps>(), {
   scrollable: true,

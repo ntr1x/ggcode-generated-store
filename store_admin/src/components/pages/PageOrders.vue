@@ -1,30 +1,40 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { paymentsRemote } from '../../remotes/paymentsRemote';
+import {
+  type QuerySelectOrderPageFilter,
+  type QuerySelectOrderPageSorter,
+  useQuerySelectOrderPage
+} from '../../queries/useQuerySelectOrderPage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import ToolbarOrders from '../toolbars/ToolbarOrders.vue';
 import GridOrders from '../grids/GridOrders.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const orderSelectFilter = reactive({
-  customerId: route.params.customerId,
+const selectOrderPageFilter = reactive<QuerySelectOrderPageFilter>({
+  customerId: undefined,
   orderType: undefined,
   orderStatus: undefined,
   sourceType: undefined,
   regionId: undefined,
 })
 
-const orderSelectSort = reactive({
+const selectOrderPageSort = reactive<QuerySelectOrderPageSorter>({
   orderTypeId: undefined,
   orderStatusId: undefined,
   id: undefined,
@@ -33,60 +43,22 @@ const orderSelectSort = reactive({
   updatedAt: undefined,
 })
 
-const orderSelectSelection = ref([])
+const selectOrderPageSelection = ref([])
 
-const orderSelectQuery = useAxiosAutoRequest<any>(paymentsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  setProperty(data, 'customerId', orderSelectFilter.customerId)
-  setProperty(data, 'orderTypeId', orderSelectFilter.orderType)
-  setProperty(data, 'orderStatusId', orderSelectFilter.orderStatus)
-  setProperty(data, 'sourceTypeId', orderSelectFilter.sourceType)
-  setProperty(data, 'regionId', orderSelectFilter.regionId)
-  const params: Record<string, any> = {"size":50,"sort":"id,asc"}
-  const sort: string[] = []
-  if (orderSelectSort.orderTypeId != null) {
-    sort.push('orderType,' + orderSelectSort.orderTypeId)
-  }
-  if (orderSelectSort.orderStatusId != null) {
-    sort.push('orderStatus,' + orderSelectSort.orderStatusId)
-  }
-  if (orderSelectSort.id != null) {
-    sort.push('id,' + orderSelectSort.id)
-  }
-  if (orderSelectSort.customerId != null) {
-    sort.push('customerId,' + orderSelectSort.customerId)
-  }
-  if (orderSelectSort.createdAt != null) {
-    sort.push('createdAt,' + orderSelectSort.createdAt)
-  }
-  if (orderSelectSort.updatedAt != null) {
-    sort.push('updatedAt,' + orderSelectSort.updatedAt)
-  }
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectOrderPageQuery = useQuerySelectOrderPage(
+  props,
+  selectOrderPageSort,
+  selectOrderPageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_order/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshOrderSelect = () => {
-  orderSelectQuery.refresh()
-  orderSelectSelection.value = []
+const handleRefreshSelectOrderPage = () => {
+  selectOrderPageQuery.refresh()
+  selectOrderPageSelection.value = []
 }
 
 watch(
-  [orderSelectFilter, orderSelectSort],
-  handleRefreshOrderSelect
+  [selectOrderPageFilter, selectOrderPageSort],
+  handleRefreshSelectOrderPage
 )
 
 </script>
@@ -99,23 +71,23 @@ watch(
     />
     <ToolbarOrders
       class="rounded-none border-0 border-b"
-      v-model:selection="orderSelectSelection"
-      v-model:filter-by-customer-id = orderSelectFilter.customerId
-      v-model:filter-by-source-type = orderSelectFilter.sourceType
-      v-model:filter-by-order-type = orderSelectFilter.orderType
-      v-model:filter-by-order-status = orderSelectFilter.orderStatus
-      v-model:filter-by-region-id = orderSelectFilter.regionId
-      v-model:sort-by-id = orderSelectSort.id
-      v-model:sort-by-customer-id = orderSelectSort.customerId
-      v-model:sort-by-order-type-id = orderSelectSort.orderTypeId
-      v-model:sort-by-order-status-id = orderSelectSort.orderStatusId
-      v-model:sort-by-created-at = orderSelectSort.createdAt
-      v-model:sort-by-updated-at = orderSelectSort.updatedAt
-      @refresh="handleRefreshOrderSelect"
+      v-model:selection="selectOrderPageSelection"
+      v-model:filter-by-customer-id = selectOrderPageFilter.customerId
+      v-model:filter-by-source-type = selectOrderPageFilter.sourceType
+      v-model:filter-by-order-type = selectOrderPageFilter.orderType
+      v-model:filter-by-order-status = selectOrderPageFilter.orderStatus
+      v-model:filter-by-region-id = selectOrderPageFilter.regionId
+      v-model:sort-by-id = selectOrderPageSort.id
+      v-model:sort-by-customer-id = selectOrderPageSort.customerId
+      v-model:sort-by-order-type-id = selectOrderPageSort.orderTypeId
+      v-model:sort-by-order-status-id = selectOrderPageSort.orderStatusId
+      v-model:sort-by-created-at = selectOrderPageSort.createdAt
+      v-model:sort-by-updated-at = selectOrderPageSort.updatedAt
+      @refresh="handleRefreshSelectOrderPage"
     />
     <GridOrders
-      :state="orderSelectQuery.state"
-      v-model:selection="orderSelectSelection"
+      :state="selectOrderPageQuery.state"
+      v-model:selection="selectOrderPageSelection"
     />
   </div>
 </template>

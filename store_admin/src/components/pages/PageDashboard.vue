@@ -1,12 +1,20 @@
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
 import SectionHeading from '../partials/SectionHeading.vue';
 import WidgetPersonalProfile from '../widgets/WidgetPersonalProfile.vue';
 import WidgetDispatchMessage from '../widgets/WidgetDispatchMessage.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
 const security = useSecurityContext()
-
 
 </script>
 

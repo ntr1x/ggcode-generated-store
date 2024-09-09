@@ -1,26 +1,36 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { structureRemote } from '../../remotes/structureRemote';
+import {
+  type QuerySelectGuidePageFilter,
+  type QuerySelectGuidePageSorter,
+  useQuerySelectGuidePage
+} from '../../queries/useQuerySelectGuidePage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import ToolbarGuides from '../toolbars/ToolbarGuides.vue';
 import GridGuides from '../grids/GridGuides.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const guideSelectFilter = reactive({
-  subjectId: route.params.subjectId,
+const selectGuidePageFilter = reactive<QuerySelectGuidePageFilter>({
+  subjectId: undefined,
 })
 
-const guideSelectSort = reactive({
+const selectGuidePageSort = reactive<QuerySelectGuidePageSorter>({
   id: undefined,
   name: undefined,
   position: undefined,
@@ -29,56 +39,22 @@ const guideSelectSort = reactive({
   updatedAt: undefined,
 })
 
-const guideSelectSelection = ref([])
+const selectGuidePageSelection = ref([])
 
-const guideSelectQuery = useAxiosAutoRequest<any>(structureRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  setProperty(data, 'subjectId', guideSelectFilter.subjectId)
-  const params: Record<string, any> = {"size":50,"sort":"position,asc"}
-  const sort: string[] = []
-  if (guideSelectSort.id != null) {
-    sort.push('id,' + guideSelectSort.id)
-  }
-  if (guideSelectSort.name != null) {
-    sort.push('name,' + guideSelectSort.name)
-  }
-  if (guideSelectSort.position != null) {
-    sort.push('position,' + guideSelectSort.position)
-  }
-  if (guideSelectSort.subjectId != null) {
-    sort.push('subjectId,' + guideSelectSort.subjectId)
-  }
-  if (guideSelectSort.createdAt != null) {
-    sort.push('createdAt,' + guideSelectSort.createdAt)
-  }
-  if (guideSelectSort.updatedAt != null) {
-    sort.push('updatedAt,' + guideSelectSort.updatedAt)
-  }
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectGuidePageQuery = useQuerySelectGuidePage(
+  props,
+  selectGuidePageSort,
+  selectGuidePageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_guide/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshGuideSelect = () => {
-  guideSelectQuery.refresh()
-  guideSelectSelection.value = []
+const handleRefreshSelectGuidePage = () => {
+  selectGuidePageQuery.refresh()
+  selectGuidePageSelection.value = []
 }
 
 watch(
-  [guideSelectFilter, guideSelectSort],
-  handleRefreshGuideSelect
+  [selectGuidePageFilter, selectGuidePageSort],
+  handleRefreshSelectGuidePage
 )
 
 </script>
@@ -91,17 +67,17 @@ watch(
     />
     <ToolbarGuides
       class="rounded-none border-0 border-b"
-      v-model:selection="guideSelectSelection"
-      v-model:filter-by-subject-id = guideSelectFilter.subjectId
-      v-model:sort-by-id = guideSelectSort.id
-      v-model:sort-by-name = guideSelectSort.name
-      v-model:sort-by-position = guideSelectSort.position
-      v-model:sort-by-subject-id = guideSelectSort.subjectId
-      @refresh="handleRefreshGuideSelect"
+      v-model:selection="selectGuidePageSelection"
+      v-model:filter-by-subject-id = selectGuidePageFilter.subjectId
+      v-model:sort-by-id = selectGuidePageSort.id
+      v-model:sort-by-name = selectGuidePageSort.name
+      v-model:sort-by-position = selectGuidePageSort.position
+      v-model:sort-by-subject-id = selectGuidePageSort.subjectId
+      @refresh="handleRefreshSelectGuidePage"
     />
     <GridGuides
-      :state="guideSelectQuery.state"
-      v-model:selection="guideSelectSelection"
+      :state="selectGuidePageQuery.state"
+      v-model:selection="selectGuidePageSelection"
     />
   </div>
 </template>

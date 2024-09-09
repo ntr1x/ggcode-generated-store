@@ -1,57 +1,52 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { paymentsRemote } from '../../remotes/paymentsRemote';
+import {
+  type QuerySelectOrderTypePageFilter,
+  type QuerySelectOrderTypePageSorter,
+  useQuerySelectOrderTypePage
+} from '../../queries/useQuerySelectOrderTypePage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridOrderTypes from '../grids/GridOrderTypes.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const orderTypeSelectFilter = reactive({
+const selectOrderTypePageFilter = reactive<QuerySelectOrderTypePageFilter>({
 })
 
-const orderTypeSelectSort = reactive({
+const selectOrderTypePageSort = reactive<QuerySelectOrderTypePageSorter>({
 })
 
-const orderTypeSelectSelection = ref([])
+const selectOrderTypePageSelection = ref([])
 
-const orderTypeSelectQuery = useAxiosAutoRequest<any>(paymentsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectOrderTypePageQuery = useQuerySelectOrderTypePage(
+  props,
+  selectOrderTypePageSort,
+  selectOrderTypePageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_order_type/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshOrderTypeSelect = () => {
-  orderTypeSelectQuery.refresh()
-  orderTypeSelectSelection.value = []
+const handleRefreshSelectOrderTypePage = () => {
+  selectOrderTypePageQuery.refresh()
+  selectOrderTypePageSelection.value = []
 }
 
 watch(
-  [orderTypeSelectFilter, orderTypeSelectSort],
-  handleRefreshOrderTypeSelect
+  [selectOrderTypePageFilter, selectOrderTypePageSort],
+  handleRefreshSelectOrderTypePage
 )
 
 </script>
@@ -63,8 +58,8 @@ watch(
       title="Order Types"
     />
     <GridOrderTypes
-      :state="orderTypeSelectQuery.state"
-      v-model:selection="orderTypeSelectSelection"
+      :state="selectOrderTypePageQuery.state"
+      v-model:selection="selectOrderTypePageSelection"
     />
   </div>
 </template>

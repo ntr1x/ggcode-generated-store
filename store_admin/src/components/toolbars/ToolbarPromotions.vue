@@ -7,6 +7,9 @@ import Menu from 'primevue/menu';
 import { type Option } from '../dialogs/PlatformDialogFilter.vue';
 import { useModalStore } from '../../store/modalStore';
 import SelectPickerPromotionType from '../controls/SelectPickerPromotionType.vue'
+
+export type SelectionPromotionsRecord = Record<string, any>
+
 const modalStore = useModalStore()
 
 const emit = defineEmits<{

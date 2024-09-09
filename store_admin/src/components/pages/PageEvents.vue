@@ -1,28 +1,38 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { eventsRemote } from '../../remotes/eventsRemote';
+import {
+  type QuerySelectEventPageFilter,
+  type QuerySelectEventPageSorter,
+  useQuerySelectEventPage
+} from '../../queries/useQuerySelectEventPage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import ToolbarEvents from '../toolbars/ToolbarEvents.vue';
 import GridEvents from '../grids/GridEvents.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const eventSelectFilter = reactive({
+const selectEventPageFilter = reactive<QuerySelectEventPageFilter>({
   eventSource: undefined,
   eventType: undefined,
   eventTopic: undefined,
 })
 
-const eventSelectSort = reactive({
+const selectEventPageSort = reactive<QuerySelectEventPageSorter>({
   id: undefined,
   ceSource: undefined,
   ceType: undefined,
@@ -30,55 +40,22 @@ const eventSelectSort = reactive({
   createdAt: undefined,
 })
 
-const eventSelectSelection = ref([])
+const selectEventPageSelection = ref([])
 
-const eventSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  setProperty(data, 'ceSource', eventSelectFilter.eventSource)
-  setProperty(data, 'ceType', eventSelectFilter.eventType)
-  setProperty(data, 'topic', eventSelectFilter.eventTopic)
-  const params: Record<string, any> = {"size":50,"sort":"createdAt,desc"}
-  const sort: string[] = []
-  if (eventSelectSort.id != null) {
-    sort.push('id,' + eventSelectSort.id)
-  }
-  if (eventSelectSort.ceSource != null) {
-    sort.push('ceSource,' + eventSelectSort.ceSource)
-  }
-  if (eventSelectSort.ceType != null) {
-    sort.push('ceType,' + eventSelectSort.ceType)
-  }
-  if (eventSelectSort.topic != null) {
-    sort.push('topic,' + eventSelectSort.topic)
-  }
-  if (eventSelectSort.createdAt != null) {
-    sort.push('createdAt,' + eventSelectSort.createdAt)
-  }
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectEventPageQuery = useQuerySelectEventPage(
+  props,
+  selectEventPageSort,
+  selectEventPageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_event/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshEventSelect = () => {
-  eventSelectQuery.refresh()
-  eventSelectSelection.value = []
+const handleRefreshSelectEventPage = () => {
+  selectEventPageQuery.refresh()
+  selectEventPageSelection.value = []
 }
 
 watch(
-  [eventSelectFilter, eventSelectSort],
-  handleRefreshEventSelect
+  [selectEventPageFilter, selectEventPageSort],
+  handleRefreshSelectEventPage
 )
 
 </script>
@@ -91,20 +68,20 @@ watch(
     />
     <ToolbarEvents
       class="rounded-none border-0 border-b"
-      v-model:selection="eventSelectSelection"
-      v-model:filter-by-event-source = eventSelectFilter.eventSource
-      v-model:filter-by-event-topic = eventSelectFilter.eventTopic
-      v-model:filter-by-event-type = eventSelectFilter.eventType
-      v-model:sort-by-id = eventSelectSort.id
-      v-model:sort-by-ce-source = eventSelectSort.ceSource
-      v-model:sort-by-ce-type = eventSelectSort.ceType
-      v-model:sort-by-topic = eventSelectSort.topic
-      v-model:sort-by-created-at = eventSelectSort.createdAt
-      @refresh="handleRefreshEventSelect"
+      v-model:selection="selectEventPageSelection"
+      v-model:filter-by-event-source = selectEventPageFilter.eventSource
+      v-model:filter-by-event-topic = selectEventPageFilter.eventTopic
+      v-model:filter-by-event-type = selectEventPageFilter.eventType
+      v-model:sort-by-id = selectEventPageSort.id
+      v-model:sort-by-ce-source = selectEventPageSort.ceSource
+      v-model:sort-by-ce-type = selectEventPageSort.ceType
+      v-model:sort-by-topic = selectEventPageSort.topic
+      v-model:sort-by-created-at = selectEventPageSort.createdAt
+      @refresh="handleRefreshSelectEventPage"
     />
     <GridEvents
-      :state="eventSelectQuery.state"
-      v-model:selection="eventSelectSelection"
+      :state="selectEventPageQuery.state"
+      v-model:selection="selectEventPageSelection"
     />
   </div>
 </template>

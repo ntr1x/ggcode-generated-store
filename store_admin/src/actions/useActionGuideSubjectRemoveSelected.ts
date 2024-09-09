@@ -1,9 +1,17 @@
+import { EventEmitter } from 'events';
 import { reactive } from "vue";
 import { useAuthStore } from "../store/authStore";
-import { structureRemote } from '../remotes/structureRemote'
+import { removeGuideSubjectArrayRequest } from '../requests/removeGuideSubjectArrayRequest';
+import { StructurePublicGuideSubjectRecord } from '../structures/StructurePublicGuideSubjectRecord';
+
+export type ActionGuideSubjectRemoveSelectedProps = {
+  items: StructurePublicGuideSubjectRecord[]
+}
 
 export function useActionGuideSubjectRemoveSelected() {
   const authStore = useAuthStore()
+
+  const emitter = new EventEmitter()
 
   const state = reactive({
     isLoading: false,
@@ -11,36 +19,36 @@ export function useActionGuideSubjectRemoveSelected() {
     isFailed: false,
   })
 
-  const execute = async (payload?: any) => {
-    const token = await authStore.requireToken()
+  const execute = async (props: ActionGuideSubjectRemoveSelectedProps) => {
     try {
       Object.assign(state, {
         isLoading: true,
         isFailed: false
       })
-      const { data } = await structureRemote.request({
-        method: 'POST',
-        url: '/system/public_guide_subject/removeAll',
-        data: Object.assign([], payload),
-        params: {},
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+      
+      const token = await authStore.requireToken()
+      
+      const { data } = await removeGuideSubjectArrayRequest({
+        payload: props.items,
+        token,
       })
+
+      emitter.emit('success', data)
+
       Object.assign(state, {
         isLoading: false,
         isFailed: false,
         isLoaded: true,
       })
-      return data
     } catch (e) {
       Object.assign(state, {
         isLoading: false,
         isFailed: true
       })
+      emitter.emit('failure', e)
       throw e
     }
   }
 
-  return { execute, state }
+  return { execute, state, emitter }
 }

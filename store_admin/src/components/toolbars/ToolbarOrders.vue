@@ -11,6 +11,9 @@ import SelectPickerSourceType from '../controls/SelectPickerSourceType.vue'
 import SelectPickerOrderType from '../controls/SelectPickerOrderType.vue'
 import SelectPickerOrderStatus from '../controls/SelectPickerOrderStatus.vue'
 import SelectPickerRegionId from '../controls/SelectPickerRegionId.vue'
+
+export type SelectionOrdersRecord = Record<string, any>
+
 const modalStore = useModalStore()
 
 const emit = defineEmits<{

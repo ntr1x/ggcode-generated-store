@@ -1,57 +1,52 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { paymentsRemote } from '../../remotes/paymentsRemote';
+import {
+  type QuerySelectPromotionTypePageFilter,
+  type QuerySelectPromotionTypePageSorter,
+  useQuerySelectPromotionTypePage
+} from '../../queries/useQuerySelectPromotionTypePage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridPromotionTypes from '../grids/GridPromotionTypes.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const promotionTypeSelectFilter = reactive({
+const selectPromotionTypePageFilter = reactive<QuerySelectPromotionTypePageFilter>({
 })
 
-const promotionTypeSelectSort = reactive({
+const selectPromotionTypePageSort = reactive<QuerySelectPromotionTypePageSorter>({
 })
 
-const promotionTypeSelectSelection = ref([])
+const selectPromotionTypePageSelection = ref([])
 
-const promotionTypeSelectQuery = useAxiosAutoRequest<any>(paymentsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectPromotionTypePageQuery = useQuerySelectPromotionTypePage(
+  props,
+  selectPromotionTypePageSort,
+  selectPromotionTypePageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_promotion_type/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshPromotionTypeSelect = () => {
-  promotionTypeSelectQuery.refresh()
-  promotionTypeSelectSelection.value = []
+const handleRefreshSelectPromotionTypePage = () => {
+  selectPromotionTypePageQuery.refresh()
+  selectPromotionTypePageSelection.value = []
 }
 
 watch(
-  [promotionTypeSelectFilter, promotionTypeSelectSort],
-  handleRefreshPromotionTypeSelect
+  [selectPromotionTypePageFilter, selectPromotionTypePageSort],
+  handleRefreshSelectPromotionTypePage
 )
 
 </script>
@@ -63,8 +58,8 @@ watch(
       title="Promotion Types"
     />
     <GridPromotionTypes
-      :state="promotionTypeSelectQuery.state"
-      v-model:selection="promotionTypeSelectSelection"
+      :state="selectPromotionTypePageQuery.state"
+      v-model:selection="selectPromotionTypePageSelection"
     />
   </div>
 </template>

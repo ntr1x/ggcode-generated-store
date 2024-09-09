@@ -6,7 +6,13 @@ import Chip from 'primevue/chip'
 import Menu from 'primevue/menu';
 import { type Option } from '../dialogs/PlatformDialogFilter.vue';
 import { useModalStore } from '../../store/modalStore';
+import { StructurePublicProductPage } from '../../structures/StructurePublicProductPage'
 import SelectPickerCategoryId from '../controls/SelectPickerCategoryId.vue'
+import { useActionProductRemoveSelected } from '../../actions/useActionProductRemoveSelected'
+import { useActionCreateProduct } from '../../actions/useActionCreateProduct'
+
+export type SelectionProductsRecord = StructurePublicProductPage['content'][0]
+
 const modalStore = useModalStore()
 
 const emit = defineEmits<{
@@ -16,6 +22,7 @@ const emit = defineEmits<{
 const filterByCategoryId = defineModel('filterByCategoryId')
 const sortById = defineModel<'asc' | 'desc' | undefined>('sortById')
 const sortByName = defineModel<'asc' | 'desc' | undefined>('sortByName')
+const selection = defineModel<SelectionProductsRecord[]>('selection', { required: true })
 
 const filters = reactive<Record<string, Option | undefined>>({
   categoryId: undefined,
@@ -95,6 +102,38 @@ const sortersMenuItems = ref([
     ]
   }
 ])
+
+const actionProductRemoveSelected = useActionProductRemoveSelected()
+const actionCreateProduct = useActionCreateProduct()
+
+
+actionProductRemoveSelected.emitter
+  .on('success', (data: any) => {
+    console.log(data)
+    emit('refresh')
+  })
+  .on('failure', (error: any) => {
+    console.error(error)
+  })
+
+actionCreateProduct.emitter
+  .on('success', (data: any) => {
+    console.log(data)
+    emit('refresh')
+  })
+  .on('failure', (error: any) => {
+    console.error(error)
+  })
+
+async function handleRemoveSelected() {
+  actionProductRemoveSelected.execute({
+    items: selection.value,
+  })
+}
+
+async function handleCreateProduct() {
+  actionCreateProduct.execute()
+}
 </script>
 
 <template>
@@ -135,6 +174,22 @@ const sortersMenuItems = ref([
     </template>
     <template #end>
       <div class="flex flex-wrap">
+        <div class="flex items-center group-actions">
+          <Button
+            v-if="selection.length > 0"
+            text
+            label="Remove Selected"
+            class="ms-2"
+            severity="danger"
+            @click="handleRemoveSelected"
+          />
+          <Button
+            text
+            label="Create Product"
+            class="ms-2"
+            @click="handleCreateProduct"
+          />
+        </div>
       </div>
     </template>
   </Menubar>

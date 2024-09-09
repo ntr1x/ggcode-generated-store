@@ -1,57 +1,52 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { customersRemote } from '../../remotes/customersRemote';
+import {
+  type QuerySelectCustomerPageFilter,
+  type QuerySelectCustomerPageSorter,
+  useQuerySelectCustomerPage
+} from '../../queries/useQuerySelectCustomerPage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridCustomers from '../grids/GridCustomers.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const customerSelectFilter = reactive({
+const selectCustomerPageFilter = reactive<QuerySelectCustomerPageFilter>({
 })
 
-const customerSelectSort = reactive({
+const selectCustomerPageSort = reactive<QuerySelectCustomerPageSorter>({
 })
 
-const customerSelectSelection = ref([])
+const selectCustomerPageSelection = ref([])
 
-const customerSelectQuery = useAxiosAutoRequest<any>(customersRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  const params: Record<string, any> = {"size":50,"sort":"fullName"}
-  const sort: string[] = []
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectCustomerPageQuery = useQuerySelectCustomerPage(
+  props,
+  selectCustomerPageSort,
+  selectCustomerPageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_customer/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshCustomerSelect = () => {
-  customerSelectQuery.refresh()
-  customerSelectSelection.value = []
+const handleRefreshSelectCustomerPage = () => {
+  selectCustomerPageQuery.refresh()
+  selectCustomerPageSelection.value = []
 }
 
 watch(
-  [customerSelectFilter, customerSelectSort],
-  handleRefreshCustomerSelect
+  [selectCustomerPageFilter, selectCustomerPageSort],
+  handleRefreshSelectCustomerPage
 )
 
 </script>
@@ -63,8 +58,8 @@ watch(
       title="Customers"
     />
     <GridCustomers
-      :state="customerSelectQuery.state"
-      v-model:selection="customerSelectSelection"
+      :state="selectCustomerPageQuery.state"
+      v-model:selection="selectCustomerPageSelection"
     />
   </div>
 </template>

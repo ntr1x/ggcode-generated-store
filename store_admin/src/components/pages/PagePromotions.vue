@@ -1,60 +1,54 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { productsRemote } from '../../remotes/productsRemote';
+import {
+  type QuerySelectPromotionPageFilter,
+  type QuerySelectPromotionPageSorter,
+  useQuerySelectPromotionPage
+} from '../../queries/useQuerySelectPromotionPage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import ToolbarPromotions from '../toolbars/ToolbarPromotions.vue';
 import GridPromotions from '../grids/GridPromotions.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const promotionSelectFilter = reactive({
+const selectPromotionPageFilter = reactive<QuerySelectPromotionPageFilter>({
   promotionType: undefined,
 })
 
-const promotionSelectSort = reactive({
+const selectPromotionPageSort = reactive<QuerySelectPromotionPageSorter>({
 })
 
-const promotionSelectSelection = ref([])
+const selectPromotionPageSelection = ref([])
 
-const promotionSelectQuery = useAxiosAutoRequest<any>(productsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  setProperty(data, 'typeId', promotionSelectFilter.promotionType)
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectPromotionPageQuery = useQuerySelectPromotionPage(
+  props,
+  selectPromotionPageSort,
+  selectPromotionPageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_promotion/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshPromotionSelect = () => {
-  promotionSelectQuery.refresh()
-  promotionSelectSelection.value = []
+const handleRefreshSelectPromotionPage = () => {
+  selectPromotionPageQuery.refresh()
+  selectPromotionPageSelection.value = []
 }
 
 watch(
-  [promotionSelectFilter, promotionSelectSort],
-  handleRefreshPromotionSelect
+  [selectPromotionPageFilter, selectPromotionPageSort],
+  handleRefreshSelectPromotionPage
 )
 
 </script>
@@ -67,13 +61,13 @@ watch(
     />
     <ToolbarPromotions
       class="rounded-none border-0 border-b"
-      v-model:selection="promotionSelectSelection"
-      v-model:filter-by-promotion-type = promotionSelectFilter.promotionType
-      @refresh="handleRefreshPromotionSelect"
+      v-model:selection="selectPromotionPageSelection"
+      v-model:filter-by-promotion-type = selectPromotionPageFilter.promotionType
+      @refresh="handleRefreshSelectPromotionPage"
     />
     <GridPromotions
-      :state="promotionSelectQuery.state"
-      v-model:selection="promotionSelectSelection"
+      :state="selectPromotionPageQuery.state"
+      v-model:selection="selectPromotionPageSelection"
     />
   </div>
 </template>

@@ -1,13 +1,33 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { customersRemote } from '../../remotes/customersRemote';
-import { paymentsRemote } from '../../remotes/paymentsRemote';
-import { eventsRemote } from '../../remotes/eventsRemote';
+import {
+  type QueryGetCustomerRecordFilter,
+  type QueryGetCustomerRecordSorter,
+  useQueryGetCustomerRecord
+} from '../../queries/useQueryGetCustomerRecord';
+import {
+  type QuerySelectOrderPageFilter,
+  type QuerySelectOrderPageSorter,
+  useQuerySelectOrderPage
+} from '../../queries/useQuerySelectOrderPage';
+import {
+  type QuerySelectAgentPageFilter,
+  type QuerySelectAgentPageSorter,
+  useQuerySelectAgentPage
+} from '../../queries/useQuerySelectAgentPage';
+import {
+  type QuerySelectSubscriptionPageFilter,
+  type QuerySelectSubscriptionPageSorter,
+  useQuerySelectSubscriptionPage
+} from '../../queries/useQuerySelectSubscriptionPage';
+import {
+  type QuerySelectDispatchPageFilter,
+  type QuerySelectDispatchPageSorter,
+  useQuerySelectDispatchPage
+} from '../../queries/useQuerySelectDispatchPage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import FieldsetCustomerInfo from '../fieldsets/FieldsetCustomerInfo.vue';
 import ToolbarOrders from '../toolbars/ToolbarOrders.vue';
@@ -18,59 +38,53 @@ import GridSubscriptions from '../grids/GridSubscriptions.vue';
 import ToolbarDispatches from '../toolbars/ToolbarDispatches.vue';
 import GridDispatches from '../grids/GridDispatches.vue';
 
+const props = defineProps<{
+  customerId: string
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const customerGetFilter = reactive({
+const getCustomerRecordFilter = reactive<QueryGetCustomerRecordFilter>({
 })
 
-const customerGetSort = reactive({
+const getCustomerRecordSort = reactive<QueryGetCustomerRecordSorter>({
 })
 
-const customerGetSelection = ref([])
+const getCustomerRecordSelection = ref([])
 
-const customerGetQuery = useAxiosAutoRequest<any>(customersRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const getCustomerRecordQuery = useQueryGetCustomerRecord(
+  props,
+  getCustomerRecordSort,
+  getCustomerRecordFilter
+)
 
-  return {
-    method: 'GET',
-    url: `/system/public_customer/i/${route.params.customerId}`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshCustomerGet = () => {
-  customerGetQuery.refresh()
-  customerGetSelection.value = []
+const handleRefreshGetCustomerRecord = () => {
+  getCustomerRecordQuery.refresh()
+  getCustomerRecordSelection.value = []
 }
 
 watch(
-  [customerGetFilter, customerGetSort],
-  handleRefreshCustomerGet
+  [getCustomerRecordFilter, getCustomerRecordSort],
+  handleRefreshGetCustomerRecord
 )
-const orderSelectFilter = reactive({
-  customerId: route.params.customerId,
+
+const selectOrderPageFilter = reactive<QuerySelectOrderPageFilter>({
+  customerId: props.customerId,
   orderType: undefined,
   orderStatus: undefined,
   sourceType: undefined,
   regionId: undefined,
 })
 
-const orderSelectSort = reactive({
+const selectOrderPageSort = reactive<QuerySelectOrderPageSorter>({
   orderTypeId: undefined,
   orderStatusId: undefined,
   id: undefined,
@@ -79,162 +93,85 @@ const orderSelectSort = reactive({
   updatedAt: undefined,
 })
 
-const orderSelectSelection = ref([])
+const selectOrderPageSelection = ref([])
 
-const orderSelectQuery = useAxiosAutoRequest<any>(paymentsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  setProperty(data, 'customerId', orderSelectFilter.customerId)
-  setProperty(data, 'orderTypeId', orderSelectFilter.orderType)
-  setProperty(data, 'orderStatusId', orderSelectFilter.orderStatus)
-  setProperty(data, 'sourceTypeId', orderSelectFilter.sourceType)
-  setProperty(data, 'regionId', orderSelectFilter.regionId)
-  const params: Record<string, any> = {"size":50,"sort":"id,asc"}
-  const sort: string[] = []
-  if (orderSelectSort.orderTypeId != null) {
-    sort.push('orderType,' + orderSelectSort.orderTypeId)
-  }
-  if (orderSelectSort.orderStatusId != null) {
-    sort.push('orderStatus,' + orderSelectSort.orderStatusId)
-  }
-  if (orderSelectSort.id != null) {
-    sort.push('id,' + orderSelectSort.id)
-  }
-  if (orderSelectSort.customerId != null) {
-    sort.push('customerId,' + orderSelectSort.customerId)
-  }
-  if (orderSelectSort.createdAt != null) {
-    sort.push('createdAt,' + orderSelectSort.createdAt)
-  }
-  if (orderSelectSort.updatedAt != null) {
-    sort.push('updatedAt,' + orderSelectSort.updatedAt)
-  }
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectOrderPageQuery = useQuerySelectOrderPage(
+  props,
+  selectOrderPageSort,
+  selectOrderPageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_order/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshOrderSelect = () => {
-  orderSelectQuery.refresh()
-  orderSelectSelection.value = []
+const handleRefreshSelectOrderPage = () => {
+  selectOrderPageQuery.refresh()
+  selectOrderPageSelection.value = []
 }
 
 watch(
-  [orderSelectFilter, orderSelectSort],
-  handleRefreshOrderSelect
+  [selectOrderPageFilter, selectOrderPageSort],
+  handleRefreshSelectOrderPage
 )
-const agentSelectFilter = reactive({
-  customerId: route.params.customerId,
+
+const selectAgentPageFilter = reactive<QuerySelectAgentPageFilter>({
+  customerId: props.customerId,
 })
 
-const agentSelectSort = reactive({
+const selectAgentPageSort = reactive<QuerySelectAgentPageSorter>({
 })
 
-const agentSelectSelection = ref([])
+const selectAgentPageSelection = ref([])
 
-const agentSelectQuery = useAxiosAutoRequest<any>(customersRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  setProperty(data, 'customerId', agentSelectFilter.customerId)
-  const params: Record<string, any> = {"size":50}
-  const sort: string[] = []
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectAgentPageQuery = useQuerySelectAgentPage(
+  props,
+  selectAgentPageSort,
+  selectAgentPageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_agent/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshAgentSelect = () => {
-  agentSelectQuery.refresh()
-  agentSelectSelection.value = []
+const handleRefreshSelectAgentPage = () => {
+  selectAgentPageQuery.refresh()
+  selectAgentPageSelection.value = []
 }
 
 watch(
-  [agentSelectFilter, agentSelectSort],
-  handleRefreshAgentSelect
+  [selectAgentPageFilter, selectAgentPageSort],
+  handleRefreshSelectAgentPage
 )
-const subscriptionSelectFilter = reactive({
-  customerId: route.params.customerId,
+
+const selectSubscriptionPageFilter = reactive<QuerySelectSubscriptionPageFilter>({
+  customerId: props.customerId,
   typeId: undefined,
 })
 
-const subscriptionSelectSort = reactive({
+const selectSubscriptionPageSort = reactive<QuerySelectSubscriptionPageSorter>({
   id: undefined,
   createdAt: undefined,
   typeId: undefined,
 })
 
-const subscriptionSelectSelection = ref([])
+const selectSubscriptionPageSelection = ref([])
 
-const subscriptionSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  setProperty(data, 'customerId', subscriptionSelectFilter.customerId)
-  setProperty(data, 'typeId', subscriptionSelectFilter.typeId)
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  if (subscriptionSelectSort.id != null) {
-    sort.push('id,' + subscriptionSelectSort.id)
-  }
-  if (subscriptionSelectSort.createdAt != null) {
-    sort.push('createdAt,' + subscriptionSelectSort.createdAt)
-  }
-  if (subscriptionSelectSort.typeId != null) {
-    sort.push('typeId,' + subscriptionSelectSort.typeId)
-  }
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectSubscriptionPageQuery = useQuerySelectSubscriptionPage(
+  props,
+  selectSubscriptionPageSort,
+  selectSubscriptionPageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_subscription/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshSubscriptionSelect = () => {
-  subscriptionSelectQuery.refresh()
-  subscriptionSelectSelection.value = []
+const handleRefreshSelectSubscriptionPage = () => {
+  selectSubscriptionPageQuery.refresh()
+  selectSubscriptionPageSelection.value = []
 }
 
 watch(
-  [subscriptionSelectFilter, subscriptionSelectSort],
-  handleRefreshSubscriptionSelect
+  [selectSubscriptionPageFilter, selectSubscriptionPageSort],
+  handleRefreshSelectSubscriptionPage
 )
-const dispatchSelectFilter = reactive({
-  customerId: route.params.customerId,
+
+const selectDispatchPageFilter = reactive<QuerySelectDispatchPageFilter>({
+  customerId: props.customerId,
   typeId: undefined,
   statusId: undefined,
 })
 
-const dispatchSelectSort = reactive({
+const selectDispatchPageSort = reactive<QuerySelectDispatchPageSorter>({
   id: undefined,
   typeId: undefined,
   statusId: undefined,
@@ -242,55 +179,22 @@ const dispatchSelectSort = reactive({
   updatedAt: undefined,
 })
 
-const dispatchSelectSelection = ref([])
+const selectDispatchPageSelection = ref([])
 
-const dispatchSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  setProperty(data, 'customerId', dispatchSelectFilter.customerId)
-  setProperty(data, 'typeId', dispatchSelectFilter.typeId)
-  setProperty(data, 'statusId', dispatchSelectFilter.statusId)
-  const params: Record<string, any> = {"size":50,"sort":"createdAt,desc"}
-  const sort: string[] = []
-  if (dispatchSelectSort.id != null) {
-    sort.push('id,' + dispatchSelectSort.id)
-  }
-  if (dispatchSelectSort.typeId != null) {
-    sort.push('typeId,' + dispatchSelectSort.typeId)
-  }
-  if (dispatchSelectSort.statusId != null) {
-    sort.push('statusId,' + dispatchSelectSort.statusId)
-  }
-  if (dispatchSelectSort.createdAt != null) {
-    sort.push('createdAt,' + dispatchSelectSort.createdAt)
-  }
-  if (dispatchSelectSort.updatedAt != null) {
-    sort.push('updatedAt,' + dispatchSelectSort.updatedAt)
-  }
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectDispatchPageQuery = useQuerySelectDispatchPage(
+  props,
+  selectDispatchPageSort,
+  selectDispatchPageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_dispatch/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshDispatchSelect = () => {
-  dispatchSelectQuery.refresh()
-  dispatchSelectSelection.value = []
+const handleRefreshSelectDispatchPage = () => {
+  selectDispatchPageQuery.refresh()
+  selectDispatchPageSelection.value = []
 }
 
 watch(
-  [dispatchSelectFilter, dispatchSelectSort],
-  handleRefreshDispatchSelect
+  [selectDispatchPageFilter, selectDispatchPageSort],
+  handleRefreshSelectDispatchPage
 )
 
 </script>
@@ -302,7 +206,7 @@ watch(
       title="Customer"
     />
     <FieldsetCustomerInfo
-      :state="customerGetQuery.state"
+      :state="getCustomerRecordQuery.state"
     />
     <SectionHeading
       tag="h3"
@@ -310,23 +214,23 @@ watch(
     />
     <ToolbarOrders
       class="rounded-none border-0 border-b"
-      v-model:selection="orderSelectSelection"
-      v-model:filter-by-customer-id = orderSelectFilter.customerId
-      v-model:filter-by-source-type = orderSelectFilter.sourceType
-      v-model:filter-by-order-type = orderSelectFilter.orderType
-      v-model:filter-by-order-status = orderSelectFilter.orderStatus
-      v-model:filter-by-region-id = orderSelectFilter.regionId
-      v-model:sort-by-id = orderSelectSort.id
-      v-model:sort-by-customer-id = orderSelectSort.customerId
-      v-model:sort-by-order-type-id = orderSelectSort.orderTypeId
-      v-model:sort-by-order-status-id = orderSelectSort.orderStatusId
-      v-model:sort-by-created-at = orderSelectSort.createdAt
-      v-model:sort-by-updated-at = orderSelectSort.updatedAt
-      @refresh="handleRefreshOrderSelect"
+      v-model:selection="selectOrderPageSelection"
+      v-model:filter-by-customer-id = selectOrderPageFilter.customerId
+      v-model:filter-by-source-type = selectOrderPageFilter.sourceType
+      v-model:filter-by-order-type = selectOrderPageFilter.orderType
+      v-model:filter-by-order-status = selectOrderPageFilter.orderStatus
+      v-model:filter-by-region-id = selectOrderPageFilter.regionId
+      v-model:sort-by-id = selectOrderPageSort.id
+      v-model:sort-by-customer-id = selectOrderPageSort.customerId
+      v-model:sort-by-order-type-id = selectOrderPageSort.orderTypeId
+      v-model:sort-by-order-status-id = selectOrderPageSort.orderStatusId
+      v-model:sort-by-created-at = selectOrderPageSort.createdAt
+      v-model:sort-by-updated-at = selectOrderPageSort.updatedAt
+      @refresh="handleRefreshSelectOrderPage"
     />
     <GridOrders
-      :state="orderSelectQuery.state"
-      v-model:selection="orderSelectSelection"
+      :state="selectOrderPageQuery.state"
+      v-model:selection="selectOrderPageSelection"
       :scrollable="false"
       :hide-customer="true"
     />
@@ -335,8 +239,8 @@ watch(
       title="Agents"
     />
     <GridAgents
-      :state="agentSelectQuery.state"
-      v-model:selection="agentSelectSelection"
+      :state="selectAgentPageQuery.state"
+      v-model:selection="selectAgentPageSelection"
       :scrollable="false"
       :hide-customer="true"
     />
@@ -346,17 +250,17 @@ watch(
     />
     <ToolbarSubscriptions
       class="rounded-none border-0 border-b"
-      v-model:selection="subscriptionSelectSelection"
-      v-model:filter-by-customer-id = subscriptionSelectFilter.customerId
-      v-model:filter-by-type-id = subscriptionSelectFilter.typeId
-      v-model:sort-by-id = subscriptionSelectSort.id
-      v-model:sort-by-created-at = subscriptionSelectSort.createdAt
-      v-model:sort-by-type-id = subscriptionSelectSort.typeId
-      @refresh="handleRefreshSubscriptionSelect"
+      v-model:selection="selectSubscriptionPageSelection"
+      v-model:filter-by-customer-id = selectSubscriptionPageFilter.customerId
+      v-model:filter-by-type-id = selectSubscriptionPageFilter.typeId
+      v-model:sort-by-id = selectSubscriptionPageSort.id
+      v-model:sort-by-created-at = selectSubscriptionPageSort.createdAt
+      v-model:sort-by-type-id = selectSubscriptionPageSort.typeId
+      @refresh="handleRefreshSelectSubscriptionPage"
     />
     <GridSubscriptions
-      :state="subscriptionSelectQuery.state"
-      v-model:selection="subscriptionSelectSelection"
+      :state="selectSubscriptionPageQuery.state"
+      v-model:selection="selectSubscriptionPageSelection"
       :scrollable="false"
       :hide-customer="true"
     />
@@ -366,20 +270,20 @@ watch(
     />
     <ToolbarDispatches
       class="rounded-none border-0 border-b"
-      v-model:selection="dispatchSelectSelection"
-      v-model:filter-by-customer-id = dispatchSelectFilter.customerId
-      v-model:filter-by-type-id = dispatchSelectFilter.typeId
-      v-model:filter-by-status-id = dispatchSelectFilter.statusId
-      v-model:sort-by-id = dispatchSelectSort.id
-      v-model:sort-by-created-at = dispatchSelectSort.createdAt
-      v-model:sort-by-updated-at = dispatchSelectSort.updatedAt
-      v-model:sort-by-type-id = dispatchSelectSort.typeId
-      v-model:sort-by-status-id = dispatchSelectSort.statusId
-      @refresh="handleRefreshDispatchSelect"
+      v-model:selection="selectDispatchPageSelection"
+      v-model:filter-by-customer-id = selectDispatchPageFilter.customerId
+      v-model:filter-by-type-id = selectDispatchPageFilter.typeId
+      v-model:filter-by-status-id = selectDispatchPageFilter.statusId
+      v-model:sort-by-id = selectDispatchPageSort.id
+      v-model:sort-by-created-at = selectDispatchPageSort.createdAt
+      v-model:sort-by-updated-at = selectDispatchPageSort.updatedAt
+      v-model:sort-by-type-id = selectDispatchPageSort.typeId
+      v-model:sort-by-status-id = selectDispatchPageSort.statusId
+      @refresh="handleRefreshSelectDispatchPage"
     />
     <GridDispatches
-      :state="dispatchSelectQuery.state"
-      v-model:selection="dispatchSelectSelection"
+      :state="selectDispatchPageQuery.state"
+      v-model:selection="selectDispatchPageSelection"
       :scrollable="false"
       :hide-customer="true"
     />

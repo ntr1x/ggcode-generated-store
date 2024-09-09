@@ -1,74 +1,58 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { eventsRemote } from '../../remotes/eventsRemote';
+import {
+  type QuerySelectSubscriptionPageFilter,
+  type QuerySelectSubscriptionPageSorter,
+  useQuerySelectSubscriptionPage
+} from '../../queries/useQuerySelectSubscriptionPage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import ToolbarSubscriptions from '../toolbars/ToolbarSubscriptions.vue';
 import GridSubscriptions from '../grids/GridSubscriptions.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const subscriptionSelectFilter = reactive({
-  customerId: route.params.customerId,
+const selectSubscriptionPageFilter = reactive<QuerySelectSubscriptionPageFilter>({
+  customerId: undefined,
   typeId: undefined,
 })
 
-const subscriptionSelectSort = reactive({
+const selectSubscriptionPageSort = reactive<QuerySelectSubscriptionPageSorter>({
   id: undefined,
   createdAt: undefined,
   typeId: undefined,
 })
 
-const subscriptionSelectSelection = ref([])
+const selectSubscriptionPageSelection = ref([])
 
-const subscriptionSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  setProperty(data, 'customerId', subscriptionSelectFilter.customerId)
-  setProperty(data, 'typeId', subscriptionSelectFilter.typeId)
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  if (subscriptionSelectSort.id != null) {
-    sort.push('id,' + subscriptionSelectSort.id)
-  }
-  if (subscriptionSelectSort.createdAt != null) {
-    sort.push('createdAt,' + subscriptionSelectSort.createdAt)
-  }
-  if (subscriptionSelectSort.typeId != null) {
-    sort.push('typeId,' + subscriptionSelectSort.typeId)
-  }
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectSubscriptionPageQuery = useQuerySelectSubscriptionPage(
+  props,
+  selectSubscriptionPageSort,
+  selectSubscriptionPageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_subscription/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshSubscriptionSelect = () => {
-  subscriptionSelectQuery.refresh()
-  subscriptionSelectSelection.value = []
+const handleRefreshSelectSubscriptionPage = () => {
+  selectSubscriptionPageQuery.refresh()
+  selectSubscriptionPageSelection.value = []
 }
 
 watch(
-  [subscriptionSelectFilter, subscriptionSelectSort],
-  handleRefreshSubscriptionSelect
+  [selectSubscriptionPageFilter, selectSubscriptionPageSort],
+  handleRefreshSelectSubscriptionPage
 )
 
 </script>
@@ -81,17 +65,17 @@ watch(
     />
     <ToolbarSubscriptions
       class="rounded-none border-0 border-b"
-      v-model:selection="subscriptionSelectSelection"
-      v-model:filter-by-customer-id = subscriptionSelectFilter.customerId
-      v-model:filter-by-type-id = subscriptionSelectFilter.typeId
-      v-model:sort-by-id = subscriptionSelectSort.id
-      v-model:sort-by-created-at = subscriptionSelectSort.createdAt
-      v-model:sort-by-type-id = subscriptionSelectSort.typeId
-      @refresh="handleRefreshSubscriptionSelect"
+      v-model:selection="selectSubscriptionPageSelection"
+      v-model:filter-by-customer-id = selectSubscriptionPageFilter.customerId
+      v-model:filter-by-type-id = selectSubscriptionPageFilter.typeId
+      v-model:sort-by-id = selectSubscriptionPageSort.id
+      v-model:sort-by-created-at = selectSubscriptionPageSort.createdAt
+      v-model:sort-by-type-id = selectSubscriptionPageSort.typeId
+      @refresh="handleRefreshSelectSubscriptionPage"
     />
     <GridSubscriptions
-      :state="subscriptionSelectQuery.state"
-      v-model:selection="subscriptionSelectSelection"
+      :state="selectSubscriptionPageQuery.state"
+      v-model:selection="selectSubscriptionPageSelection"
     />
   </div>
 </template>

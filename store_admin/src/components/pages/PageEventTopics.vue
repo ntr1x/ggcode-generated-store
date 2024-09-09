@@ -1,65 +1,54 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { eventsRemote } from '../../remotes/eventsRemote';
+import {
+  type QuerySelectEventTopicPageFilter,
+  type QuerySelectEventTopicPageSorter,
+  useQuerySelectEventTopicPage
+} from '../../queries/useQuerySelectEventTopicPage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridEventTopics from '../grids/GridEventTopics.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const eventTopicSelectFilter = reactive({
+const selectEventTopicPageFilter = reactive<QuerySelectEventTopicPageFilter>({
 })
 
-const eventTopicSelectSort = reactive({
+const selectEventTopicPageSort = reactive<QuerySelectEventTopicPageSorter>({
   name: undefined,
   description: undefined,
 })
 
-const eventTopicSelectSelection = ref([])
+const selectEventTopicPageSelection = ref([])
 
-const eventTopicSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  if (eventTopicSelectSort.name != null) {
-    sort.push('name,' + eventTopicSelectSort.name)
-  }
-  if (eventTopicSelectSort.description != null) {
-    sort.push('description,' + eventTopicSelectSort.description)
-  }
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectEventTopicPageQuery = useQuerySelectEventTopicPage(
+  props,
+  selectEventTopicPageSort,
+  selectEventTopicPageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_event_topic_info/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshEventTopicSelect = () => {
-  eventTopicSelectQuery.refresh()
-  eventTopicSelectSelection.value = []
+const handleRefreshSelectEventTopicPage = () => {
+  selectEventTopicPageQuery.refresh()
+  selectEventTopicPageSelection.value = []
 }
 
 watch(
-  [eventTopicSelectFilter, eventTopicSelectSort],
-  handleRefreshEventTopicSelect
+  [selectEventTopicPageFilter, selectEventTopicPageSort],
+  handleRefreshSelectEventTopicPage
 )
 
 </script>
@@ -71,8 +60,8 @@ watch(
       title="Event Topics"
     />
     <GridEventTopics
-      :state="eventTopicSelectQuery.state"
-      v-model:selection="eventTopicSelectSelection"
+      :state="selectEventTopicPageQuery.state"
+      v-model:selection="selectEventTopicPageSelection"
     />
   </div>
 </template>

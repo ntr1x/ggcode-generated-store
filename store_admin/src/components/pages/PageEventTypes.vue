@@ -1,65 +1,54 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { eventsRemote } from '../../remotes/eventsRemote';
+import {
+  type QuerySelectEventTypePageFilter,
+  type QuerySelectEventTypePageSorter,
+  useQuerySelectEventTypePage
+} from '../../queries/useQuerySelectEventTypePage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridEventTypes from '../grids/GridEventTypes.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const eventTypeSelectFilter = reactive({
+const selectEventTypePageFilter = reactive<QuerySelectEventTypePageFilter>({
 })
 
-const eventTypeSelectSort = reactive({
+const selectEventTypePageSort = reactive<QuerySelectEventTypePageSorter>({
   name: undefined,
   description: undefined,
 })
 
-const eventTypeSelectSelection = ref([])
+const selectEventTypePageSelection = ref([])
 
-const eventTypeSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  if (eventTypeSelectSort.name != null) {
-    sort.push('name,' + eventTypeSelectSort.name)
-  }
-  if (eventTypeSelectSort.description != null) {
-    sort.push('description,' + eventTypeSelectSort.description)
-  }
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectEventTypePageQuery = useQuerySelectEventTypePage(
+  props,
+  selectEventTypePageSort,
+  selectEventTypePageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_event_type_info/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshEventTypeSelect = () => {
-  eventTypeSelectQuery.refresh()
-  eventTypeSelectSelection.value = []
+const handleRefreshSelectEventTypePage = () => {
+  selectEventTypePageQuery.refresh()
+  selectEventTypePageSelection.value = []
 }
 
 watch(
-  [eventTypeSelectFilter, eventTypeSelectSort],
-  handleRefreshEventTypeSelect
+  [selectEventTypePageFilter, selectEventTypePageSort],
+  handleRefreshSelectEventTypePage
 )
 
 </script>
@@ -71,8 +60,8 @@ watch(
       title="Event Types"
     />
     <GridEventTypes
-      :state="eventTypeSelectQuery.state"
-      v-model:selection="eventTypeSelectSelection"
+      :state="selectEventTypePageQuery.state"
+      v-model:selection="selectEventTypePageSelection"
     />
   </div>
 </template>

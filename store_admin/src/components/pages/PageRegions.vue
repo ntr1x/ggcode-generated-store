@@ -1,57 +1,52 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { productsRemote } from '../../remotes/productsRemote';
+import {
+  type QuerySelectRegionPageFilter,
+  type QuerySelectRegionPageSorter,
+  useQuerySelectRegionPage
+} from '../../queries/useQuerySelectRegionPage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridRegions from '../grids/GridRegions.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const regionSelectFilter = reactive({
+const selectRegionPageFilter = reactive<QuerySelectRegionPageFilter>({
 })
 
-const regionSelectSort = reactive({
+const selectRegionPageSort = reactive<QuerySelectRegionPageSorter>({
 })
 
-const regionSelectSelection = ref([])
+const selectRegionPageSelection = ref([])
 
-const regionSelectQuery = useAxiosAutoRequest<any>(productsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectRegionPageQuery = useQuerySelectRegionPage(
+  props,
+  selectRegionPageSort,
+  selectRegionPageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_region/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshRegionSelect = () => {
-  regionSelectQuery.refresh()
-  regionSelectSelection.value = []
+const handleRefreshSelectRegionPage = () => {
+  selectRegionPageQuery.refresh()
+  selectRegionPageSelection.value = []
 }
 
 watch(
-  [regionSelectFilter, regionSelectSort],
-  handleRefreshRegionSelect
+  [selectRegionPageFilter, selectRegionPageSort],
+  handleRefreshSelectRegionPage
 )
 
 </script>
@@ -63,8 +58,8 @@ watch(
       title="Regions"
     />
     <GridRegions
-      :state="regionSelectQuery.state"
-      v-model:selection="regionSelectSelection"
+      :state="selectRegionPageQuery.state"
+      v-model:selection="selectRegionPageSelection"
     />
   </div>
 </template>

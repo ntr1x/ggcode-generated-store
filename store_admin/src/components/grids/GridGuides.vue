@@ -1,17 +1,20 @@
-<script setup lang="ts" generic="T">
+<script setup lang="ts">
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import { type State } from '../../hooks/useAxiosRequest';
 import SymbolId from '../symbols/SymbolId.vue'
 import SymbolGuideSubject from '../symbols/SymbolGuideSubject.vue'
 import SymbolS3Http from '../symbols/SymbolS3Http.vue'
+import { StructurePublicGuidePage } from '../../structures/StructurePublicGuidePage'
 
-export type ResponseData = {
-  content: []
+export type GridGuidesRecord = StructurePublicGuidePage['content'][0]
+
+export type GridGuidesPage = {
+  content: GridGuidesRecord[]
 }
 
 export type GridGuidesProps = {
-  state: State<ResponseData>,
+  state: State<GridGuidesPage>,
   scrollable?: boolean,
   scrollHeight?: string,
   hideId?: boolean,
@@ -21,7 +24,7 @@ export type GridGuidesProps = {
   hideAttachment?: boolean,
 }
 
-const selection = defineModel<T[]>('selection')
+const selection = defineModel<GridGuidesRecord[]>('selection')
 
 withDefaults(defineProps<GridGuidesProps>(), {
   scrollable: true,

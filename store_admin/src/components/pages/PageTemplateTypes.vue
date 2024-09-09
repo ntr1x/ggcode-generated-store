@@ -1,69 +1,55 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { set as setProperty } from 'lodash';
+import { onMounted } from 'vue';
 import { ref, watch, reactive } from 'vue';
 import { useAuthStore } from '../../store/authStore';
-import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
-import { eventsRemote } from '../../remotes/eventsRemote';
+import {
+  type QuerySelectTemplateTypePageFilter,
+  type QuerySelectTemplateTypePageSorter,
+  useQuerySelectTemplateTypePage
+} from '../../queries/useQuerySelectTemplateTypePage';
 import SectionHeading from '../partials/SectionHeading.vue';
 import GridTemplateTypes from '../grids/GridTemplateTypes.vue';
 
+const props = defineProps<{
+  // yet nothing
+}>()
+
+onMounted(() => {
+  console.trace(props)
+})
+
 // @ts-ignore
-const route = useRoute()
 const authStore = useAuthStore()
+
 // @ts-ignore
 const security = useSecurityContext()
 
-const templateTypeSelectFilter = reactive({
+const selectTemplateTypePageFilter = reactive<QuerySelectTemplateTypePageFilter>({
 })
 
-const templateTypeSelectSort = reactive({
+const selectTemplateTypePageSort = reactive<QuerySelectTemplateTypePageSorter>({
   id: undefined,
   name: undefined,
   description: undefined,
 })
 
-const templateTypeSelectSelection = ref([])
+const selectTemplateTypePageSelection = ref([])
 
-const templateTypeSelectQuery = useAxiosAutoRequest<any>(eventsRemote, async () => {
-  const token = await authStore.requireToken()
-  const data = {}
-  const params: Record<string, any> = {}
-  const sort: string[] = []
-  if (templateTypeSelectSort.id != null) {
-    sort.push('id,' + templateTypeSelectSort.id)
-  }
-  if (templateTypeSelectSort.name != null) {
-    sort.push('name,' + templateTypeSelectSort.name)
-  }
-  if (templateTypeSelectSort.description != null) {
-    sort.push('description,' + templateTypeSelectSort.description)
-  }
-  setProperty(params, 'sort', sort.length > 0 ? sort : params.sort)
+const selectTemplateTypePageQuery = useQuerySelectTemplateTypePage(
+  props,
+  selectTemplateTypePageSort,
+  selectTemplateTypePageFilter
+)
 
-  return {
-    method: 'POST',
-    url: `/system/public_template_type/select`,
-    params,
-    data,
-    paramsSerializer: {
-      indexes: null
-    },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-})
-
-const handleRefreshTemplateTypeSelect = () => {
-  templateTypeSelectQuery.refresh()
-  templateTypeSelectSelection.value = []
+const handleRefreshSelectTemplateTypePage = () => {
+  selectTemplateTypePageQuery.refresh()
+  selectTemplateTypePageSelection.value = []
 }
 
 watch(
-  [templateTypeSelectFilter, templateTypeSelectSort],
-  handleRefreshTemplateTypeSelect
+  [selectTemplateTypePageFilter, selectTemplateTypePageSort],
+  handleRefreshSelectTemplateTypePage
 )
 
 </script>
@@ -75,8 +61,8 @@ watch(
       title="Template Types"
     />
     <GridTemplateTypes
-      :state="templateTypeSelectQuery.state"
-      v-model:selection="templateTypeSelectSelection"
+      :state="selectTemplateTypePageQuery.state"
+      v-model:selection="selectTemplateTypePageSelection"
     />
   </div>
 </template>
