@@ -1,6 +1,7 @@
+
 import { useAuthStore } from "../store/authStore";
 import { useAxiosAutoRequest } from '../hooks/useAxiosAutoRequest';
-import { productsRemote } from '../remotes/productsRemote'
+import { selectProductPageRequest } from '../requests/selectProductPageRequest'
 import { StructurePublicProductPage } from '../structures/StructurePublicProductPage'
 
 export type QuerySelectProductPageProps = {
@@ -15,7 +16,6 @@ export type QuerySelectProductPageSorter = {
   id?: 'asc' | 'desc',
   name?: 'asc' | 'desc',
 }
-
 const mapping: Record<string, any> = {
   categoryId: 'categoryId',
 }
@@ -23,23 +23,24 @@ const mapping: Record<string, any> = {
 export function useQuerySelectProductPage(
   // @ts-ignore
   props: QuerySelectProductPageProps,
+  // @ts-ignore
   sort?: QuerySelectProductPageSorter,
+  // @ts-ignore
   filter?: QuerySelectProductPageFilter
 ) {
   const authStore = useAuthStore()
 
-  return useAxiosAutoRequest<StructurePublicProductPage>(productsRemote, async () => {
+  return useAxiosAutoRequest<StructurePublicProductPage>(async () => {
     const token = await authStore.requireToken()
-
-    const body: Record<string, any> = {}
+    const payload: Record<string, any> = {}
     if (filter != null) {
       for (const [k, v] of Object.entries(filter)) {
         if (v != undefined) {
-          body[mapping[k]] = v
+          payload[mapping[k]] = v
         }
       }
     }
-
+    
     const sortArray: string[] = []
     if (sort != null) {
       for (const [k, v] of Object.entries(sort)) {
@@ -54,17 +55,10 @@ export function useQuerySelectProductPage(
       query.sort = sortArray
     }
 
-    return {
-      method: 'POST',
-      url: `/system/public_product/select`,
-      params: query,
-      paramsSerializer: {
-        indexes: null
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      data: body
-    }
+    return selectProductPageRequest({
+      token,
+      query,
+      payload,
+    })
   })
 }

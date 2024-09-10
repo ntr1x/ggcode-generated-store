@@ -1,6 +1,7 @@
+
 import { useAuthStore } from "../store/authStore";
 import { useAxiosAutoRequest } from '../hooks/useAxiosAutoRequest';
-import { productsRemote } from '../remotes/productsRemote'
+import { selectRegionPageRequest } from '../requests/selectRegionPageRequest'
 
 export type QuerySelectRegionPageProps = {
   // yet nothing
@@ -14,30 +15,20 @@ export type QuerySelectRegionPageSorter = {
   // yet nothing
 }
 
-const mapping: Record<string, any> = {
-  // yet nothing
-}
-
 export function useQuerySelectRegionPage(
   // @ts-ignore
   props: QuerySelectRegionPageProps,
+  // @ts-ignore
   sort?: QuerySelectRegionPageSorter,
+  // @ts-ignore
   filter?: QuerySelectRegionPageFilter
 ) {
   const authStore = useAuthStore()
 
-  return useAxiosAutoRequest<any>(productsRemote, async () => {
+  return useAxiosAutoRequest<any>(async () => {
     const token = await authStore.requireToken()
-
-    const body: Record<string, any> = {}
-    if (filter != null) {
-      for (const [k, v] of Object.entries(filter)) {
-        if (v != undefined) {
-          body[mapping[k]] = v
-        }
-      }
-    }
-
+    const payload: Record<string, any> = {}
+    
     const sortArray: string[] = []
     if (sort != null) {
       for (const [k, v] of Object.entries(sort)) {
@@ -52,17 +43,10 @@ export function useQuerySelectRegionPage(
       query.sort = sortArray
     }
 
-    return {
-      method: 'POST',
-      url: `/system/public_region/select`,
-      params: query,
-      paramsSerializer: {
-        indexes: null
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      data: body
-    }
+    return selectRegionPageRequest({
+      token,
+      query,
+      payload,
+    })
   })
 }

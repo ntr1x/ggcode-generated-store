@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { productsRemote } from '../../remotes/productsRemote'
+import { selectShopPageRequest } from '../../requests/selectShopPageRequest'
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import PlatformDialogFilter, { type Option } from '../dialogs/PlatformDialogFilter.vue';
@@ -10,7 +10,7 @@ type IHaveId = {
 }
 
 type IHaveName = {
-  name: string
+  name?: string
 }
 
 type IHaveDescription = {
@@ -30,17 +30,11 @@ const emit = defineEmits<{
 
 const authStore = useAuthStore()
 
-const { state } = useAxiosAutoRequest<ResponseData>(productsRemote, async () => {
+const { state } = useAxiosAutoRequest<ResponseData>(async () => {
   const token = await authStore.requireToken()
-  return {
-    method: 'POST',
-    url: '/system/public_shop/select',
-    data: {},
-    params: {"size":50,"sort":"name,asc"},
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
+  return selectShopPageRequest({
+    token,
+  })
 })
 
 const options = computed(() => {

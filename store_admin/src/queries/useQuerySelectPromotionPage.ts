@@ -1,6 +1,7 @@
+
 import { useAuthStore } from "../store/authStore";
 import { useAxiosAutoRequest } from '../hooks/useAxiosAutoRequest';
-import { productsRemote } from '../remotes/productsRemote'
+import { selectPromotionPageRequest } from '../requests/selectPromotionPageRequest'
 
 export type QuerySelectPromotionPageProps = {
   // yet nothing
@@ -13,7 +14,6 @@ export type QuerySelectPromotionPageFilter = {
 export type QuerySelectPromotionPageSorter = {
   // yet nothing
 }
-
 const mapping: Record<string, any> = {
   promotionType: 'typeId',
 }
@@ -21,23 +21,24 @@ const mapping: Record<string, any> = {
 export function useQuerySelectPromotionPage(
   // @ts-ignore
   props: QuerySelectPromotionPageProps,
+  // @ts-ignore
   sort?: QuerySelectPromotionPageSorter,
+  // @ts-ignore
   filter?: QuerySelectPromotionPageFilter
 ) {
   const authStore = useAuthStore()
 
-  return useAxiosAutoRequest<any>(productsRemote, async () => {
+  return useAxiosAutoRequest<any>(async () => {
     const token = await authStore.requireToken()
-
-    const body: Record<string, any> = {}
+    const payload: Record<string, any> = {}
     if (filter != null) {
       for (const [k, v] of Object.entries(filter)) {
         if (v != undefined) {
-          body[mapping[k]] = v
+          payload[mapping[k]] = v
         }
       }
     }
-
+    
     const sortArray: string[] = []
     if (sort != null) {
       for (const [k, v] of Object.entries(sort)) {
@@ -52,17 +53,10 @@ export function useQuerySelectPromotionPage(
       query.sort = sortArray
     }
 
-    return {
-      method: 'POST',
-      url: `/system/public_promotion/select`,
-      params: query,
-      paramsSerializer: {
-        indexes: null
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      data: body
-    }
+    return selectPromotionPageRequest({
+      token,
+      query,
+      payload,
+    })
   })
 }

@@ -2,16 +2,21 @@ import { structureRemote } from '../remotes/structureRemote'
 
 export type RequestSelectNetworkTypePageProps = {
   token: string
-  payload: Record<string, any>
+  query?: Record<string, any>
+  payload?: Record<string, any>
 }
+export type RequestSelectNetworkTypePageResponse = any
 
-export const selectNetworkTypePageRequest = async (props: RequestSelectNetworkTypePageProps) => {
+export const selectNetworkTypePageRequest = async (props: RequestSelectNetworkTypePageProps): Promise<RequestSelectNetworkTypePageResponse> => {
 
-  const { data } = await structureRemote.request({
+  const { data } = await structureRemote.request<RequestSelectNetworkTypePageResponse>({
     method: `POST`,
     url: `/system/public_network_type/select`,
     data: Object.assign({}, props.payload),
-    params: {},
+    params: Object.assign({}, props.query),
+    paramsSerializer: {
+      indexes: null
+    },
     headers: {
       Authorization: `Bearer ${props.token}`
     },

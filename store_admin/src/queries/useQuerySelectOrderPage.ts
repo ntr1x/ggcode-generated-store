@@ -1,6 +1,7 @@
+
 import { useAuthStore } from "../store/authStore";
 import { useAxiosAutoRequest } from '../hooks/useAxiosAutoRequest';
-import { paymentsRemote } from '../remotes/paymentsRemote'
+import { selectOrderPageRequest } from '../requests/selectOrderPageRequest'
 
 export type QuerySelectOrderPageProps = {
   // yet nothing
@@ -22,7 +23,6 @@ export type QuerySelectOrderPageSorter = {
   createdAt?: 'asc' | 'desc',
   updatedAt?: 'asc' | 'desc',
 }
-
 const mapping: Record<string, any> = {
   customerId: 'customerId',
   orderType: 'orderTypeId',
@@ -34,23 +34,24 @@ const mapping: Record<string, any> = {
 export function useQuerySelectOrderPage(
   // @ts-ignore
   props: QuerySelectOrderPageProps,
+  // @ts-ignore
   sort?: QuerySelectOrderPageSorter,
+  // @ts-ignore
   filter?: QuerySelectOrderPageFilter
 ) {
   const authStore = useAuthStore()
 
-  return useAxiosAutoRequest<any>(paymentsRemote, async () => {
+  return useAxiosAutoRequest<any>(async () => {
     const token = await authStore.requireToken()
-
-    const body: Record<string, any> = {}
+    const payload: Record<string, any> = {}
     if (filter != null) {
       for (const [k, v] of Object.entries(filter)) {
         if (v != undefined) {
-          body[mapping[k]] = v
+          payload[mapping[k]] = v
         }
       }
     }
-
+    
     const sortArray: string[] = []
     if (sort != null) {
       for (const [k, v] of Object.entries(sort)) {
@@ -65,17 +66,10 @@ export function useQuerySelectOrderPage(
       query.sort = sortArray
     }
 
-    return {
-      method: 'POST',
-      url: `/system/public_order/select`,
-      params: query,
-      paramsSerializer: {
-        indexes: null
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      data: body
-    }
+    return selectOrderPageRequest({
+      token,
+      query,
+      payload,
+    })
   })
 }

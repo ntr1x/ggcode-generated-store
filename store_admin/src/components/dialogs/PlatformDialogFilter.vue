@@ -6,7 +6,7 @@ import { watch, ref, inject, computed } from 'vue';
 
 export type Option = {
   key: string
-  title: string
+  title?: string
   description?: string
   value: any
 }
@@ -39,7 +39,7 @@ const filteredOptions = computed(() => {
   }
   return value.trim() == ''
     ? props.options
-    : props.options.filter(option => option.title.toLowerCase().includes(value))
+    : props.options.filter(option => option.title!.toLowerCase().includes(value))
 })
 
 const selectedIndex = ref<number>(0)

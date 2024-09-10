@@ -2,16 +2,21 @@ import { customersRemote } from '../remotes/customersRemote'
 
 export type RequestSelectAgentPageProps = {
   token: string
-  payload: Record<string, any>
+  query?: Record<string, any>
+  payload?: Record<string, any>
 }
+export type RequestSelectAgentPageResponse = any
 
-export const selectAgentPageRequest = async (props: RequestSelectAgentPageProps) => {
+export const selectAgentPageRequest = async (props: RequestSelectAgentPageProps): Promise<RequestSelectAgentPageResponse> => {
 
-  const { data } = await customersRemote.request({
+  const { data } = await customersRemote.request<RequestSelectAgentPageResponse>({
     method: `POST`,
     url: `/system/public_agent/select`,
     data: Object.assign({}, props.payload),
-    params: {"size":50},
+    params: Object.assign({"size":50}, props.query),
+    paramsSerializer: {
+      indexes: null
+    },
     headers: {
       Authorization: `Bearer ${props.token}`
     },

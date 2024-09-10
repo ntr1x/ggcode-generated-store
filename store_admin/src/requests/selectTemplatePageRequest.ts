@@ -2,16 +2,21 @@ import { eventsRemote } from '../remotes/eventsRemote'
 
 export type RequestSelectTemplatePageProps = {
   token: string
-  payload: Record<string, any>
+  query?: Record<string, any>
+  payload?: Record<string, any>
 }
+export type RequestSelectTemplatePageResponse = any
 
-export const selectTemplatePageRequest = async (props: RequestSelectTemplatePageProps) => {
+export const selectTemplatePageRequest = async (props: RequestSelectTemplatePageProps): Promise<RequestSelectTemplatePageResponse> => {
 
-  const { data } = await eventsRemote.request({
+  const { data } = await eventsRemote.request<RequestSelectTemplatePageResponse>({
     method: `POST`,
     url: `/system/public_template/select`,
     data: Object.assign({}, props.payload),
-    params: {"size":50,"sort":"id,desc"},
+    params: Object.assign({"size":50,"sort":"id,desc"}, props.query),
+    paramsSerializer: {
+      indexes: null
+    },
     headers: {
       Authorization: `Bearer ${props.token}`
     },

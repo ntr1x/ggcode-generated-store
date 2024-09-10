@@ -1,6 +1,7 @@
+
 import { useAuthStore } from "../store/authStore";
 import { useAxiosAutoRequest } from '../hooks/useAxiosAutoRequest';
-import { eventsRemote } from '../remotes/eventsRemote'
+import { selectDispatchPageRequest } from '../requests/selectDispatchPageRequest'
 import { StructurePublicDispatchPage } from '../structures/StructurePublicDispatchPage'
 
 export type QuerySelectDispatchPageProps = {
@@ -20,7 +21,6 @@ export type QuerySelectDispatchPageSorter = {
   createdAt?: 'asc' | 'desc',
   updatedAt?: 'asc' | 'desc',
 }
-
 const mapping: Record<string, any> = {
   customerId: 'customerId',
   typeId: 'typeId',
@@ -30,23 +30,24 @@ const mapping: Record<string, any> = {
 export function useQuerySelectDispatchPage(
   // @ts-ignore
   props: QuerySelectDispatchPageProps,
+  // @ts-ignore
   sort?: QuerySelectDispatchPageSorter,
+  // @ts-ignore
   filter?: QuerySelectDispatchPageFilter
 ) {
   const authStore = useAuthStore()
 
-  return useAxiosAutoRequest<StructurePublicDispatchPage>(eventsRemote, async () => {
+  return useAxiosAutoRequest<StructurePublicDispatchPage>(async () => {
     const token = await authStore.requireToken()
-
-    const body: Record<string, any> = {}
+    const payload: Record<string, any> = {}
     if (filter != null) {
       for (const [k, v] of Object.entries(filter)) {
         if (v != undefined) {
-          body[mapping[k]] = v
+          payload[mapping[k]] = v
         }
       }
     }
-
+    
     const sortArray: string[] = []
     if (sort != null) {
       for (const [k, v] of Object.entries(sort)) {
@@ -61,17 +62,10 @@ export function useQuerySelectDispatchPage(
       query.sort = sortArray
     }
 
-    return {
-      method: 'POST',
-      url: `/system/public_dispatch/select`,
-      params: query,
-      paramsSerializer: {
-        indexes: null
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      data: body
-    }
+    return selectDispatchPageRequest({
+      token,
+      query,
+      payload,
+    })
   })
 }

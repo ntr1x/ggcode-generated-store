@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import Dropdown from 'primevue/dropdown'
-import { productsRemote } from '../../remotes/productsRemote'
+import { selectProductPageRequest } from '../../requests/selectProductPageRequest'
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 
@@ -10,7 +10,7 @@ type IHaveId = {
 }
 
 type IHaveName = {
-  name: string
+  name?: string
 }
 
 type IHaveDescription = {
@@ -26,17 +26,11 @@ const productId = defineModel('productId')
 
 const authStore = useAuthStore()
 
-const { state } = useAxiosAutoRequest<ResponseData>(productsRemote, async () => {
+const { state } = useAxiosAutoRequest<ResponseData>(async () => {
   const token = await authStore.requireToken()
-  return {
-    method: 'POST',
-    url: '/system/public_product/select',
-    data: {},
-    params: {"size":50,"sort":"name,asc"},
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
+  return selectProductPageRequest({
+    token,
+  })
 })
 
 const options = computed(() => {

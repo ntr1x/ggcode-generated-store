@@ -1,6 +1,7 @@
+
 import { useAuthStore } from "../store/authStore";
 import { useAxiosAutoRequest } from '../hooks/useAxiosAutoRequest';
-import { paymentsRemote } from '../remotes/paymentsRemote'
+import { selectPaymentPageRequest } from '../requests/selectPaymentPageRequest'
 
 export type QuerySelectPaymentPageProps = {
   // yet nothing
@@ -18,7 +19,6 @@ export type QuerySelectPaymentPageFilter = {
 export type QuerySelectPaymentPageSorter = {
   // yet nothing
 }
-
 const mapping: Record<string, any> = {
   orderId: 'orderId',
   customerId: 'customerId',
@@ -31,23 +31,24 @@ const mapping: Record<string, any> = {
 export function useQuerySelectPaymentPage(
   // @ts-ignore
   props: QuerySelectPaymentPageProps,
+  // @ts-ignore
   sort?: QuerySelectPaymentPageSorter,
+  // @ts-ignore
   filter?: QuerySelectPaymentPageFilter
 ) {
   const authStore = useAuthStore()
 
-  return useAxiosAutoRequest<any>(paymentsRemote, async () => {
+  return useAxiosAutoRequest<any>(async () => {
     const token = await authStore.requireToken()
-
-    const body: Record<string, any> = {}
+    const payload: Record<string, any> = {}
     if (filter != null) {
       for (const [k, v] of Object.entries(filter)) {
         if (v != undefined) {
-          body[mapping[k]] = v
+          payload[mapping[k]] = v
         }
       }
     }
-
+    
     const sortArray: string[] = []
     if (sort != null) {
       for (const [k, v] of Object.entries(sort)) {
@@ -62,17 +63,10 @@ export function useQuerySelectPaymentPage(
       query.sort = sortArray
     }
 
-    return {
-      method: 'POST',
-      url: `/system/public_payment/select`,
-      params: query,
-      paramsSerializer: {
-        indexes: null
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      data: body
-    }
+    return selectPaymentPageRequest({
+      token,
+      query,
+      payload,
+    })
   })
 }

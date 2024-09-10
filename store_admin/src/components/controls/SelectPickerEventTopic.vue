@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { eventsRemote } from '../../remotes/eventsRemote'
+import { selectEventTopicPageRequest } from '../../requests/selectEventTopicPageRequest'
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 import PlatformDialogFilter, { type Option } from '../dialogs/PlatformDialogFilter.vue';
@@ -10,11 +10,11 @@ type IHaveId = {
 }
 
 type IHaveName = {
-  name: string
+  name?: string
 }
 
 type IHaveDescription = {
-  description: string
+  description?: string
 }
 
 export type ResponseDataRow = IHaveId & IHaveName & IHaveDescription
@@ -31,17 +31,11 @@ const emit = defineEmits<{
 
 const authStore = useAuthStore()
 
-const { state } = useAxiosAutoRequest<ResponseData>(eventsRemote, async () => {
+const { state } = useAxiosAutoRequest<ResponseData>(async () => {
   const token = await authStore.requireToken()
-  return {
-    method: 'POST',
-    url: '/system/public_event_topic_info/select',
-    data: {},
-    params: {},
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
+  return selectEventTopicPageRequest({
+    token,
+  })
 })
 
 const options = computed(() => {

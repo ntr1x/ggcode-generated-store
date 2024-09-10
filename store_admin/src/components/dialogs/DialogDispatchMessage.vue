@@ -5,12 +5,12 @@ import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import { useToast } from 'primevue/usetoast';
-import { eventsRemote } from '../../remotes/eventsRemote';
 import { useAuthStore } from '../../store/authStore';
 import type { ModalContext } from '../../store/modalStore';
 import SelectDispatchType from '../controls/SelectDispatchType.vue';
 import SearchCustomerId from '../controls/SearchCustomerId.vue';
 import JsonEditor from '../editors/JsonEditor.vue';
+import { createDispatchRequest } from '../../requests/createDispatchRequest';
 
 const authStore = useAuthStore()
 const toast = useToast();
@@ -62,10 +62,9 @@ async function doSubmit() {
     payload: JSON.parse(form.payload)
   }
 
-  const { data } = await eventsRemote.post('/system/public_dispatch', payload, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
+  const data = await createDispatchRequest({
+    token,
+    payload
   })
 
   return data

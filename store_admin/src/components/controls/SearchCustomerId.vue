@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { debounce } from 'lodash';
-import { customersRemote } from '../../remotes/customersRemote'
+import { selectCustomerPageRequest } from '../../requests/selectCustomerPageRequest'
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosManualRequest } from '../../hooks/useAxiosManualRequest';
 import AutoComplete, { type AutoCompleteCompleteEvent } from 'primevue/autocomplete';
@@ -11,11 +11,11 @@ type IHaveId = {
 }
 
 type IHaveName = {
-  fullName: string
+  fullName?: string
 }
 
 type IHaveDescription = {
-  email: string
+  email?: string
 }
 
 export type ResponseDataRow = IHaveId & IHaveName & IHaveDescription
@@ -34,10 +34,10 @@ const selected = ref<{
 
 const authStore = useAuthStore()
 
-const response = useAxiosManualRequest<ResponseData>(customersRemote, async () => {
+const response = useAxiosManualRequest<ResponseData>(async () => {
   const token = await authStore.requireToken()
 
-  const requestData = {
+  const payload = {
     $where: query.value == null ? undefined : [
       {
         $gt: {
@@ -66,15 +66,10 @@ const response = useAxiosManualRequest<ResponseData>(customersRemote, async () =
     ]
   }
 
-  return {
-    method: 'POST',
-    url: '/system/public_customer/select',
-    data: Object.assign({}, requestData),
-    params: {"size":50,"sort":"fullName"},
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
+  return selectCustomerPageRequest({
+    token,
+    payload
+  })
 })
 
 const options = computed(() => {

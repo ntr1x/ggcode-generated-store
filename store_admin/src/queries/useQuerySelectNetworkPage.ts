@@ -1,6 +1,7 @@
+
 import { useAuthStore } from "../store/authStore";
 import { useAxiosAutoRequest } from '../hooks/useAxiosAutoRequest';
-import { structureRemote } from '../remotes/structureRemote'
+import { selectNetworkPageRequest } from '../requests/selectNetworkPageRequest'
 import { StructurePublicNetworkPage } from '../structures/StructurePublicNetworkPage'
 
 export type QuerySelectNetworkPageProps = {
@@ -20,7 +21,6 @@ export type QuerySelectNetworkPageSorter = {
   shopId?: 'asc' | 'desc',
   hidden?: 'asc' | 'desc',
 }
-
 const mapping: Record<string, any> = {
   typeId: 'typeId',
   shopId: 'shopId',
@@ -30,23 +30,24 @@ const mapping: Record<string, any> = {
 export function useQuerySelectNetworkPage(
   // @ts-ignore
   props: QuerySelectNetworkPageProps,
+  // @ts-ignore
   sort?: QuerySelectNetworkPageSorter,
+  // @ts-ignore
   filter?: QuerySelectNetworkPageFilter
 ) {
   const authStore = useAuthStore()
 
-  return useAxiosAutoRequest<StructurePublicNetworkPage>(structureRemote, async () => {
+  return useAxiosAutoRequest<StructurePublicNetworkPage>(async () => {
     const token = await authStore.requireToken()
-
-    const body: Record<string, any> = {}
+    const payload: Record<string, any> = {}
     if (filter != null) {
       for (const [k, v] of Object.entries(filter)) {
         if (v != undefined) {
-          body[mapping[k]] = v
+          payload[mapping[k]] = v
         }
       }
     }
-
+    
     const sortArray: string[] = []
     if (sort != null) {
       for (const [k, v] of Object.entries(sort)) {
@@ -61,17 +62,10 @@ export function useQuerySelectNetworkPage(
       query.sort = sortArray
     }
 
-    return {
-      method: 'POST',
-      url: `/system/public_network/select`,
-      params: query,
-      paramsSerializer: {
-        indexes: null
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      data: body
-    }
+    return selectNetworkPageRequest({
+      token,
+      query,
+      payload,
+    })
   })
 }

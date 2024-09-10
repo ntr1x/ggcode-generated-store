@@ -4,10 +4,10 @@ import Button from 'primevue/button'
 import Panel from 'primevue/panel'
 import { useModalStore } from '../../store/modalStore'
 import DialogDispatchMessage from '../dialogs/DialogDispatchMessage.vue'
-import { eventsRemote } from '../../remotes/eventsRemote'
 import { type PrincipalResponse } from '../../store/profileStore'
 import { useAuthStore } from '../../store/authStore'
 import { Ref } from 'vue'
+import { createDispatchRequest } from '../../requests/createDispatchRequest'
 
 const modalStore = useModalStore()
 const authStore = useAuthStore()
@@ -23,7 +23,7 @@ function handleOpenModal() {
 async function handleTest() {
   const token = await authStore.requireToken()
 
-  const data = {
+  const payload = {
     customerId: principal.value?.subject,
     sessionId: null,
     subscriptionId: null,
@@ -37,11 +37,12 @@ async function handleTest() {
     }
   }
 
-  await eventsRemote.post('/system/public_dispatch', data, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
+  const data = await createDispatchRequest({
+    token,
+    payload
   })
+
+  return data
 }
 
 </script>

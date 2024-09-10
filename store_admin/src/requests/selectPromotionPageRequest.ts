@@ -2,16 +2,21 @@ import { productsRemote } from '../remotes/productsRemote'
 
 export type RequestSelectPromotionPageProps = {
   token: string
-  payload: Record<string, any>
+  query?: Record<string, any>
+  payload?: Record<string, any>
 }
+export type RequestSelectPromotionPageResponse = any
 
-export const selectPromotionPageRequest = async (props: RequestSelectPromotionPageProps) => {
+export const selectPromotionPageRequest = async (props: RequestSelectPromotionPageProps): Promise<RequestSelectPromotionPageResponse> => {
 
-  const { data } = await productsRemote.request({
+  const { data } = await productsRemote.request<RequestSelectPromotionPageResponse>({
     method: `POST`,
     url: `/system/public_promotion/select`,
     data: Object.assign({}, props.payload),
-    params: {},
+    params: Object.assign({}, props.query),
+    paramsSerializer: {
+      indexes: null
+    },
     headers: {
       Authorization: `Bearer ${props.token}`
     },

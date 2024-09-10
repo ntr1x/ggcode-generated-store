@@ -1,6 +1,7 @@
+
 import { useAuthStore } from "../store/authStore";
 import { useAxiosAutoRequest } from '../hooks/useAxiosAutoRequest';
-import { paymentsRemote } from '../remotes/paymentsRemote'
+import { selectPaymentTypePageRequest } from '../requests/selectPaymentTypePageRequest'
 
 export type QuerySelectPaymentTypePageProps = {
   // yet nothing
@@ -14,30 +15,20 @@ export type QuerySelectPaymentTypePageSorter = {
   // yet nothing
 }
 
-const mapping: Record<string, any> = {
-  // yet nothing
-}
-
 export function useQuerySelectPaymentTypePage(
   // @ts-ignore
   props: QuerySelectPaymentTypePageProps,
+  // @ts-ignore
   sort?: QuerySelectPaymentTypePageSorter,
+  // @ts-ignore
   filter?: QuerySelectPaymentTypePageFilter
 ) {
   const authStore = useAuthStore()
 
-  return useAxiosAutoRequest<any>(paymentsRemote, async () => {
+  return useAxiosAutoRequest<any>(async () => {
     const token = await authStore.requireToken()
-
-    const body: Record<string, any> = {}
-    if (filter != null) {
-      for (const [k, v] of Object.entries(filter)) {
-        if (v != undefined) {
-          body[mapping[k]] = v
-        }
-      }
-    }
-
+    const payload: Record<string, any> = {}
+    
     const sortArray: string[] = []
     if (sort != null) {
       for (const [k, v] of Object.entries(sort)) {
@@ -52,17 +43,10 @@ export function useQuerySelectPaymentTypePage(
       query.sort = sortArray
     }
 
-    return {
-      method: 'POST',
-      url: `/system/public_payment_type/select`,
-      params: query,
-      paramsSerializer: {
-        indexes: null
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      data: body
-    }
+    return selectPaymentTypePageRequest({
+      token,
+      query,
+      payload,
+    })
   })
 }

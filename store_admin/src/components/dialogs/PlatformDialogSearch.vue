@@ -6,7 +6,7 @@ import { watch, ref, inject, computed } from 'vue';
 
 export type Option = {
   key: string
-  title: string
+  title?: string
   description?: string
   value: any
 }

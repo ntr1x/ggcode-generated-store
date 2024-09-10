@@ -1,6 +1,7 @@
+
 import { useAuthStore } from "../store/authStore";
 import { useAxiosAutoRequest } from '../hooks/useAxiosAutoRequest';
-import { eventsRemote } from '../remotes/eventsRemote'
+import { selectTemplatePageRequest } from '../requests/selectTemplatePageRequest'
 
 export type QuerySelectTemplatePageProps = {
   // yet nothing
@@ -17,7 +18,6 @@ export type QuerySelectTemplatePageSorter = {
   typeId?: 'asc' | 'desc',
   shapeId?: 'asc' | 'desc',
 }
-
 const mapping: Record<string, any> = {
   typeId: 'typeId',
   shapeId: 'shapeId',
@@ -26,23 +26,24 @@ const mapping: Record<string, any> = {
 export function useQuerySelectTemplatePage(
   // @ts-ignore
   props: QuerySelectTemplatePageProps,
+  // @ts-ignore
   sort?: QuerySelectTemplatePageSorter,
+  // @ts-ignore
   filter?: QuerySelectTemplatePageFilter
 ) {
   const authStore = useAuthStore()
 
-  return useAxiosAutoRequest<any>(eventsRemote, async () => {
+  return useAxiosAutoRequest<any>(async () => {
     const token = await authStore.requireToken()
-
-    const body: Record<string, any> = {}
+    const payload: Record<string, any> = {}
     if (filter != null) {
       for (const [k, v] of Object.entries(filter)) {
         if (v != undefined) {
-          body[mapping[k]] = v
+          payload[mapping[k]] = v
         }
       }
     }
-
+    
     const sortArray: string[] = []
     if (sort != null) {
       for (const [k, v] of Object.entries(sort)) {
@@ -57,17 +58,10 @@ export function useQuerySelectTemplatePage(
       query.sort = sortArray
     }
 
-    return {
-      method: 'POST',
-      url: `/system/public_template/select`,
-      params: query,
-      paramsSerializer: {
-        indexes: null
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      data: body
-    }
+    return selectTemplatePageRequest({
+      token,
+      query,
+      payload,
+    })
   })
 }

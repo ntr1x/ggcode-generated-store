@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import Dropdown from 'primevue/dropdown'
-import { paymentsRemote } from '../../remotes/paymentsRemote'
+import { selectSourceTypePageRequest } from '../../requests/selectSourceTypePageRequest'
 import { useAuthStore } from '../../store/authStore';
 import { useAxiosAutoRequest } from '../../hooks/useAxiosAutoRequest';
 
@@ -10,11 +10,11 @@ type IHaveId = {
 }
 
 type IHaveName = {
-  name: string
+  name?: string
 }
 
 type IHaveDescription = {
-  description: string
+  description?: string
 }
 
 export type ResponseDataRow = IHaveId & IHaveName & IHaveDescription
@@ -27,17 +27,11 @@ const sourceType = defineModel('sourceType')
 
 const authStore = useAuthStore()
 
-const { state } = useAxiosAutoRequest<ResponseData>(paymentsRemote, async () => {
+const { state } = useAxiosAutoRequest<ResponseData>(async () => {
   const token = await authStore.requireToken()
-  return {
-    method: 'POST',
-    url: '/system/public_source_type/select',
-    data: {},
-    params: {},
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
+  return selectSourceTypePageRequest({
+    token,
+  })
 })
 
 const options = computed(() => {

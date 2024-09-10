@@ -1,6 +1,7 @@
+
 import { useAuthStore } from "../store/authStore";
 import { useAxiosAutoRequest } from '../hooks/useAxiosAutoRequest';
-import { eventsRemote } from '../remotes/eventsRemote'
+import { selectEventPageRequest } from '../requests/selectEventPageRequest'
 
 export type QuerySelectEventPageProps = {
   // yet nothing
@@ -19,7 +20,6 @@ export type QuerySelectEventPageSorter = {
   topic?: 'asc' | 'desc',
   createdAt?: 'asc' | 'desc',
 }
-
 const mapping: Record<string, any> = {
   eventSource: 'ceSource',
   eventType: 'ceType',
@@ -29,23 +29,24 @@ const mapping: Record<string, any> = {
 export function useQuerySelectEventPage(
   // @ts-ignore
   props: QuerySelectEventPageProps,
+  // @ts-ignore
   sort?: QuerySelectEventPageSorter,
+  // @ts-ignore
   filter?: QuerySelectEventPageFilter
 ) {
   const authStore = useAuthStore()
 
-  return useAxiosAutoRequest<any>(eventsRemote, async () => {
+  return useAxiosAutoRequest<any>(async () => {
     const token = await authStore.requireToken()
-
-    const body: Record<string, any> = {}
+    const payload: Record<string, any> = {}
     if (filter != null) {
       for (const [k, v] of Object.entries(filter)) {
         if (v != undefined) {
-          body[mapping[k]] = v
+          payload[mapping[k]] = v
         }
       }
     }
-
+    
     const sortArray: string[] = []
     if (sort != null) {
       for (const [k, v] of Object.entries(sort)) {
@@ -60,17 +61,10 @@ export function useQuerySelectEventPage(
       query.sort = sortArray
     }
 
-    return {
-      method: 'POST',
-      url: `/system/public_event/select`,
-      params: query,
-      paramsSerializer: {
-        indexes: null
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      data: body
-    }
+    return selectEventPageRequest({
+      token,
+      query,
+      payload,
+    })
   })
 }

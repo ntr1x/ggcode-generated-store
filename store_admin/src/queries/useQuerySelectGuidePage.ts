@@ -1,6 +1,7 @@
+
 import { useAuthStore } from "../store/authStore";
 import { useAxiosAutoRequest } from '../hooks/useAxiosAutoRequest';
-import { structureRemote } from '../remotes/structureRemote'
+import { selectGuidePageRequest } from '../requests/selectGuidePageRequest'
 import { StructurePublicGuidePage } from '../structures/StructurePublicGuidePage'
 
 export type QuerySelectGuidePageProps = {
@@ -19,7 +20,6 @@ export type QuerySelectGuidePageSorter = {
   createdAt?: 'asc' | 'desc',
   updatedAt?: 'asc' | 'desc',
 }
-
 const mapping: Record<string, any> = {
   subjectId: 'subjectId',
 }
@@ -27,23 +27,24 @@ const mapping: Record<string, any> = {
 export function useQuerySelectGuidePage(
   // @ts-ignore
   props: QuerySelectGuidePageProps,
+  // @ts-ignore
   sort?: QuerySelectGuidePageSorter,
+  // @ts-ignore
   filter?: QuerySelectGuidePageFilter
 ) {
   const authStore = useAuthStore()
 
-  return useAxiosAutoRequest<StructurePublicGuidePage>(structureRemote, async () => {
+  return useAxiosAutoRequest<StructurePublicGuidePage>(async () => {
     const token = await authStore.requireToken()
-
-    const body: Record<string, any> = {}
+    const payload: Record<string, any> = {}
     if (filter != null) {
       for (const [k, v] of Object.entries(filter)) {
         if (v != undefined) {
-          body[mapping[k]] = v
+          payload[mapping[k]] = v
         }
       }
     }
-
+    
     const sortArray: string[] = []
     if (sort != null) {
       for (const [k, v] of Object.entries(sort)) {
@@ -58,17 +59,10 @@ export function useQuerySelectGuidePage(
       query.sort = sortArray
     }
 
-    return {
-      method: 'POST',
-      url: `/system/public_guide/select`,
-      params: query,
-      paramsSerializer: {
-        indexes: null
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      data: body
-    }
+    return selectGuidePageRequest({
+      token,
+      query,
+      payload,
+    })
   })
 }

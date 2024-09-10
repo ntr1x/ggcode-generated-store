@@ -1,6 +1,7 @@
+
 import { useAuthStore } from "../store/authStore";
 import { useAxiosAutoRequest } from '../hooks/useAxiosAutoRequest';
-import { customersRemote } from '../remotes/customersRemote'
+import { selectAgentPageRequest } from '../requests/selectAgentPageRequest'
 
 export type QuerySelectAgentPageProps = {
   // yet nothing
@@ -13,7 +14,6 @@ export type QuerySelectAgentPageFilter = {
 export type QuerySelectAgentPageSorter = {
   // yet nothing
 }
-
 const mapping: Record<string, any> = {
   customerId: 'customerId',
 }
@@ -21,23 +21,24 @@ const mapping: Record<string, any> = {
 export function useQuerySelectAgentPage(
   // @ts-ignore
   props: QuerySelectAgentPageProps,
+  // @ts-ignore
   sort?: QuerySelectAgentPageSorter,
+  // @ts-ignore
   filter?: QuerySelectAgentPageFilter
 ) {
   const authStore = useAuthStore()
 
-  return useAxiosAutoRequest<any>(customersRemote, async () => {
+  return useAxiosAutoRequest<any>(async () => {
     const token = await authStore.requireToken()
-
-    const body: Record<string, any> = {}
+    const payload: Record<string, any> = {}
     if (filter != null) {
       for (const [k, v] of Object.entries(filter)) {
         if (v != undefined) {
-          body[mapping[k]] = v
+          payload[mapping[k]] = v
         }
       }
     }
-
+    
     const sortArray: string[] = []
     if (sort != null) {
       for (const [k, v] of Object.entries(sort)) {
@@ -52,17 +53,10 @@ export function useQuerySelectAgentPage(
       query.sort = sortArray
     }
 
-    return {
-      method: 'POST',
-      url: `/system/public_agent/select`,
-      params: query,
-      paramsSerializer: {
-        indexes: null
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      data: body
-    }
+    return selectAgentPageRequest({
+      token,
+      query,
+      payload,
+    })
   })
 }
