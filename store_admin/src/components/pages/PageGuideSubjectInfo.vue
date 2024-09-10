@@ -117,6 +117,7 @@ watch(
       v-model:selection="selectGuidePageSelection"
       :scrollable="false"
       :hide-customer="true"
+      @refresh="handleRefreshSelectGuidePage"
     />
   </div>
 </template>

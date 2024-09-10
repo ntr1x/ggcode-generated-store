@@ -1,17 +1,18 @@
 import { productsRemote } from '../remotes/productsRemote'
 
-export type RequestSelectCategoryPageProps = {
+export type RequestUpdateProductProps = {
   token: string
+  productId: string
   payload: Record<string, any>
 }
 
-export const selectCategoryPageRequest = async (props: RequestSelectCategoryPageProps) => {
+export const updateProductRequest = async (props: RequestUpdateProductProps) => {
 
   const { data } = await productsRemote.request({
-    method: `POST`,
-    url: `/system/public_category/select`,
+    method: `PUT`,
+    url: `/system/public_product/i/${props.productId}`,
     data: Object.assign({}, props.payload),
-    params: {"size":50,"sort":"name,asc"},
+    params: {},
     headers: {
       Authorization: `Bearer ${props.token}`
     },

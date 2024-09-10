@@ -142,7 +142,6 @@ const sortersMenuItems = ref([
 const actionNetworkRemoveSelected = useActionNetworkRemoveSelected()
 const actionCreateNetwork = useActionCreateNetwork()
 
-
 actionNetworkRemoveSelected.emitter
   .on('success', (data: any) => {
     console.log(data)

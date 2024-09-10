@@ -60,6 +60,7 @@ watch(
     <GridCategories
       :state="selectCategoryPageQuery.state"
       v-model:selection="selectCategoryPageSelection"
+      @refresh="handleRefreshSelectCategoryPage"
     />
   </div>
 </template>

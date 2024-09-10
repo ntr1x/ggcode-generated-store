@@ -63,6 +63,7 @@ watch(
     <GridDispatchStatuses
       :state="selectDispatchStatusPageQuery.state"
       v-model:selection="selectDispatchStatusPageSelection"
+      @refresh="handleRefreshSelectDispatchStatusPage"
     />
   </div>
 </template>

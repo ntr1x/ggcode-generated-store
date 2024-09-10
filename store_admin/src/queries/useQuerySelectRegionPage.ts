@@ -47,7 +47,7 @@ export function useQuerySelectRegionPage(
       }
     }
 
-    const query: Record<string, any> = {}
+    const query: Record<string, any> = {"size":50,"sort":"name,asc"}
     if (sortArray.length > 0) {
       query.sort = sortArray
     }

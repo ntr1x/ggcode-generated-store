@@ -65,6 +65,7 @@ watch(
     <GridSubscriptionTypes
       :state="selectSubscriptionTypePageQuery.state"
       v-model:selection="selectSubscriptionTypePageSelection"
+      @refresh="handleRefreshSelectSubscriptionTypePage"
     />
   </div>
 </template>

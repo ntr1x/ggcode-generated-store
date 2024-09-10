@@ -7,7 +7,7 @@ import InputNumber from 'primevue/inputnumber';
 import { useToast } from 'primevue/usetoast';
 import type { ModalContext } from '../../store/modalStore';
 import { useAuthStore } from '../../store/authStore';
-import { structureRemote } from '../../remotes/structureRemote';
+import { createGuideSubjectRequest } from '../../requests/createGuideSubjectRequest';
 
 export type DialogGuideSubjectCreateProps = {
   // TODO: Implement
@@ -46,19 +46,10 @@ const maximized = ref(false)
 async function doSubmit() {
 
   const token = await authStore.requireToken()
-
-  const payload = {
-    ...form
-  }
-
-  const { data } = await structureRemote.request({
-    method: 'POST',
-    url: '/system/public_guide_subject',
-    data: Object.assign({}, payload),
-    params: {},
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
+  
+  const data = await createGuideSubjectRequest({
+    payload: form,
+    token,
   })
 
   return data

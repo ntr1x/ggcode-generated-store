@@ -142,7 +142,6 @@ const sortersMenuItems = ref([
 const actionGuideRemoveSelected = useActionGuideRemoveSelected()
 const actionCreateGuide = useActionCreateGuide()
 
-
 actionGuideRemoveSelected.emitter
   .on('success', (data: any) => {
     console.log(data)

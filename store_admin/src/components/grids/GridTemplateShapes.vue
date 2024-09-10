@@ -26,6 +26,10 @@ withDefaults(defineProps<GridTemplateShapesProps>(), {
   scrollHeight: 'flex',
 })
 
+const emit = defineEmits<{
+  (e: 'refresh'): void
+}>()
+
 </script>
 
 <template>

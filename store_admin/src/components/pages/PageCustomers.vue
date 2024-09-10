@@ -60,6 +60,7 @@ watch(
     <GridCustomers
       :state="selectCustomerPageQuery.state"
       v-model:selection="selectCustomerPageSelection"
+      @refresh="handleRefreshSelectCustomerPage"
     />
   </div>
 </template>

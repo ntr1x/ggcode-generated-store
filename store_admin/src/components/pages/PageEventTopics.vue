@@ -62,6 +62,7 @@ watch(
     <GridEventTopics
       :state="selectEventTopicPageQuery.state"
       v-model:selection="selectEventTopicPageSelection"
+      @refresh="handleRefreshSelectEventTopicPage"
     />
   </div>
 </template>

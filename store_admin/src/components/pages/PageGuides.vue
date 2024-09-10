@@ -78,6 +78,7 @@ watch(
     <GridGuides
       :state="selectGuidePageQuery.state"
       v-model:selection="selectGuidePageSelection"
+      @refresh="handleRefreshSelectGuidePage"
     />
   </div>
 </template>

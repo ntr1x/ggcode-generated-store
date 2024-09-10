@@ -60,6 +60,7 @@ watch(
     <GridRegions
       :state="selectRegionPageQuery.state"
       v-model:selection="selectRegionPageSelection"
+      @refresh="handleRefreshSelectRegionPage"
     />
   </div>
 </template>

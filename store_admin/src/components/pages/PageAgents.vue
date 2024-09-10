@@ -61,6 +61,7 @@ watch(
     <GridAgents
       :state="selectAgentPageQuery.state"
       v-model:selection="selectAgentPageSelection"
+      @refresh="handleRefreshSelectAgentPage"
     />
   </div>
 </template>

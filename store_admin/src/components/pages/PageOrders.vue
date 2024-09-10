@@ -88,6 +88,7 @@ watch(
     <GridOrders
       :state="selectOrderPageQuery.state"
       v-model:selection="selectOrderPageSelection"
+      @refresh="handleRefreshSelectOrderPage"
     />
   </div>
 </template>

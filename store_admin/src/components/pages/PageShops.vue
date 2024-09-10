@@ -68,6 +68,7 @@ watch(
     <GridShops
       :state="selectShopPageQuery.state"
       v-model:selection="selectShopPageSelection"
+      @refresh="handleRefreshSelectShopPage"
     />
   </div>
 </template>

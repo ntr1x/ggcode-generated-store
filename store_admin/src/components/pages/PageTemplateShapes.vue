@@ -63,6 +63,7 @@ watch(
     <GridTemplateShapes
       :state="selectTemplateShapePageQuery.state"
       v-model:selection="selectTemplateShapePageSelection"
+      @refresh="handleRefreshSelectTemplateShapePage"
     />
   </div>
 </template>

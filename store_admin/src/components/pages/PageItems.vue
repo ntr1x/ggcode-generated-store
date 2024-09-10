@@ -68,6 +68,7 @@ watch(
     <GridItems
       :state="selectItemPageQuery.state"
       v-model:selection="selectItemPageSelection"
+      @refresh="handleRefreshSelectItemPage"
     />
   </div>
 </template>

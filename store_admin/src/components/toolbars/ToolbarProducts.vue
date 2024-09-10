@@ -106,7 +106,6 @@ const sortersMenuItems = ref([
 const actionProductRemoveSelected = useActionProductRemoveSelected()
 const actionCreateProduct = useActionCreateProduct()
 
-
 actionProductRemoveSelected.emitter
   .on('success', (data: any) => {
     console.log(data)

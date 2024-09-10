@@ -78,6 +78,7 @@ watch(
     <GridTemplates
       :state="selectTemplatePageQuery.state"
       v-model:selection="selectTemplatePageSelection"
+      @refresh="handleRefreshSelectTemplatePage"
     />
   </div>
 </template>

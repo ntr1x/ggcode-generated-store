@@ -60,6 +60,7 @@ watch(
     <GridOrderTypes
       :state="selectOrderTypePageQuery.state"
       v-model:selection="selectOrderTypePageSelection"
+      @refresh="handleRefreshSelectOrderTypePage"
     />
   </div>
 </template>

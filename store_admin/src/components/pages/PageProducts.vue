@@ -72,6 +72,7 @@ watch(
     <GridProducts
       :state="selectProductPageQuery.state"
       v-model:selection="selectProductPageSelection"
+      @refresh="handleRefreshSelectProductPage"
     />
   </div>
 </template>

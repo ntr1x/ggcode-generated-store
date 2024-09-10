@@ -79,6 +79,7 @@ watch(
     <GridNetworks
       :state="selectNetworkPageQuery.state"
       v-model:selection="selectNetworkPageSelection"
+      @refresh="handleRefreshSelectNetworkPage"
     />
   </div>
 </template>

@@ -60,6 +60,7 @@ watch(
     <GridPromotionTypes
       :state="selectPromotionTypePageQuery.state"
       v-model:selection="selectPromotionTypePageSelection"
+      @refresh="handleRefreshSelectPromotionTypePage"
     />
   </div>
 </template>

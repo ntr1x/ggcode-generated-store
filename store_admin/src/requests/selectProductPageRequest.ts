@@ -11,7 +11,7 @@ export const selectProductPageRequest = async (props: RequestSelectProductPagePr
     method: `POST`,
     url: `/system/public_product/select`,
     data: Object.assign({}, props.payload),
-    params: {},
+    params: {"size":50,"sort":"name,asc"},
     headers: {
       Authorization: `Bearer ${props.token}`
     },

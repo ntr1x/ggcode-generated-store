@@ -60,6 +60,7 @@ watch(
     <GridPaymentTypes
       :state="selectPaymentTypePageQuery.state"
       v-model:selection="selectPaymentTypePageSelection"
+      @refresh="handleRefreshSelectPaymentTypePage"
     />
   </div>
 </template>

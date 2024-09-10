@@ -60,6 +60,7 @@ watch(
     <GridSourceTypes
       :state="selectSourceTypePageQuery.state"
       v-model:selection="selectSourceTypePageSelection"
+      @refresh="handleRefreshSelectSourceTypePage"
     />
   </div>
 </template>

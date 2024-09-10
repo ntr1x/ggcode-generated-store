@@ -68,6 +68,7 @@ watch(
     <GridPromotions
       :state="selectPromotionPageQuery.state"
       v-model:selection="selectPromotionPageSelection"
+      @refresh="handleRefreshSelectPromotionPage"
     />
   </div>
 </template>

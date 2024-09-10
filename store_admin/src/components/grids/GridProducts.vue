@@ -31,11 +31,16 @@ withDefaults(defineProps<GridProductsProps>(), {
   scrollHeight: 'flex',
 })
 
+const emit = defineEmits<{
+  (e: 'refresh'): void
+}>()
+
 const actionUpdateProduct = useActionUpdateProduct()
 
 actionUpdateProduct.emitter
   .on('success', (data: any) => {
     console.log(data)
+    emit('refresh')
   })
   .on('failure', (error: any) => {
     console.error(error)

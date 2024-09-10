@@ -27,6 +27,10 @@ withDefaults(defineProps<GridAgentsProps>(), {
   scrollHeight: 'flex',
 })
 
+const emit = defineEmits<{
+  (e: 'refresh'): void
+}>()
+
 </script>
 
 <template>

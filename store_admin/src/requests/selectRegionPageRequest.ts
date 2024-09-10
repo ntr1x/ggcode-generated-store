@@ -11,7 +11,7 @@ export const selectRegionPageRequest = async (props: RequestSelectRegionPageProp
     method: `POST`,
     url: `/system/public_region/select`,
     data: Object.assign({}, props.payload),
-    params: {},
+    params: {"size":50,"sort":"name,asc"},
     headers: {
       Authorization: `Bearer ${props.token}`
     },

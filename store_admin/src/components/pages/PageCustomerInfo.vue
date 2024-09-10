@@ -233,6 +233,7 @@ watch(
       v-model:selection="selectOrderPageSelection"
       :scrollable="false"
       :hide-customer="true"
+      @refresh="handleRefreshSelectOrderPage"
     />
     <SectionHeading
       tag="h3"
@@ -243,6 +244,7 @@ watch(
       v-model:selection="selectAgentPageSelection"
       :scrollable="false"
       :hide-customer="true"
+      @refresh="handleRefreshSelectAgentPage"
     />
     <SectionHeading
       tag="h3"
@@ -263,6 +265,7 @@ watch(
       v-model:selection="selectSubscriptionPageSelection"
       :scrollable="false"
       :hide-customer="true"
+      @refresh="handleRefreshSelectSubscriptionPage"
     />
     <SectionHeading
       tag="h3"
@@ -286,6 +289,7 @@ watch(
       v-model:selection="selectDispatchPageSelection"
       :scrollable="false"
       :hide-customer="true"
+      @refresh="handleRefreshSelectDispatchPage"
     />
   </div>
 </template>

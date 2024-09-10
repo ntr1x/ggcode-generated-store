@@ -76,6 +76,7 @@ watch(
     <GridPayments
       :state="selectPaymentPageQuery.state"
       v-model:selection="selectPaymentPageSelection"
+      @refresh="handleRefreshSelectPaymentPage"
     />
   </div>
 </template>

@@ -36,7 +36,7 @@ const { state } = useAxiosAutoRequest<ResponseData>(productsRemote, async () => 
     method: 'POST',
     url: '/system/public_category/select',
     data: {},
-    params: {},
+    params: {"size":50,"sort":"name,asc"},
     headers: {
       Authorization: `Bearer ${token}`
     }

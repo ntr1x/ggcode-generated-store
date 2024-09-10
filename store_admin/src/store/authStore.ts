@@ -170,16 +170,20 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     async doAuth(provider?: string, state?: string) {
-      const redirectUri = new URL('/auth/callback', window.location.origin)
-      const { data } = await securityRemote.post<AuthResponse>('/public/security/auth', {
-        state: state != null
-          ? state
-          : this.$router.currentRoute.value.fullPath,
-        redirectUri: redirectUri.toString(),
-        provider
-      })
+      if (provider != null) {
+        const redirectUri = new URL('/auth/callback', window.location.origin)
+        const { data } = await securityRemote.post<AuthResponse>('/public/security/auth', {
+          state: state != null
+            ? state
+            : this.$router.currentRoute.value.fullPath,
+          redirectUri: redirectUri.toString(),
+          provider
+        })
 
-      window.location.href = data.authUri
+        window.location.href = data.authUri
+      } else {
+        this.$router.push('/sign-in')
+      }
     },
     async doLogout() {
       await securityRemote.post<RevokeRequest, RevokeResponse>('/public/security/revoke', {

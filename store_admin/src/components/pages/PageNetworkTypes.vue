@@ -63,6 +63,7 @@ watch(
     <GridNetworkTypes
       :state="selectNetworkTypePageQuery.state"
       v-model:selection="selectNetworkTypePageSelection"
+      @refresh="handleRefreshSelectNetworkTypePage"
     />
   </div>
 </template>

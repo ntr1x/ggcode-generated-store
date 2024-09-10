@@ -115,6 +115,7 @@ watch(
       v-model:selection="selectPaymentPageSelection"
       :scrollable="false"
       :hide-order="true"
+      @refresh="handleRefreshSelectPaymentPage"
     />
   </div>
 </template>

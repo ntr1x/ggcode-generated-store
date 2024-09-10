@@ -6,8 +6,8 @@ import InputText from 'primevue/inputtext';
 import { useToast } from 'primevue/usetoast';
 import type { ModalContext } from '../../store/modalStore';
 import { useAuthStore } from '../../store/authStore';
+import { updateProductRequest } from '../../requests/updateProductRequest';
 import { StructurePublicProductRecord } from '../../structures/StructurePublicProductRecord';
-import { productsRemote } from '../../remotes/productsRemote';
 import SelectCategoryId from '../controls/SelectCategoryId.vue';
 import EditorJSProductDescription from '../controls/EditorJSProductDescription.vue';
 
@@ -56,19 +56,11 @@ const maximized = ref(false)
 async function doSubmit() {
 
   const token = await authStore.requireToken()
-
-  const payload = {
-    ...form
-  }
-
-  const { data } = await productsRemote.request({
-    method: 'POST',
-    url: '/system/public_product',
-    data: Object.assign({}, payload),
-    params: {},
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
+  
+  const data = await updateProductRequest({
+    payload: form,
+    productId: props.product.id,
+    token,
   })
 
   return data

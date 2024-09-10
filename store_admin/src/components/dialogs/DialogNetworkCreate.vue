@@ -7,7 +7,7 @@ import ToggleButton from 'primevue/togglebutton';
 import { useToast } from 'primevue/usetoast';
 import type { ModalContext } from '../../store/modalStore';
 import { useAuthStore } from '../../store/authStore';
-import { structureRemote } from '../../remotes/structureRemote';
+import { createNetworkRequest } from '../../requests/createNetworkRequest';
 import SelectNetworkType from '../controls/SelectNetworkType.vue';
 import SelectShopId from '../controls/SelectShopId.vue';
 
@@ -51,19 +51,10 @@ const maximized = ref(false)
 async function doSubmit() {
 
   const token = await authStore.requireToken()
-
-  const payload = {
-    ...form
-  }
-
-  const { data } = await structureRemote.request({
-    method: 'POST',
-    url: '/system/public_network',
-    data: Object.assign({}, payload),
-    params: {},
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
+  
+  const data = await createNetworkRequest({
+    payload: form,
+    token,
   })
 
   return data

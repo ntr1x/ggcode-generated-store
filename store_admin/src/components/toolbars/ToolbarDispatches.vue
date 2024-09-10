@@ -202,7 +202,6 @@ const sortersMenuItems = ref([
 const actionDispatchRemoveSelected = useActionDispatchRemoveSelected()
 const actionDispatchMessage = useActionDispatchMessage()
 
-
 actionDispatchRemoveSelected.emitter
   .on('success', (data: any) => {
     console.log(data)

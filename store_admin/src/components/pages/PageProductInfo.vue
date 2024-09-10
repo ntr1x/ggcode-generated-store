@@ -108,6 +108,7 @@ watch(
       v-model:selection="selectPromotionTargetPageSelection"
       :scrollable="false"
       :hide-customer="true"
+      @refresh="handleRefreshSelectPromotionTargetPage"
     />
   </div>
 </template>
