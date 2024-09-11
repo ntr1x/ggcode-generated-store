@@ -1,0 +1,19 @@
+server:
+  port: 8080
+  forward-headers-strategy: framework
+  servlet:
+    context-path: /api/gateway_profile
+
+spring:
+  application:
+    name: gateway_profile
+  config:
+    import:
+      - classpath:shared-datasource.yaml
+      - classpath:gateway_profile.yaml
+
+springdoc:
+  api:
+    title: Store
+    description: Store Description
+    version: 1

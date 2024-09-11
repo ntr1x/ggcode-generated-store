@@ -1,0 +1,16 @@
+include:
+- path: compose/env/env-haproxy.compose.yaml
+- path: compose/env/env-kafka.compose.yaml
+- path: compose/env/env-kafka-ui.compose.yaml
+- path: compose/env/env-pgadmin.compose.yaml
+- path: compose/env/env-postgres.compose.yaml
+- path: compose/env/env-swagger-ui.compose.yaml
+- path: compose/env/env-keycloak.compose.yaml
+- path: compose/env/env-kcadm.compose.yaml
+- path: compose/env/env-minio.compose.yaml
+- path: compose/env/env-mcli.compose.yaml
+- path: compose/app/app-assembly-web.compose.yaml
+- path: compose/app/app-admin-ui.compose.yaml
+networks:
+  default: {}
+

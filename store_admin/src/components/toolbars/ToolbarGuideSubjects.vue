@@ -1,0 +1,167 @@
+<script setup lang="ts" generic="T">
+import { ref, reactive } from 'vue';
+import Menubar from 'primevue/menubar'
+import Button from 'primevue/button'
+import Chip from 'primevue/chip'
+import Menu from 'primevue/menu';
+import { StructurePublicGuideSubjectPage } from '../../structures/StructurePublicGuideSubjectPage'
+import { useActionGuideSubjectRemoveSelected } from '../../actions/useActionGuideSubjectRemoveSelected'
+import { useActionCreateGuideSubject } from '../../actions/useActionCreateGuideSubject'
+
+export type SelectionGuideSubjectsRecord = StructurePublicGuideSubjectPage['content'][0]
+
+const emit = defineEmits<{
+  (e: 'refresh'): void
+}>()
+
+const sortById = defineModel<'asc' | 'desc' | undefined>('sortById')
+const sortByName = defineModel<'asc' | 'desc' | undefined>('sortByName')
+const sortByPosition = defineModel<'asc' | 'desc' | undefined>('sortByPosition')
+const selection = defineModel<SelectionGuideSubjectsRecord[]>('selection', { required: true })
+
+const sortings = reactive<Record<string, 'asc' | 'desc' | undefined>>({
+  id: undefined,
+  name: undefined,
+  position: undefined,
+})
+
+const sortersMenuRef = ref()
+
+const sortersMenuItems = ref([
+  {
+    label: 'By Column',
+    items: [
+      {
+        label: 'Id (Ascending)',
+        icon: 'pi pi-sort-alpha-down',
+        command: () => {
+          sortings.id = 'asc'
+          sortById.value = 'asc'
+        }
+      },
+      {
+        icon: 'pi pi-sort-alpha-up',
+        label: 'Id (Descending)',
+        command: () => {
+          sortings.id = 'desc'
+          sortById.value = 'desc'
+        }
+      },
+      {
+        label: 'Name (Ascending)',
+        icon: 'pi pi-sort-alpha-down',
+        command: () => {
+          sortings.name = 'asc'
+          sortByName.value = 'asc'
+        }
+      },
+      {
+        icon: 'pi pi-sort-alpha-up',
+        label: 'Name (Descending)',
+        command: () => {
+          sortings.name = 'desc'
+          sortByName.value = 'desc'
+        }
+      },
+      {
+        label: 'Position (Ascending)',
+        icon: 'pi pi-sort-alpha-down',
+        command: () => {
+          sortings.position = 'asc'
+          sortByPosition.value = 'asc'
+        }
+      },
+      {
+        icon: 'pi pi-sort-alpha-up',
+        label: 'Position (Descending)',
+        command: () => {
+          sortings.position = 'desc'
+          sortByPosition.value = 'desc'
+        }
+      },
+    ]
+  }
+])
+
+const actionGuideSubjectRemoveSelected = useActionGuideSubjectRemoveSelected()
+const actionCreateGuideSubject = useActionCreateGuideSubject()
+
+actionGuideSubjectRemoveSelected.emitter
+  .on('success', (data: any) => {
+    console.log(data)
+    emit('refresh')
+  })
+  .on('failure', (error: any) => {
+    console.error(error)
+  })
+
+actionCreateGuideSubject.emitter
+  .on('success', (data: any) => {
+    console.log(data)
+    emit('refresh')
+  })
+  .on('failure', (error: any) => {
+    console.error(error)
+  })
+
+async function handleRemoveSelected() {
+  actionGuideSubjectRemoveSelected.execute({
+    items: selection.value,
+  })
+}
+
+async function handleCreateGuideSubject() {
+  actionCreateGuideSubject.execute()
+}
+</script>
+
+<template>
+  <Menubar>
+    <template #start>
+      <div class="flex flex-wrap">
+        <div class="flex items-center group-sort">
+          <div class="flex flex-none">
+            <Button text label="Sort" icon="pi pi-sort" @click="sortersMenuRef.toggle($event)" />
+            <Menu ref="sortersMenuRef" id="overlay_menu" :model="sortersMenuItems" :popup="true" />
+          </div>
+          <div class="flex flex-wrap flex-1">
+            <Chip v-if="sortById !== undefined" removable @remove="sortById = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
+              <span><b>Id: </b><span v-text="sortings.id || sortById"></span></span>
+            </Chip>
+            <Chip v-if="sortByName !== undefined" removable @remove="sortByName = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
+              <span><b>Name: </b><span v-text="sortings.name || sortByName"></span></span>
+            </Chip>
+            <Chip v-if="sortByPosition !== undefined" removable @remove="sortByPosition = undefined" class="p-1 ms-2 my-1 md:whitespace-nowrap">
+              <span><b>Position: </b><span v-text="sortings.position || sortByPosition"></span></span>
+            </Chip>
+          </div>
+        </div>
+        <div class="flex items-center group-sort">
+          <div class="flex flex-none">
+            <Button text label="Refresh" icon="pi pi-refresh" @click="emit('refresh')" />
+          </div>
+        </div>
+      </div>
+    </template>
+    <template #end>
+      <div class="flex flex-wrap">
+        <div class="flex items-center group-actions">
+          <Button
+            v-if="selection.length > 0"
+            text
+            label="Remove Selected"
+            class="ms-2"
+            severity="danger"
+            @click="handleRemoveSelected"
+          />
+          <Button
+            text
+            label="Create Guide Subject"
+            class="ms-2"
+            @click="handleCreateGuideSubject"
+          />
+        </div>
+      </div>
+    </template>
+  </Menubar>
+</template>

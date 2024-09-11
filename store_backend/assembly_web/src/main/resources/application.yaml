@@ -1,0 +1,22 @@
+server:
+  port: 8080
+  forward-headers-strategy: framework
+  servlet:
+    context-path: /api/assembly_web
+
+spring:
+  application:
+    name: assembly_web
+  config:
+    import:
+      - optional:classpath:shared-datasource.yaml
+      - optional:classpath:shared-security.yaml
+      - optional:classpath:shared-openid-client.yaml
+      - optional:classpath:shared-minio-client.yaml
+      - classpath:assembly_web.yaml
+
+springdoc:
+  api:
+    title: Store
+    description: Store Description
+    version: 1

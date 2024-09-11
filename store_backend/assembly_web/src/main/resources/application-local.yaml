@@ -1,0 +1,41 @@
+app:
+  firebase:
+    push:
+      config-file: classpath:firebase-service-account.json
+  huawei:
+    push:
+      token-url: https://oauth-login.cloud.huawei.com/oauth2/v3/token
+      client-secret: fd7c6891686f73fd66a7661b2bc971c04fa7f058b431eb0e35526da1549c2c76
+      client-id: 111569649
+      api-url: https://push-api.cloud.huawei.com/v1/${app.huawei.client-id}/messages:send
+  openid:
+    client:
+      client-id: api
+      client-secret: 4Ggxc50xzu5j1qFk5rZ4OPHwvNFXLpNX
+  minio:
+    client:
+      endpoint: http://minio.local.example.com
+      secret-key: AZitoDkffcEYFYUmV4CGv1jr2fiXWIw4uSvdFlDu
+      access-key: y5LeRZ84J4SsenpaIxMl
+    buckets:
+    - name: app-public-document
+    - name: app-public-image
+      upload_policy:
+        content_type: image/
+        content_length: 10M
+    - name: app-product-image
+      upload_policy:
+        content_type: image/
+        content_length: 10M
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  datasource:
+    username: app
+    url: jdbc:postgresql://localhost:5432/app
+    password: app
+server:
+  port: 8080

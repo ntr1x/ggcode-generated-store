@@ -1,0 +1,37 @@
+{
+  "queryConfigEnabled": true,
+  "urls": [
+    {
+      "name": "Assembly Web",
+      "url": "http://api.local.example.com/api/assembly_web/v3/api-docs"
+    },
+    {
+      "name": "Service Structure",
+      "url": "http://api.local.example.com/api/service_structure/v3/api-docs"
+    },
+    {
+      "name": "Service Catalogue",
+      "url": "http://api.local.example.com/api/service_catalog/v3/api-docs"
+    },
+    {
+      "name": "Service Profiles",
+      "url": "http://api.local.example.com/api/service_profile/v3/api-docs"
+    },
+    {
+      "name": "Service Events",
+      "url": "http://api.local.example.com/api/service_events/v3/api-docs"
+    },
+    {
+      "name": "Service Payments",
+      "url": "http://api.local.example.com/api/service_payments/v3/api-docs"
+    },
+    {
+      "name": "Service Security",
+      "url": "http://api.local.example.com/api/service_security/v3/api-docs"
+    },
+    {
+      "name": "Service Uploads",
+      "url": "http://api.local.example.com/api/service_uploads/v3/api-docs"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+services:
+  app-assembly-web:
+    depends_on:
+    - env-kafka
+    - env-postgres
+    - env-keycloak
+    - env-minio
+    image: store/assembly_web:1.0-SNAPSHOT
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://env-postgres:5432/app
+      APP_OPENID_CLIENT_CLIENTID: api
+      APP_MINIO_BUCKETS_2_UPLOAD_POLICY_CONTENT_TYPE: image/
+      APP_OPENID_CLIENT_CLIENTSECRET: 4Ggxc50xzu5j1qFk5rZ4OPHwvNFXLpNX
+      APP_MINIO_BUCKETS_2_UPLOAD_POLICY_CONTENT_LENGTH: 10M
+      APP_MINIO_CLIENT_ACCESS_KEY: y5LeRZ84J4SsenpaIxMl
+      SPRING_DATASOURCE_PASSWORD: app
+      APP_MINIO_BUCKETS_1_UPLOAD_POLICY_CONTENT_TYPE: image/
+      APP_MINIO_CLIENT_TARGET_SERVER: http://env-minio:9000
+      APP_MINIO_BUCKETS_1_UPLOAD_POLICY_CONTENT_LENGTH: 10M
+      APP_MINIO_BUCKETS_2_NAME: app-product-image
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: env-kafka:29092
+      SPRING_DATASOURCE_USERNAME: app
+      APP_MINIO_BUCKETS_1_NAME: app-public-image
+      APP_MINIO_CLIENT_SECRET_KEY: AZitoDkffcEYFYUmV4CGv1jr2fiXWIw4uSvdFlDu
+      APP_MINIO_BUCKETS_0_NAME: app-public-document
+      JAVA_OPTS: -Xmx512m -Xms256m
+    restart: unless-stopped
+    networks:
+      default: {}
+    links:
+    - env-haproxy:auth.local.example.com
+    deploy:
+      resources:
+        limits:
+          memory: 600M
+    profiles:
+    - app
+
