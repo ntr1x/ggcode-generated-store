@@ -36,6 +36,7 @@ withDefaults(defineProps<GridPaymentsProps>(), {
   scrollHeight: 'flex',
 })
 
+// @ts-ignore
 const emit = defineEmits<{
   (e: 'refresh'): void
 }>()

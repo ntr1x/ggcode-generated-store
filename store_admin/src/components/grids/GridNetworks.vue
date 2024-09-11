@@ -31,6 +31,7 @@ withDefaults(defineProps<GridNetworksProps>(), {
   scrollHeight: 'flex',
 })
 
+// @ts-ignore
 const emit = defineEmits<{
   (e: 'refresh'): void
 }>()

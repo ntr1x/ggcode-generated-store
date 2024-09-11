@@ -24,6 +24,7 @@ withDefaults(defineProps<GridEventSourcesProps>(), {
   scrollHeight: 'flex',
 })
 
+// @ts-ignore
 const emit = defineEmits<{
   (e: 'refresh'): void
 }>()

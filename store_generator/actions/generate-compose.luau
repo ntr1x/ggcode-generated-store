@@ -9,7 +9,6 @@ local Kcadm = require('compose/Kcadm')
 local Mcli = require('compose/Mcli')
 local App = require('compose/App')
 local Spa = require('compose/Spa')
-local Worker = require('compose/Worker')
 
 local project = Project:from('store_starter')
 
@@ -36,22 +35,6 @@ local minio_client = {
   secret_key = 'AZitoDkffcEYFYUmV4CGv1jr2fiXWIw4uSvdFlDu'
 }
 
-ggcode.generate "compose/make" {
-  target = '@store',
-  variables = {
-    project = project:unwrap_project(),
-    run = {
-      profiles = { 'app', 'env' },
-    },
-    build = {
-      images = {
-        { context = 'build/app/app-worker-product-image', bundle = 'app', namespace = 'store', name = 'worker_product_image', version = '1.0-SNAPSHOT' },
-        { context = 'build/app/app-worker-employee-table', bundle = 'app', namespace = 'store', name = 'worker_employee_table', version = '1.0-SNAPSHOT' },
-      }
-    }
-  }
-}
-
 ggcode.generate "compose/compose" {
   target = '@store',
   variables = {
@@ -70,8 +53,6 @@ ggcode.generate "compose/compose" {
         { path = "compose/env/env-mcli.compose.yaml" },
         { path = "compose/app/app-assembly-web.compose.yaml" },
         { path = "compose/app/app-admin-ui.compose.yaml" },
-        { path = "compose/app/app-worker-product-image.compose.yaml" },
-        { path = "compose/app/app-worker-employee-table.compose.yaml" },
       }
     }
   }
@@ -318,39 +299,5 @@ ggcode.generate "compose/spa" {
   target = '@store',
   variables = Spa
     :from(project, 'app-admin-ui', 'store/admin_ui:1.0-SNAPSHOT')
-    :unwrap()
-}
-
-ggcode.generate "compose/worker" {
-  target = '@store',
-  variables = Worker
-    :from(project, 'app-worker-product-image', 'store/worker_product_image:1.0-SNAPSHOT')
-    :with_depends_on('env-kafka')
-    :with_depends_on('env-minio')
-    :with_volume('app-worker-product-image', '/app/data')
-    :with_packages({ 'imagemagick', 'imagemagick-jpeg', 'imagemagick-svg' })
-    :with_minio_client(minio_client)
-    :with_env_variables({
-      KAFKA_BOOTSTRAP_SERVERS = 'env-kafka:29092',
-      KAFKA_CONSUMER_GROUP = 'worker_product_image.app_product_image',
-      KAFKA_TOPICS = 'app_product_image',
-    })
-    :unwrap()
-}
-
-ggcode.generate "compose/worker" {
-  target = '@store',
-  variables = Worker
-    :from(project, 'app-worker-employee-table', 'store/worker_employee_table:1.0-SNAPSHOT')
-    :with_depends_on('env-kafka')
-    :with_depends_on('env-minio')
-    :with_volume('app-worker-employee-table', '/app/data')
-    :with_packages({ 'csvq', 'curl' })
-    :with_minio_client(minio_client)
-    :with_env_variables({
-      KAFKA_BOOTSTRAP_SERVERS = 'env-kafka:29092',
-      KAFKA_CONSUMER_GROUP = 'worker_employee_table.onec_employee_table',
-      KAFKA_TOPICS = 'onec_employee_table',
-    })
     :unwrap()
 }
