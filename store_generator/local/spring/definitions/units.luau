@@ -625,6 +625,7 @@ units.unit_structure_guide_subject:with_columns {
   Prop:int 'position',
   Prop:datetime 'created_at',
   Prop:datetime 'updated_at',
+  Ref:many { name = 'guides', column = 'subject_id', unit = units.unit_structure_guide },
 }
 
 return units

@@ -13,6 +13,14 @@ toolbars.toolbar_product = Toolbar
     Toolbar.Filter:from_select(selects.select_category_id),
     Toolbar.Sorter:from('id'),
     Toolbar.Sorter:from('name'),
+    Toolbar.Handle
+      :from(actions.action_product_remove_selected, 'remove_selected', { items = 'selection.value' })
+      :with_severity('danger')
+      :with_selection(true)
+      :with_on_success('refresh'),
+    Toolbar.Handle
+      :from(actions.action_product_create_open_dialog, 'create_product')
+      :with_on_success('refresh'),
   }
 
 toolbars.toolbar_item = Toolbar
@@ -98,12 +106,10 @@ toolbars.toolbar_dispatch = Toolbar
     Toolbar.Sorter:from('updated_at'),
     Toolbar.Sorter:from('type_id'),
     Toolbar.Sorter:from('status_id'),
-    Toolbar.Column:from('id', 'string'),
     Toolbar.Handle
-      :from(actions.action_dispatch_message_remove_selected, 'remove_selected')
+      :from(actions.action_dispatch_message_remove_selected, 'remove_selected', { items = 'selection.value' })
       :with_severity('danger')
       :with_selection(true)
-      :with_expression('selection.value.map(item => ({ id: item.id }))')
       :with_on_success('refresh'),
     Toolbar.Handle
       :from(actions.action_dispatch_message_open_dialog,'create_dispatch')
@@ -129,12 +135,10 @@ toolbars.toolbar_network = Toolbar
     Toolbar.Sorter:from('name'),
     Toolbar.Sorter:from('type_id'),
     Toolbar.Sorter:from('hidden'),
-    Toolbar.Column:from('id', 'string'),
     Toolbar.Handle
-      :from(actions.action_network_remove_selected, 'remove_selected')
+      :from(actions.action_network_remove_selected, 'remove_selected', { items = 'selection.value' })
       :with_severity('danger')
       :with_selection(true)
-      :with_expression('selection.value.map(item => ({ id: item.id }))')
       :with_on_success('refresh'),
     Toolbar.Handle
       :from(actions.action_network_create_open_dialog,'create_network')
@@ -149,12 +153,10 @@ toolbars.toolbar_guide = Toolbar
     Toolbar.Sorter:from('name'),
     Toolbar.Sorter:from('position'),
     Toolbar.Sorter:from('subject_id'),
-    Toolbar.Column:from('id', 'string'),
     Toolbar.Handle
-      :from(actions.action_guide_remove_selected, 'remove_selected')
+      :from(actions.action_guide_remove_selected, 'remove_selected', { items = 'selection.value' })
       :with_severity('danger')
       :with_selection(true)
-      :with_expression('selection.value.map(item => ({ id: item.id }))')
       :with_on_success('refresh'),
     Toolbar.Handle
       :from(actions.action_guide_create_open_dialog,'create_guide')
@@ -167,12 +169,10 @@ toolbars.toolbar_guide_subject = Toolbar
     Toolbar.Sorter:from('id'),
     Toolbar.Sorter:from('name'),
     Toolbar.Sorter:from('position'),
-    Toolbar.Column:from('id', 'string'),
     Toolbar.Handle
-      :from(actions.action_guide_subject_remove_selected, 'remove_selected')
+      :from(actions.action_guide_subject_remove_selected, 'remove_selected', { items = 'selection.value' })
       :with_severity('danger')
       :with_selection(true)
-      :with_expression('selection.value.map(item => ({ id: item.id }))')
       :with_on_success('refresh'),
     Toolbar.Handle
       :from(actions.action_guide_subject_create_open_dialog,'create_guide_subject')

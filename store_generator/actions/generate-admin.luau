@@ -4,6 +4,7 @@ local projects = require('vue/definitions/projects')
 local dockerfiles = require('vue/definitions/dockerfiles')
 local remotes = require('vue/definitions/remotes')
 local views = require('vue/definitions/views')
+local structures = require('vue/definitions/structures')
 local requests = require('vue/definitions/requests')
 local queries = require('vue/definitions/queries')
 local symbols = require('vue/definitions/symbols')
@@ -12,6 +13,7 @@ local fieldsets = require('vue/definitions/fieldsets')
 local selects = require('vue/definitions/selects')
 local searches = require('vue/definitions/searches')
 local uploads = require('vue/definitions/uploads')
+local editors = require('vue/definitions/editors')
 local toolbars = require('vue/definitions/toolbars')
 local pages = require('vue/definitions/pages')
 local routers = require('vue/definitions/routers')
@@ -40,9 +42,19 @@ for _, remote in remotes do
   ggcode.generate "vue/remote" { target = '@store', variables = remote:unwrap() }
 end
 
+-- Generate Requests
+for _, request in requests do
+  ggcode.generate "vue/request" { target = '@store', variables = request:unwrap() }
+end
+
 -- Generate Views
 for _, view in views do
   ggcode.generate "vue/view" { target = '@store', variables = view:unwrap() }
+end
+
+-- Generate Structures
+for _, structure in structures do
+  ggcode.generate "vue/structure" { target = '@store', variables = structure:unwrap() }
 end
 
 -- Generate Select Controls
@@ -58,6 +70,11 @@ end
 -- Generate Upload Controls
 for _, upload in uploads do
   ggcode.generate "vue/upload_s3" { target = '@store', variables = upload:unwrap() }
+end
+
+-- Generate Editor Controls
+for _, editor in editors do
+  ggcode.generate "vue/editor_js" { target = '@store', variables = editor:unwrap() }
 end
 
 -- Generate Symbols
@@ -103,4 +120,9 @@ end
 -- Generate Actions
 for _, action in actions do
   ggcode.generate "vue/action" { target = '@store', variables = action:unwrap() }
+end
+
+-- Generate Queries
+for _, query in queries do
+  ggcode.generate "vue/query" { target = '@store', variables = query:unwrap() }
 end

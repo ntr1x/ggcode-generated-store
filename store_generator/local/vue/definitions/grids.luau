@@ -2,6 +2,7 @@ local Grid = require('vue/Grid')
 
 local queries = require('vue/definitions/queries')
 local symbols = require('vue/definitions/symbols')
+local actions = require('vue/definitions/actions')
 
 local grids = {}
 
@@ -52,6 +53,10 @@ grids.grid_product = Grid
     Grid.Column:from_path('name', 'name'),
     Grid.Column:from_path('category', 'category.name'),
     Grid.Column:from_symbol('price', symbols.symbol_price, 'price'),
+    Grid.Handle
+      :from(actions.action_product_update_open_dialog, 'product_edit')
+      :with_expression('{ productId: item.id }')
+      :with_on_success('refresh'),
   }
 
 grids.grid_category = Grid
