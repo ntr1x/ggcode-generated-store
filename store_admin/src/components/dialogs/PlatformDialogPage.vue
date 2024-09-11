@@ -58,7 +58,7 @@ const groups = computed(() => {
       key: 'pages',
       label: 'Page',
       items: filteredPages.value
-        .slice(0, 3)
+        .slice(0, 5)
         .map((item, index) => ({
           ...item,
           key: `item-${index}`
@@ -68,7 +68,7 @@ const groups = computed(() => {
       key: 'actions',
       label: 'Action',
       items: filteredActions.value
-        .slice(0, 3)
+        .slice(0, 5)
         .map((item, index) => ({
           ...item,
           key: `item-${index}`
